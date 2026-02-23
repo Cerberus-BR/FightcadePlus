@@ -1,6 +1,6 @@
 # **🐺 Fightcade Plus (Cerberus)**
 
-[*🇧🇷 Leia em Português (Read in Portuguese)*](http://docs.google.com/README.md)  
+[*🇧🇷 Leia em Português (Read in Portuguese)*](README_br.md)  
 **Developed with a focus on high performance and optimization for all PCs.**  
 **Fightcade Plus** is an enhancement script (mod) for the official Fightcade client. It injects quality-of-life (QoL) features, advanced geographic filters, and a community reputation system—all without causing any slowdowns or FPS drops during your matches.
 

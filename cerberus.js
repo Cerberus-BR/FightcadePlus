@@ -38,7 +38,7 @@ const Locales = {
             unlockThemes: "Unlock Color Themes"
         },
         about: {
-            title: "Fightcade Plus 1.7.2",
+            title: "Fightcade Plus 1.7.3",
             subtitle: "By Cerberus",
             feat1: "Auto Join Channels",
             feat2: "Geographic Country Filter",
@@ -90,7 +90,7 @@ const Locales = {
             unlockThemes: "Desbloquear Temas de Cor"
         },
         about: {
-            title: "Fightcade Plus 1.7.2",
+            title: "Fightcade Plus 1.7.3",
             subtitle: "By Cerberus",
             feat1: "Entrada automática em canais (Auto Join)",
             feat2: "Filtro Geográfico de Países",
@@ -142,7 +142,7 @@ const Locales = {
             unlockThemes: "Desbloquear Temas de Color"
         },
         about: {
-            title: "Fightcade Plus 1.7.2",
+            title: "Fightcade Plus 1.7.3",
             subtitle: "By Cerberus",
             feat1: "Entrada automática a canales (Auto Join)",
             feat2: "Filtro Geográfico de Países",
@@ -174,7 +174,6 @@ const AVAILABLE_COUNTRIES = {
     'DZ': 'Algeria', 'PK': 'Pakistan', 'HK': 'Hong Kong'
 };
 
-// Otimização: Mapa reverso para consultas O(1) instantâneas do país
 const COUNTRY_NAME_TO_CODE = Object.fromEntries(
     Object.entries(AVAILABLE_COUNTRIES).map(([code, name]) => [name, code])
 );
@@ -426,7 +425,6 @@ function t(keyPath) {
         result = result[k];
     }
     
-    // Fallback para inglês
     if (result === undefined && lang !== 'en') {
         result = Locales['en'];
         for (let k of keys) {
@@ -508,9 +506,7 @@ window.ConfigManager = ConfigManager;
 // ==================== PLUGIN MAIN LOOP ====================
 
 const runPlugin = (FCADE) => {
-    console.log('🐺 Cerberus v1.7.2 (Fightcade Plus) Inicializado');
-    
-    // Essencial para o Global Reprocess aceder aos dados instantaneamente
+    console.log('🐺 Cerberus v1.7.3 (Fightcade Plus) Inicializado');
     window.CerberusFCADE = FCADE; 
 
     if (runtimeConfig.autoJoin?.enabled !== false) {
@@ -607,8 +603,8 @@ function injectGlobalMenu() {
         
         fn(userKey);
         
-        if (menu.dataset.type === 'match' || menu.dataset.type === 'challenge') {
-            const playerNames = document.querySelectorAll('.playerName, .cerb-challenge-name');
+        if (menu.dataset.type === 'match') {
+            const playerNames = document.querySelectorAll('.playerName');
             playerNames.forEach(el => {
                 if (normalizeUsername(el.textContent) === userKey) {
                     applyReputationStyleMatch(el, userKey);
@@ -712,8 +708,8 @@ const updateChat = (FCADE, configFull) => {
     newMessages.forEach(msg => {
         try {
             const isChat = msg.classList.contains('chat');
-            const isChallenge = msg.classList.contains('challengeRequested');
-            if (!isChat && !isChallenge) {
+            
+            if (!isChat) {
                 msg.dataset.cerberusProcessed = "true";
                 return;
             }
@@ -721,116 +717,41 @@ const updateChat = (FCADE, configFull) => {
             let userKey = null;
             let userCountry = null;
 
-            if (isChat) {
-                const author = msg.querySelector('span.author');
-                if (!author) return;
-                
-                userKey = normalizeUsername(author.textContent);
-                if (!userKey) return; 
+            const author = msg.querySelector('span.author');
+            if (!author) return;
+            
+            userKey = normalizeUsername(author.textContent);
+            if (!userKey) return; 
 
-                const user = globalUsers[userKey];
-                
-                if (user) userCountry = user.country?.iso_code?.toUpperCase();
-                
-                const activeChannelId = FCADE.activeChannelId;
-                const usersList = FCADE.$refs[activeChannelId]?.[0]?.$refs?.usersList;
-                const userFound = usersList?.$children?.find(ch => ch?.user?.id === userKey);
-                
-                const minPingVal = getMinPing(userFound);
+            const user = globalUsers[userKey];
+            
+            if (user) userCountry = user.country?.iso_code?.toUpperCase();
+            
+            const activeChannelId = FCADE.activeChannelId;
+            const usersList = FCADE.$refs[activeChannelId]?.[0]?.$refs?.usersList;
+            const userFound = usersList?.$children?.find(ch => ch?.user?.id === userKey);
+            const minPingVal = getMinPing(userFound);
 
-                const elements = {
-                    status: (cfg.enableStatus && user?.away !== undefined) ? createStatusElement(user.away) : null,
-                    flag: (cfg.enableFlag && user?.country) ? createFlagElement(user.country) : null,
-                    rank: (cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle) : null,
-                    pingBar: (cfg.enablePingBars && userFound?.pingSrc && !cfg.replacePingBarWithText) ? createPingElement(userFound.pingSrc, userFound.pingTitle) : null,
-                    pingText: (cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal) : null
-                };
+            const elements = {
+                status: (cfg.enableStatus && user?.away !== undefined) ? createStatusElement(user.away) : null,
+                flag: (cfg.enableFlag && user?.country) ? createFlagElement(user.country) : null,
+                rank: (cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle) : null,
+                pingBar: (cfg.enablePingBars && userFound?.pingSrc && !cfg.replacePingBarWithText) ? createPingElement(userFound.pingSrc, userFound.pingTitle) : null,
+                pingText: (cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal) : null
+            };
 
-                if (cfg.enableReputation) {
-                    applyReputationStyleChat(author, msg, userKey, false);
-                    addReputationControlsToElement(author, msg, userKey, 'chat', cfg.hideNegativeMessages);
-                }
-
-                if (elements.status) author.parentElement.insertBefore(elements.status, author);
-                if (elements.flag) author.appendChild(elements.flag);
-                if (elements.rank) author.appendChild(elements.rank);
-                if (elements.pingBar) author.appendChild(elements.pingBar);
-                if (elements.pingText) author.appendChild(elements.pingText);
-
-                if (cfg.blurMode === 'individual') msg.classList.add('blur-individual');
-                
-            } else if (isChallenge) {
-                const contentEl = msg.querySelector('.challengeContent');
-                const titleEl = msg.querySelector('.title');
-                
-                if (contentEl) {
-                    const nameEl = contentEl.querySelector('.name');
-                    if (nameEl) {
-                        userKey = normalizeUsername(nameEl.textContent);
-                        if (!userKey) return;
-
-                        userCountry = globalUsers[userKey]?.country?.iso_code?.toUpperCase();
-                        
-                        if (cfg.enableReputation) {
-                            applyReputationStyleMatch(nameEl, userKey); 
-                            addReputationControlsToElement(nameEl, contentEl.querySelector('.userInfo'), userKey, 'challenge');
-                        }
-                    }
-                } else if (titleEl) {
-                    const textNodes = Array.from(titleEl.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
-                    for (let node of textNodes) {
-                        const text = node.nodeValue;
-                        let match = text.match(/(cancelled by|challenge from)\s+([^\s].+?)\s*$/i);
-                        
-                        if (match && !titleEl.querySelector('.cerb-challenge-name')) {
-                            const originalName = match[2];
-                            userKey = normalizeUsername(originalName);
-                            if (!userKey) return;
-
-                            const user = globalUsers[userKey];
-                            if (user) userCountry = user.country?.iso_code?.toUpperCase();
-
-                            const splitIndex = text.lastIndexOf(originalName);
-                            if (splitIndex !== -1) {
-                                const beforeText = text.substring(0, splitIndex);
-                                const afterText = text.substring(splitIndex + originalName.length);
-                                
-                                const span = document.createElement('span');
-                                span.className = 'author cerb-challenge-name';
-                                Object.assign(span.style, { cursor: 'pointer', display: 'inline-flex', alignItems: 'center' });
-                                span.textContent = originalName;
-
-                                node.nodeValue = beforeText;
-                                const afterNode = document.createTextNode(afterText);
-                                
-                                if (node.nextSibling) {
-                                    titleEl.insertBefore(span, node.nextSibling);
-                                    titleEl.insertBefore(afterNode, span.nextSibling);
-                                } else {
-                                    titleEl.appendChild(span);
-                                    titleEl.appendChild(afterNode);
-                                }
-
-                                const activeChannelId = FCADE.activeChannelId;
-                                const usersList = FCADE.$refs[activeChannelId]?.[0]?.$refs?.usersList;
-                                const userFound = usersList?.$children?.find(ch => ch?.user?.id === userKey);
-                                const minPingVal = getMinPing(userFound);
-
-                                if (cfg.enableStatus && user?.away !== undefined) span.parentElement.insertBefore(createStatusElement(user.away), span);
-                                if (cfg.enableFlag && user?.country) span.appendChild(createFlagElement(user.country));
-                                if (cfg.enableRank && userFound?.rankSrc) span.appendChild(createRankElement(userFound.rankSrc, userFound.rankTitle));
-                                if (cfg.enablePingBars && userFound?.pingSrc && !cfg.replacePingBarWithText) span.appendChild(createPingElement(userFound.pingSrc, userFound.pingTitle));
-                                if ((cfg.enablePingText || cfg.replacePingBarWithText) && minPingVal !== null) span.appendChild(createPingTextElement(minPingVal));
-
-                                if (cfg.enableReputation) {
-                                    applyReputationStyleMatch(span, userKey);
-                                    addReputationControlsToElement(span, span, userKey, 'challenge');
-                                }
-                            }
-                        }
-                    }
-                }
+            if (cfg.enableReputation) {
+                applyReputationStyleChat(author, msg, userKey, false);
+                addReputationControlsToElement(author, msg, userKey, 'chat', cfg.hideNegativeMessages);
             }
+
+            if (elements.status) author.parentElement.insertBefore(elements.status, author);
+            if (elements.flag) author.appendChild(elements.flag);
+            if (elements.rank) author.appendChild(elements.rank);
+            if (elements.pingBar) author.appendChild(elements.pingBar);
+            if (elements.pingText) author.appendChild(elements.pingText);
+
+            if (cfg.blurMode === 'individual') msg.classList.add('blur-individual');
             
             msg.dataset.cerberusProcessed = "true";
             if (userKey) msg.dataset.cerberusUser = userKey;
@@ -1138,9 +1059,6 @@ function reprocessUserMessages(userKey, hideNegative) {
             if (msg.classList.contains('chat')) {
                 const author = msg.querySelector('span.author');
                 if (author) applyReputationStyleChat(author, msg, userKey, hideNegative);
-            } else if (msg.classList.contains('challengeRequested')) {
-                const name = msg.querySelector('.cerb-challenge-name') || msg.querySelector('.challengeContent .name');
-                if (name) applyReputationStyleMatch(name, userKey);
             }
             msg.dataset.cerberusHidden = "invalid";
         }
@@ -1289,7 +1207,7 @@ function createStatusElement(isAway) {
         display: 'inline-block',
         borderRadius: '50%',
         backgroundColor: isAway ? '#ffaa00' : '#00ff00',
-        marginRight: '5px', // Corrigido a margem de injeção
+        marginRight: '5px',
         boxShadow: isAway ? '0 0 2px orange' : '0 0 2px green'
     });
     return status;
@@ -1768,7 +1686,7 @@ function createSettingsTab() {
     `;
 
     const settingToggle = (key, label, isMain = false) => {
-        const val = ConfigManager.getSetting(key) === true; // Estrito para lidar com falsos positivos
+        const val = ConfigManager.getSetting(key) === true; 
         const extraAction = isMain ? 'updateCountryTabVisibility(this.checked);' : '';
         const fn = `ConfigManager.updateSetting('${key}', this.checked); ${extraAction}`;
         

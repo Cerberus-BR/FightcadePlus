@@ -38,7 +38,7 @@ const Locales = {
             unlockThemes: "Unlock Color Themes"
         },
         about: {
-            title: "Fightcade Plus 1.7.3",
+            title: "Fightcade Plus 1.7.10",
             subtitle: "By Cerberus",
             feat1: "Auto Join Channels",
             feat2: "Geographic Country Filter",
@@ -90,7 +90,7 @@ const Locales = {
             unlockThemes: "Desbloquear Temas de Cor"
         },
         about: {
-            title: "Fightcade Plus 1.7.3",
+            title: "Fightcade Plus 1.7.10",
             subtitle: "By Cerberus",
             feat1: "Entrada automática em canais (Auto Join)",
             feat2: "Filtro Geográfico de Países",
@@ -142,7 +142,7 @@ const Locales = {
             unlockThemes: "Desbloquear Temas de Color"
         },
         about: {
-            title: "Fightcade Plus 1.7.3",
+            title: "Fightcade Plus 1.7.10",
             subtitle: "By Cerberus",
             feat1: "Entrada automática a canales (Auto Join)",
             feat2: "Filtro Geográfico de Países",
@@ -215,7 +215,19 @@ module.exports = (FCADE) => {
     }
 };
 
-// ==================== GERENCIADORES DE DADOS ====================
+// ==================== GESTÃO DE ESTADO & CACHE ====================
+// Invalida o cache O(1) de mensagens forçando a reavaliação de todos os elementos
+function invalidateCountryFilterCache() {
+    // Restaura a visibilidade visual ANTES de remover os atributos para garantir sincronia
+    unfilterAllMessages();
+    unfilterAllUsers();
+    
+    if (window.CerberusFCADE && runtimeConfig) {
+        updateChat(window.CerberusFCADE, runtimeConfig);
+        updateSidebar(window.CerberusFCADE, runtimeConfig);
+    }
+}
+
 let dataSaveTimeout = null;
 const CerberusData = {
     allowedCountries: Object.keys(AVAILABLE_COUNTRIES), 
@@ -286,6 +298,7 @@ const CerberusData = {
         if (!this.allowedCountries.includes(code)) {
             this.allowedCountries.push(code);
             this.save();
+            invalidateCountryFilterCache();
         }
     },
 
@@ -293,6 +306,7 @@ const CerberusData = {
         if (!code) return;
         this.allowedCountries = this.allowedCountries.filter(c => c !== code.toUpperCase());
         this.save();
+        invalidateCountryFilterCache();
     },
 
     isCountryAllowed(code) {
@@ -303,11 +317,13 @@ const CerberusData = {
     allowAllCountries() {
         this.allowedCountries = Object.keys(AVAILABLE_COUNTRIES);
         this.save();
+        invalidateCountryFilterCache();
     },
 
     clearAllCountries() {
         this.allowedCountries = [];
         this.save();
+        invalidateCountryFilterCache();
     },
 
     markPositive(userId) {
@@ -401,6 +417,21 @@ const ConfigManager = {
         }
         current[keys[keys.length - 1]] = value;
         this.saveConfig();
+
+        // GATILHO DE RETROATIVIDADE: Força o chat a repintar mensagens antigas se houver alteração visual.
+        // Ocultado estritamente para a opção da aba lateral para evitar remoções em massa desnecessárias.
+        if (pathStr.startsWith('chatUserInfo.') && pathStr !== 'chatUserInfo.replacePingBarWithText') {
+            document.querySelectorAll('.message').forEach(msg => {
+                msg.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext').forEach(el => el.remove());
+                msg.removeAttribute('data-cerberus-processed');
+                msg.removeAttribute('data-cerberus-retries');
+            });
+        }
+        
+        // GATILHO DE CACHE DE FILTRO
+        if (pathStr === 'countryFilter.enabled') {
+            invalidateCountryFilterCache();
+        }
     },
 
     getSetting(pathStr) {
@@ -482,18 +513,18 @@ function getMinPing(userFound) {
 }
 
 function unfilterAllMessages() {
-    document.querySelectorAll('[data-cerberus-hidden="true"]').forEach(msg => {
+    document.querySelectorAll('[data-cerberus-hidden]').forEach(msg => {
         const wrapper = msg.closest('.messageWrapper');
         if (wrapper) wrapper.style.display = '';
         msg.style.display = '';
-        msg.dataset.cerberusHidden = "false";
+        msg.removeAttribute('data-cerberus-hidden');
     });
 }
 
 function unfilterAllUsers() {
-    document.querySelectorAll('[data-country-blocked="true"]').forEach(el => {
+    document.querySelectorAll('[data-country-blocked]').forEach(el => {
         el.style.display = '';
-        el.dataset.countryBlocked = "false";
+        el.removeAttribute('data-country-blocked');
     });
 }
 
@@ -506,7 +537,7 @@ window.ConfigManager = ConfigManager;
 // ==================== PLUGIN MAIN LOOP ====================
 
 const runPlugin = (FCADE) => {
-    console.log('🐺 Cerberus v1.7.3 (Fightcade Plus) Inicializado');
+    console.log('🐺 Cerberus v1.7.10 (Fightcade Plus) Inicializado - [Real-Time Sync Fix]');
     window.CerberusFCADE = FCADE; 
 
     if (runtimeConfig.autoJoin?.enabled !== false) {
@@ -547,14 +578,20 @@ function maintainChatObserver(FCADE, cfg) {
         
         currentChatContent = chatContent;
         chatObserver = new MutationObserver((mutations) => {
-            let hasNewNodes = false;
+            let hasValidNewNodes = false;
             for (let mut of mutations) {
                 if (mut.addedNodes.length > 0) {
-                    hasNewNodes = true;
-                    break;
+                    for (let node of mut.addedNodes) {
+                        if (node.nodeType === 1 && node.classList && node.classList.contains('cerberus-anim-pop')) {
+                            continue;
+                        }
+                        hasValidNewNodes = true;
+                        break;
+                    }
                 }
+                if (hasValidNewNodes) break;
             }
-            if (hasNewNodes) {
+            if (hasValidNewNodes) {
                 try {
                     updateChat(FCADE, cfg);
                 } catch (err) {
@@ -714,17 +751,24 @@ const updateChat = (FCADE, configFull) => {
                 return;
             }
 
-            let userKey = null;
-            let userCountry = null;
-
             const author = msg.querySelector('span.author');
-            if (!author) return;
+            if (!author) {
+                let retries = parseInt(msg.dataset.cerberusRetries || "0");
+                if (retries >= 5) msg.dataset.cerberusProcessed = "true";
+                else msg.dataset.cerberusRetries = retries + 1;
+                return;
+            }
             
-            userKey = normalizeUsername(author.textContent);
-            if (!userKey) return; 
+            let userKey = normalizeUsername(author.textContent);
+            if (!userKey) {
+                let retries = parseInt(msg.dataset.cerberusRetries || "0");
+                if (retries >= 5) msg.dataset.cerberusProcessed = "true";
+                else msg.dataset.cerberusRetries = retries + 1;
+                return;
+            } 
 
             const user = globalUsers[userKey];
-            
+            let userCountry = null;
             if (user) userCountry = user.country?.iso_code?.toUpperCase();
             
             const activeChannelId = FCADE.activeChannelId;
@@ -736,7 +780,7 @@ const updateChat = (FCADE, configFull) => {
                 status: (cfg.enableStatus && user?.away !== undefined) ? createStatusElement(user.away) : null,
                 flag: (cfg.enableFlag && user?.country) ? createFlagElement(user.country) : null,
                 rank: (cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle) : null,
-                pingBar: (cfg.enablePingBars && userFound?.pingSrc && !cfg.replacePingBarWithText) ? createPingElement(userFound.pingSrc, userFound.pingTitle) : null,
+                pingBar: (cfg.enablePingBars && userFound?.pingSrc) ? createPingElement(userFound.pingSrc, userFound.pingTitle) : null,
                 pingText: (cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal) : null
             };
 
@@ -771,13 +815,17 @@ const updateChat = (FCADE, configFull) => {
         return; 
     }
 
-    document.querySelectorAll('.message').forEach(msg => {
+    const messagesToFilter = document.querySelectorAll('.message:not([data-cerberus-hidden="true"]):not([data-cerberus-hidden="false"])');
+    messagesToFilter.forEach(msg => {
         const userKey = msg.dataset.cerberusUser;
         const userCountry = msg.dataset.cerberusCountry;
-        if (!userKey) return;
+        
+        if (!userKey) {
+            msg.dataset.cerberusHidden = "false";
+            return;
+        }
 
         let shouldHide = false;
-
         if (hideNeg && CerberusData.isNegative(userKey)) {
             shouldHide = true;
         } else if (countryFilterEnabled && userCountry) {
@@ -786,20 +834,15 @@ const updateChat = (FCADE, configFull) => {
             }
         }
 
+        const wrapper = msg.closest('.messageWrapper');
         if (shouldHide) {
-            if (msg.dataset.cerberusHidden !== "true") {
-                const wrapper = msg.closest('.messageWrapper');
-                if (wrapper) wrapper.style.display = 'none';
-                msg.style.display = 'none';
-                msg.dataset.cerberusHidden = "true";
-            }
+            if (wrapper) wrapper.style.display = 'none';
+            msg.style.display = 'none';
+            msg.dataset.cerberusHidden = "true";
         } else {
-            if (msg.dataset.cerberusHidden !== "false") {
-                const wrapper = msg.closest('.messageWrapper');
-                if (wrapper) wrapper.style.display = '';
-                msg.style.display = '';
-                msg.dataset.cerberusHidden = "false";
-            }
+            if (wrapper) wrapper.style.display = '';
+            msg.style.display = '';
+            msg.dataset.cerberusHidden = "false";
         }
     });
 };
@@ -810,6 +853,12 @@ const updateSidebar = (FCADE, configFull) => {
     
     const cfg = configFull.chatUserInfo;
     const countryFilterEnabled = configFull.countryFilter?.enabled === true;
+
+    if (cfg?.replacePingBarWithText) {
+        document.body.classList.add('cerb-hide-sidebar-ping');
+    } else {
+        document.body.classList.remove('cerb-hide-sidebar-ping');
+    }
 
     // 1. Processar Lista de Utilizadores
     document.querySelectorAll('.userItem').forEach(item => {
@@ -833,7 +882,6 @@ const updateSidebar = (FCADE, configFull) => {
                     const minPing = extractMinPing(title);
                     
                     if (minPing !== null) {
-                        if (img) img.style.display = 'none';
                         let color = minPing < 60 ? '#00ff00' : (minPing > 90 ? '#ff4444' : '#aaa');
                         
                         let txt = pingWrapper.querySelector('.cerberus-ping-text');
@@ -850,8 +898,6 @@ const updateSidebar = (FCADE, configFull) => {
             } else {
                  const pingWrapper = item.querySelector('.pingWrapper');
                  if (pingWrapper) {
-                     const img = pingWrapper.querySelector('img.ping');
-                     if (img) img.style.display = '';
                      const txt = pingWrapper.querySelector('.cerberus-ping-text');
                      if (txt) txt.remove();
                  }
@@ -1060,7 +1106,10 @@ function reprocessUserMessages(userKey, hideNegative) {
                 const author = msg.querySelector('span.author');
                 if (author) applyReputationStyleChat(author, msg, userKey, hideNegative);
             }
-            msg.dataset.cerberusHidden = "invalid";
+            const wrapper = msg.closest('.messageWrapper');
+            if (wrapper) wrapper.style.display = '';
+            msg.style.display = '';
+            msg.removeAttribute('data-cerberus-hidden');
         }
     });
 
@@ -1068,7 +1117,8 @@ function reprocessUserMessages(userKey, hideNegative) {
         const name = item.querySelector('.playerName');
         if (name && normalizeUsername(name.textContent) === userKey) {
             applyReputationStyleList(name, item, userKey);
-            item.dataset.countryBlocked = "invalid";
+            item.style.display = '';
+            item.removeAttribute('data-country-blocked');
         }
     });
 
@@ -1080,7 +1130,10 @@ function reprocessUserMessages(userKey, hideNegative) {
                 hasUser = true;
             }
         });
-        if (hasUser) match.dataset.countryBlocked = "invalid";
+        if (hasUser) {
+            match.style.display = '';
+            match.removeAttribute('data-country-blocked');
+        }
     });
 
     if (runtimeConfig && window.CerberusFCADE) {
@@ -1227,6 +1280,11 @@ function injectStyles() {
         }
         .cerberus-anim-pop {
             animation: cerbPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Ancoramento Estrito do CSS da barra lateral para prevenir side-effects globais */
+        body.cerb-hide-sidebar-ping .usersListToolbar .userItem .pingWrapper img.ping {
+            display: none !important;
         }
 
         /* Blur */
@@ -1519,6 +1577,8 @@ function createControlPanel() {
 
 function makeDraggable(element) {
     const header = document.getElementById('cerberusHeader');
+    if (!header) return;
+    
     let isDragging = false;
     let currentX, currentY, initialX, initialY;
     let xOffset = 0, yOffset = 0;
@@ -1527,9 +1587,8 @@ function makeDraggable(element) {
     yOffset = (window.innerHeight - 500) / 2;
     setTranslate(xOffset, yOffset, element);
 
+    // Adiciona o ouvinte inicial estritamente ao cabeçalho (Destruído com o Painel)
     header.addEventListener("mousedown", dragStart);
-    window.addEventListener("mouseup", dragEnd);
-    window.addEventListener("mousemove", drag);
 
     function dragStart(e) {
         if (e.target === header || header.contains(e.target)) {
@@ -1537,6 +1596,10 @@ function makeDraggable(element) {
                 initialX = e.clientX - xOffset;
                 initialY = e.clientY - yOffset;
                 isDragging = true;
+                
+                // Anexa listeners ao documento APENAS durante o arrasto
+                document.addEventListener("mouseup", dragEnd);
+                document.addEventListener("mousemove", drag);
             }
         }
     }
@@ -1546,6 +1609,10 @@ function makeDraggable(element) {
             initialX = currentX;
             initialY = currentY;
             isDragging = false;
+            
+            // Destroi listeners nativos imediatamente ao soltar o clique (Anti-Leak)
+            document.removeEventListener("mouseup", dragEnd);
+            document.removeEventListener("mousemove", drag);
         }
     }
 

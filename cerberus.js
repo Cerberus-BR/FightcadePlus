@@ -28,7 +28,7 @@ const Locales = {
             replacePingBar: "Replace Bar with Text (List)",
             reputation: "Reputation",
             enableRep: "Reputation System (👍/👎)",
-            hideNeg: "Hide Negatived Users",
+            hideNeg: "Hide Negatived Users Chat",
             privacy: "Privacy",
             blurMode: "Blur Mode (Focus Chat)",
             blurNone: "Disabled",
@@ -38,7 +38,7 @@ const Locales = {
             unlockThemes: "Unlock Color Themes"
         },
         about: {
-            title: "Fightcade Plus 1.7.10",
+            title: "Fightcade Plus 1.7.13",
             subtitle: "By Cerberus",
             feat1: "Auto Join Channels",
             feat2: "Geographic Country Filter",
@@ -47,12 +47,15 @@ const Locales = {
             feat5: "Privacy Mode (Chat Blur)",
             feat6: "Premium Themes Unlock",
             note: "Developed with a focus on high performance and optimization.",
-            updateBtn: "🔄 Check for Updates"
+            updateBtn: "🔄 Check for Updates",
+            updateAvailable: "⚠️ Update Available: "
         },
         rep: {
             like: "Highlight (Bypass Filter)",
             dislike: "Negative",
-            clear: "Clear"
+            clear: "Clear Reputation",
+            block: "Block (Native)",
+            unblock: "Unblock (Native)"
         }
     },
     pt: {
@@ -80,7 +83,7 @@ const Locales = {
             replacePingBar: "Trocar Barra por Texto (Lista)",
             reputation: "Reputação",
             enableRep: "Sistema de Reputação (👍/👎)",
-            hideNeg: "Ocultar Negativados",
+            hideNeg: "Ocultar chat de negativados",
             privacy: "Privacidade",
             blurMode: "Modo Blur (Focar Chat)",
             blurNone: "Desativado",
@@ -90,7 +93,7 @@ const Locales = {
             unlockThemes: "Desbloquear Temas de Cor"
         },
         about: {
-            title: "Fightcade Plus 1.7.10",
+            title: "Fightcade Plus 1.7.13",
             subtitle: "By Cerberus",
             feat1: "Entrada automática em canais (Auto Join)",
             feat2: "Filtro Geográfico de Países",
@@ -99,12 +102,15 @@ const Locales = {
             feat5: "Modo de Privacidade (Desfoque de chat)",
             feat6: "Desbloqueio de Temas Premium",
             note: "Desenvolvido com foco em alta performance e otimização.",
-            updateBtn: "🔄 Verificar Atualizações"
+            updateBtn: "🔄 Verificar Atualizações",
+            updateAvailable: "⚠️ Atualização Disponível: "
         },
         rep: {
             like: "Destacar (Bypass Filtro)",
             dislike: "Negativar",
-            clear: "Limpar"
+            clear: "Limpar Reputação",
+            block: "Bloquear (Nativo)",
+            unblock: "Desbloquear (Nativo)"
         }
     },
     es: {
@@ -132,7 +138,7 @@ const Locales = {
             replacePingBar: "Reemplazar Barra por Texto (Lista)",
             reputation: "Reputación",
             enableRep: "Sistema de Reputación (👍/👎)",
-            hideNeg: "Ocultar Usuarios Negativos",
+            hideNeg: "Ocultar chat de usuarios negativos",
             privacy: "Privacidad",
             blurMode: "Modo Blur (Enfocar Chat)",
             blurNone: "Desactivado",
@@ -142,7 +148,7 @@ const Locales = {
             unlockThemes: "Desbloquear Temas de Color"
         },
         about: {
-            title: "Fightcade Plus 1.7.10",
+            title: "Fightcade Plus 1.7.13",
             subtitle: "By Cerberus",
             feat1: "Entrada automática a canales (Auto Join)",
             feat2: "Filtro Geográfico de Países",
@@ -151,12 +157,15 @@ const Locales = {
             feat5: "Modo de Privacidad (Desenfoque de chat)",
             feat6: "Desbloqueo de Temas Premium",
             note: "Desarrollado con enfoque en alto rendimiento y optimización.",
-            updateBtn: "🔄 Buscar Actualizaciones"
+            updateBtn: "🔄 Buscar Actualizaciones",
+            updateAvailable: "⚠️ Actualización Disponible: "
         },
         rep: {
             like: "Destacar (Bypass Filtro)",
             dislike: "Negativar",
-            clear: "Limpiar"
+            clear: "Limpiar Reputación",
+            block: "Bloquear (Nativo)",
+            unblock: "Desbloquear (Nativo)"
         }
     }
 };
@@ -196,7 +205,7 @@ const defaultConfig = {
         enablePingBars: false, 
         replacePingBarWithText: false,
         enableReputation: true,
-        hideNegativeMessages: false,
+        hideNegativeMessages: true, 
         unlockColorThemes: true, 
         blurMode: 'none'
     }
@@ -205,6 +214,7 @@ const defaultConfig = {
 const dataPath = path.join(__dirname, 'cerberus_data.json');
 const configPath = path.join(__dirname, 'config.json');
 
+const CURRENT_VERSION = "1.7.13";
 let runtimeConfig = null;
 
 module.exports = (FCADE) => {
@@ -216,9 +226,7 @@ module.exports = (FCADE) => {
 };
 
 // ==================== GESTÃO DE ESTADO & CACHE ====================
-// Invalida o cache O(1) de mensagens forçando a reavaliação de todos os elementos
 function invalidateCountryFilterCache() {
-    // Restaura a visibilidade visual ANTES de remover os atributos para garantir sincronia
     unfilterAllMessages();
     unfilterAllUsers();
     
@@ -233,7 +241,9 @@ const CerberusData = {
     allowedCountries: Object.keys(AVAILABLE_COUNTRIES), 
     positive: new Set(),
     negative: new Set(),
-    selectedTheme: 'bretema', 
+    selectedTheme: 'bretema',
+    lastUpdateCheck: 0,
+    latestVersion: null,
 
     load() {
         let rawData = null;
@@ -250,6 +260,8 @@ const CerberusData = {
                 this.positive = new Set(data.positive || []);
                 this.negative = new Set(data.negative || []);
                 this.selectedTheme = data.selectedTheme || 'bretema';
+                this.lastUpdateCheck = data.lastUpdateCheck || 0;
+                this.latestVersion = data.latestVersion || null;
                 
                 fs.writeFileSync(dataPath + '.bak', rawData, 'utf8');
             } catch (error) {
@@ -261,6 +273,8 @@ const CerberusData = {
                         this.positive = new Set(backupData.positive || []);
                         this.negative = new Set(backupData.negative || []);
                         this.selectedTheme = backupData.selectedTheme || 'bretema';
+                        this.lastUpdateCheck = backupData.lastUpdateCheck || 0;
+                        this.latestVersion = backupData.latestVersion || null;
                         console.log('✅ [Cerberus] Cópia de segurança restaurada com sucesso!');
                         return;
                     }
@@ -281,6 +295,8 @@ const CerberusData = {
                     positive: [...this.positive],
                     negative: [...this.negative],
                     selectedTheme: this.selectedTheme,
+                    lastUpdateCheck: this.lastUpdateCheck,
+                    latestVersion: this.latestVersion,
                     lastUpdated: new Date().toISOString()
                 };
                 const jsonStr = JSON.stringify(dataToSave, null, 2);
@@ -418,8 +434,6 @@ const ConfigManager = {
         current[keys[keys.length - 1]] = value;
         this.saveConfig();
 
-        // GATILHO DE RETROATIVIDADE: Força o chat a repintar mensagens antigas se houver alteração visual.
-        // Ocultado estritamente para a opção da aba lateral para evitar remoções em massa desnecessárias.
         if (pathStr.startsWith('chatUserInfo.') && pathStr !== 'chatUserInfo.replacePingBarWithText') {
             document.querySelectorAll('.message').forEach(msg => {
                 msg.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext').forEach(el => el.remove());
@@ -428,7 +442,6 @@ const ConfigManager = {
             });
         }
         
-        // GATILHO DE CACHE DE FILTRO
         if (pathStr === 'countryFilter.enabled') {
             invalidateCountryFilterCache();
         }
@@ -444,6 +457,41 @@ const ConfigManager = {
         return current;
     }
 };
+
+// ==================== UPDATER SYSTEM ====================
+function isNewerVersion(latest, current) {
+    if (!latest || !current) return false;
+    const l = latest.replace('v', '').split('.').map(Number);
+    const c = current.replace('v', '').split('.').map(Number);
+    for (let i = 0; i < Math.max(l.length, c.length); i++) {
+        const lVal = l[i] || 0;
+        const cVal = c[i] || 0;
+        if (lVal > cVal) return true;
+        if (lVal < cVal) return false;
+    }
+    return false;
+}
+
+async function checkForUpdates() {
+    const now = Date.now();
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    
+    if (!CerberusData.lastUpdateCheck || (now - CerberusData.lastUpdateCheck > ONE_DAY)) {
+        try {
+            const response = await fetch('https://api.github.com/repos/Cerberus-BR/FightcadePlus/releases/latest');
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.tag_name) {
+                    CerberusData.latestVersion = data.tag_name;
+                    CerberusData.lastUpdateCheck = now;
+                    CerberusData.save();
+                }
+            }
+        } catch (e) {
+            // Falha silenciosa para não travar o cliente em caso de offline/rate-limit
+        }
+    }
+}
 
 // ==================== TRADUTOR (i18n) ====================
 function t(keyPath) {
@@ -528,6 +576,17 @@ function unfilterAllUsers() {
     });
 }
 
+// Injeção de Bypass de Reatividade para comandos nativos
+function executeChatCommand(command) {
+    const inputEl = document.querySelector('.chatInput input.input');
+    if (!inputEl) return;
+    
+    const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+    nativeSetter.call(inputEl, command);
+    inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+    inputEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }));
+}
+
 CerberusData.load();
 ConfigManager.loadConfig();
 
@@ -537,8 +596,11 @@ window.ConfigManager = ConfigManager;
 // ==================== PLUGIN MAIN LOOP ====================
 
 const runPlugin = (FCADE) => {
-    console.log('🐺 Cerberus v1.7.10 (Fightcade Plus) Inicializado - [Real-Time Sync Fix]');
+    console.log(`🐺 Cerberus v${CURRENT_VERSION} (Fightcade Plus) Inicializado`);
     window.CerberusFCADE = FCADE; 
+
+    // Dispara a verificação diária de updates em background
+    checkForUpdates();
 
     if (runtimeConfig.autoJoin?.enabled !== false) {
         connectToChannelWhenAvailable(FCADE, runtimeConfig.autoJoin);
@@ -618,6 +680,9 @@ function injectGlobalMenu() {
         <span id="cerbBtnLike" title="${t('rep.like')}">👍</span>
         <span id="cerbBtnDislike" title="${t('rep.dislike')}">👎</span>
         <span id="cerbBtnClear" title="${t('rep.clear')}">🧹</span>
+        <div class="cerb-menu-divider"></div>
+        <span id="cerbBtnBlock" title="${t('rep.block')}">🚫</span>
+        <span id="cerbBtnUnblock" title="${t('rep.unblock')}">🟢</span>
     `;
     document.body.appendChild(menu);
 
@@ -656,6 +721,54 @@ function injectGlobalMenu() {
     document.getElementById('cerbBtnLike').onclick = () => action(k => CerberusData.markPositive(k));
     document.getElementById('cerbBtnDislike').onclick = () => action(k => CerberusData.markNegative(k));
     document.getElementById('cerbBtnClear').onclick = () => action(k => CerberusData.clearReputation(k));
+    
+    document.getElementById('cerbBtnBlock').onclick = () => {
+        const userKey = menu.dataset.user;
+        if (userKey) {
+            executeChatCommand(`/ignore ${userKey}`);
+            
+            // UX Dinâmica: "DOM Hunter" para fazer scroll automático até o jogador bloqueado
+            let attempts = 0;
+            const maxAttempts = 30; // Timeout de segurança: 3 segundos (30 * 100ms)
+            const scrollInterval = setInterval(() => {
+                attempts++;
+                const blockedEl = Array.from(document.querySelectorAll('.usersIgnoredList .userItem')).find(el => el.dataset.currentUser === userKey);
+                
+                if (blockedEl) {
+                    // Resiliência de Scroll: Em vez de mirar no elemento (que pode sofrer DOM Shift), 
+                    // rolamos o contêiner principal para o seu limite absoluto.
+                    const sidebarWrapper = document.querySelector('.usersListWrapper');
+                    if (sidebarWrapper) {
+                        sidebarWrapper.scrollTo({ top: sidebarWrapper.scrollHeight, behavior: 'smooth' });
+                    } else {
+                        blockedEl.scrollIntoView({ behavior: 'smooth', block: 'end' }); // Fallback
+                    }
+                    
+                    // UX Visual: Adiciona a âncora de foco (Piscar vermelho suave)
+                    blockedEl.classList.remove('cerberus-anim-block-pulse'); // Reseta caso já exista
+                    void blockedEl.offsetWidth; // Hack de DOM: Força o navegador a reiniciar a animação
+                    blockedEl.classList.add('cerberus-anim-block-pulse');
+                    
+                    // Limpa a classe após 4.5 segundos (Acompanha os 4s totais da animação)
+                    setTimeout(() => {
+                        if (blockedEl) blockedEl.classList.remove('cerberus-anim-block-pulse');
+                    }, 4500);
+
+                    clearInterval(scrollInterval);
+                } else if (attempts >= maxAttempts) {
+                    // Prevenção de Fuga de Memória se o servidor demorar/falhar
+                    clearInterval(scrollInterval); 
+                }
+            }, 100);
+        }
+        menu.classList.remove('visible');
+    };
+    
+    document.getElementById('cerbBtnUnblock').onclick = () => {
+        const userKey = menu.dataset.user;
+        if (userKey) executeChatCommand(`/unignore ${userKey}`);
+        menu.classList.remove('visible');
+    };
 }
 
 function injectButtonIntoHeader() {
@@ -859,6 +972,16 @@ const updateSidebar = (FCADE, configFull) => {
     } else {
         document.body.classList.remove('cerb-hide-sidebar-ping');
     }
+    
+    // UX Patch: Renomear visualmente "Ignored" para "BLOCKED" sem destruir o Span do Vue.js
+    const ignoredTitleNodes = document.querySelectorAll('.usersIgnoredTitle');
+    ignoredTitleNodes.forEach(titleEl => {
+        titleEl.childNodes.forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE && node.nodeValue.includes('Ignored')) {
+                node.nodeValue = node.nodeValue.replace('Ignored', 'BLOCKED');
+            }
+        });
+    });
 
     // 1. Processar Lista de Utilizadores
     document.querySelectorAll('.userItem').forEach(item => {
@@ -1066,6 +1189,24 @@ function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, t
             
             const activeUserKey = hoverContainer.dataset.currentUser;
             
+            // Lógica UX: Descobrir o estado nativo de bloqueio do utilizador varrendo a aba
+            const isNativeBlocked = Array.from(document.querySelectorAll('.usersIgnoredList .userItem')).some(el => el.dataset.currentUser === activeUserKey);
+            const isPos = CerberusData.isPositive(activeUserKey);
+            const isNeg = CerberusData.isNegative(activeUserKey);
+            
+            // UX Dinâmica: Ocultar opções irrelevantes para limpar o menu
+            const btnLike = document.getElementById('cerbBtnLike');
+            const btnDislike = document.getElementById('cerbBtnDislike');
+            const btnClear = document.getElementById('cerbBtnClear');
+            const btnBlock = document.getElementById('cerbBtnBlock');
+            const btnUnblock = document.getElementById('cerbBtnUnblock');
+            
+            if (btnLike) btnLike.style.display = isPos ? 'none' : 'inline-block';
+            if (btnDislike) btnDislike.style.display = isNeg ? 'none' : 'inline-block';
+            if (btnClear) btnClear.style.display = (isPos || isNeg) ? 'inline-block' : 'none';
+            if (btnBlock) btnBlock.style.display = isNativeBlocked ? 'none' : 'inline-block';
+            if (btnUnblock) btnUnblock.style.display = isNativeBlocked ? 'inline-block' : 'none';
+            
             menu.dataset.user = activeUserKey;
             menu.dataset.type = type;
             menu.dataset.hideNegative = hideNegative;
@@ -1074,7 +1215,7 @@ function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, t
             range.selectNodeContents(anchorEl);
             const rect = range.getBoundingClientRect();
             
-            const menuWidth = 110; 
+            const menuWidth = menu.offsetWidth || 150; 
             let leftPos = rect.right + 12;
             
             if (leftPos + menuWidth > window.innerWidth - 10) {
@@ -1282,6 +1423,17 @@ function injectStyles() {
             animation: cerbPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
+        /* Animação de UX: Piscar vermelho ao bloquear usuário */
+        @keyframes cerbBlockPulse {
+            0% { background-color: rgba(255, 68, 68, 0.4); box-shadow: inset 4px 0 0px #ff4444; }
+            50% { background-color: rgba(255, 68, 68, 0.05); box-shadow: inset 4px 0 0px #ff4444; }
+            100% { background-color: transparent; box-shadow: none; }
+        }
+        .cerberus-anim-block-pulse {
+            /* Animação de 2 segundos, repetida 2 vezes (total 4s) */
+            animation: cerbBlockPulse 2s ease-in-out 2 forwards !important;
+        }
+
         /* Ancoramento Estrito do CSS da barra lateral para prevenir side-effects globais */
         body.cerb-hide-sidebar-ping .usersListToolbar .userItem .pingWrapper img.ping {
             display: none !important;
@@ -1335,9 +1487,16 @@ function injectStyles() {
             cursor: pointer;
             font-size: 14px;
             transition: transform 0.1s;
+            display: inline-block;
         }
         #cerbGlobalMenu span:hover {
             transform: scale(1.3);
+        }
+        .cerb-menu-divider {
+            width: 1px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 2px;
         }
 
         /* Update Button in About Tab */
@@ -1813,11 +1972,23 @@ function createSettingsTab() {
 }
 
 function createAboutTab() {
+    let updateHtml = '';
+    if (isNewerVersion(CerberusData.latestVersion, CURRENT_VERSION)) {
+        updateHtml = `
+            <div style="background: rgba(255, 165, 0, 0.2); border: 1px solid rgba(255, 165, 0, 0.5); padding: 10px; border-radius: 8px; margin-top: 15px; color: #ffdca5; font-weight: bold; animation: cerbPopIn 0.3s ease;">
+                ${t('about.updateAvailable')} ${CerberusData.latestVersion}
+            </div>
+        `;
+    }
+
     document.getElementById('aboutTab').innerHTML = `
         <div style="text-align: center; padding: 20px;">
             <div style="font-size: 40px; margin-bottom: 10px;">🐺</div>
             <h2 style="margin: 0; color: #667eea;">${t('about.title')}</h2>
             <p style="opacity: 0.6; margin-top: 5px; font-weight: 500;">${t('about.subtitle')}</p>
+            
+            ${updateHtml}
+
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-top: 20px; text-align: left;">
                 <ul style="opacity: 0.9; padding-left: 20px; line-height: 1.6; font-size: 14px; margin-top: 0;">
                     <li>${t('about.feat1')}</li>
@@ -1837,3 +2008,24 @@ function createAboutTab() {
 }
 
 window.updateCountryTabVisibility = updateCountryTabVisibility;
+
+/* ==========================================================================
+   CHANGELOG DO PROJETO
+   ==========================================================================
+   v1.7.13 - [UX] Implementado o sistema "DOM Hunter" no bloqueio de utilizador. 
+             Ao ignorar um jogador, a sidebar agora faz polling e rola (scroll) 
+             automaticamente até ele na aba BLOCKED assim que o servidor confirmar.
+             Adicionada animação de pulso vermelho para focar a atenção do utilizador.
+   v1.7.12 - [UX & Core] Alterado o padrão global de "Ocultar chat de negativados" 
+             para ativado por padrão em novas instalações. Integrado um Update Checker 
+             assíncrono que consulta a API do GitHub a cada 24h (para evitar rate limit) 
+             e exibe um alerta dinâmico na aba "Sobre" caso exista uma versão nova.
+   v1.7.11 - [UX & Native Integration] Implementação do bloqueio nativo do Fightcade.
+             O hover menu agora integra os botões de Ignorar/Des-ignorar de forma dinâmica, 
+             ocultando botões redundantes conforme o estado do jogador. O painel da aba 
+             lateral "Ignored" foi reescrito para "BLOCKED" protegendo a reatividade do Vue.js.
+   v1.7.10 - [State Sync Hotfix] Correção na ordem de destruição do cache. A visibilidade 
+             dos elementos (display='') agora é restaurada antes da remoção dos atributos 
+             de filtro, garantindo que a UI se atualiza imediatamente ao desativar o filtro 
+             de países ou ao limpar a reputação de um jogador na lista.
+   ========================================================================== */

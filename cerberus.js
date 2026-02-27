@@ -20,7 +20,7 @@ const Locales = {
             filters: "Filters",
             enableFilter: "Enable Country Filter",
             chatVisual: "Chat Visuals",
-            showStatus: "Show Status (Online/Away)",
+            showStatus: "Show Status (Online/Away/Offline)",
             showFlags: "Show Flags",
             showRanks: "Show Rank",
             showPingBars: "Show Ping Bars",
@@ -38,7 +38,7 @@ const Locales = {
             unlockThemes: "Unlock Color Themes"
         },
         about: {
-            title: "Fightcade Plus 1.7.14",
+            title: "Fightcade Plus 1.7.18",
             subtitle: "By Cerberus",
             feat1: "Auto Join Channels",
             feat2: "Geographic Country Filter",
@@ -74,20 +74,20 @@ const Locales = {
         },
         settings: {
             global: "Global",
-            autoJoin: "Entrar Automático na Sala do Game",
+            autoJoin: "Entrar Automático (Auto Join)",
             language: "Idioma",
             filters: "Filtros",
             enableFilter: "Ativar Filtro de Países",
             chatVisual: "Chat Visual",
-            showStatus: "Mostrar Status (Online/Away)",
+            showStatus: "Mostrar Status (Online/Ausente/Offline)",
             showFlags: "Mostrar Bandeiras",
             showRanks: "Mostrar Rank",
             showPingBars: "Mostrar Barras de Ping",
             showPingText: "Mostrar Ping em Texto",
-            replacePingBar: "Trocar Barra por Texto (Lista de Jogadores)",
+            replacePingBar: "Trocar Barra por Texto na Lista",
             reputation: "Reputação",
             enableRep: "Sistema de Reputação (👍/👎)",
-            hideNeg: "Ocultar Chat de Negativados",
+            hideNeg: "Ocultar chat de negativados",
             privacy: "Privacidade",
             blurMode: "Modo Blur (Focar Chat)",
             blurNone: "Desativado",
@@ -97,7 +97,7 @@ const Locales = {
             unlockThemes: "Desbloquear Temas de Cor"
         },
         about: {
-            title: "Fightcade Plus 1.7.14",
+            title: "Fightcade Plus 1.7.18",
             subtitle: "By Cerberus",
             feat1: "Entrada automática em canais (Auto Join)",
             feat2: "Filtro Geográfico de Países",
@@ -110,7 +110,7 @@ const Locales = {
             updateAvailable: "⚠️ Atualização Disponível: "
         },
         rep: {
-            like: "Destacar (Bypass Filtro)",
+            like: "Destacar",
             dislike: "Negativar",
             clear: "Limpar Reputação",
             block: "Bloquear",
@@ -138,7 +138,7 @@ const Locales = {
             filters: "Filtros",
             enableFilter: "Activar Filtro de Países",
             chatVisual: "Visual del Chat",
-            showStatus: "Mostrar Estado (Online/Ausente)",
+            showStatus: "Mostrar Estado (Online/Ausente/Offline)",
             showFlags: "Mostrar Banderas",
             showRanks: "Mostrar Rango",
             showPingBars: "Mostrar Barras de Ping",
@@ -156,7 +156,7 @@ const Locales = {
             unlockThemes: "Desbloquear Temas de Color"
         },
         about: {
-            title: "Fightcade Plus 1.7.14",
+            title: "Fightcade Plus 1.7.18",
             subtitle: "By Cerberus",
             feat1: "Entrada automática a canales (Auto Join)",
             feat2: "Filtro Geográfico de Países",
@@ -169,11 +169,11 @@ const Locales = {
             updateAvailable: "⚠️ Actualización Disponible: "
         },
         rep: {
-            like: "Destacar (Bypass Filtro)",
+            like: "Destacar",
             dislike: "Negativar",
             clear: "Limpiar Reputación",
-            block: "Bloquear (Nativo)",
-            unblock: "Desbloquear (Nativo)"
+            block: "Bloquear",
+            unblock: "Desbloquear"
         },
         motd: {
             clearChat: "Limpiar Chat",
@@ -226,7 +226,7 @@ const defaultConfig = {
 const dataPath = path.join(__dirname, 'cerberus_data.json');
 const configPath = path.join(__dirname, 'config.json');
 
-const CURRENT_VERSION = "1.7.14";
+const CURRENT_VERSION = "1.7.18";
 let runtimeConfig = null;
 
 module.exports = (FCADE) => {
@@ -454,7 +454,7 @@ const ConfigManager = {
             });
         }
         
-        if (pathStr === 'countryFilter.enabled') {
+        if (pathStr === 'countryFilter.enabled' || pathStr === 'chatUserInfo.hideNegativeMessages') {
             invalidateCountryFilterCache();
         }
     },
@@ -500,7 +500,7 @@ async function checkForUpdates() {
                 }
             }
         } catch (e) {
-            // Falha silenciosa para não travar o cliente em caso de offline/rate-limit
+            // Falha silenciosa
         }
     }
 }
@@ -611,7 +611,6 @@ const runPlugin = (FCADE) => {
     console.log(`🐺 Cerberus v${CURRENT_VERSION} (Fightcade Plus) Inicializado`);
     window.CerberusFCADE = FCADE; 
 
-    // Dispara a verificação diária de updates em background
     checkForUpdates();
 
     if (runtimeConfig.autoJoin?.enabled !== false) {
@@ -625,7 +624,7 @@ const runPlugin = (FCADE) => {
     setInterval(() => {
         try {
             injectButtonIntoHeader();
-            injectMotdEnhancements();
+            injectUIEnhancements(); 
             maintainChatObserver(FCADE, runtimeConfig.chatUserInfo);
             
             updateSidebar(FCADE, runtimeConfig);
@@ -642,30 +641,26 @@ const runPlugin = (FCADE) => {
     setTimeout(() => applyTheme(CerberusData.selectedTheme), 2500);
 };
 
-// ==================== MOTD INJECTION ====================
-function injectMotdEnhancements() {
-    const motdWrapper = document.querySelector('.messageWrapper.motd');
-    if (!motdWrapper) return;
-    
-    // 1. Botão de Limpar Chat (Lógica desacoplada)
-    if (motdWrapper.dataset.cerbBtnAdded !== "true") {
-        motdWrapper.style.position = 'relative';
+// ==================== UI / FAB INJECTION ====================
+function injectUIEnhancements() {
+    // Botão Limpar Chat (Floating Action Button) - Fixo no chatWrapper
+    const chatWrapper = document.querySelector('.chatWrapper');
+    if (chatWrapper && !document.querySelector('.cerb-clear-chat-fab')) {
         const clearBtn = document.createElement('button');
-        clearBtn.className = 'cerb-clear-chat-btn cerberus-anim-pop';
+        clearBtn.className = 'cerb-clear-chat-fab cerberus-anim-pop';
         clearBtn.innerHTML = `🧹 ${t('motd.clearChat')}`;
         clearBtn.onclick = () => executeChatCommand('/clear');
-        motdWrapper.appendChild(clearBtn);
-        motdWrapper.dataset.cerbBtnAdded = "true";
+        chatWrapper.appendChild(clearBtn);
     }
 
-    // 2. Notificação Dinâmica de Atualização (Aguarda API responder de forma assíncrona)
-    if (CerberusData.latestVersion && isNewerVersion(CerberusData.latestVersion, CURRENT_VERSION)) {
+    // Notificação Dinâmica de Atualização
+    const motdWrapper = document.querySelector('.messageWrapper.motd');
+    if (motdWrapper && CerberusData.latestVersion && isNewerVersion(CerberusData.latestVersion, CURRENT_VERSION)) {
         if (motdWrapper.dataset.cerbUpdateAdded !== "true") {
             const updateNotice = document.createElement('div');
             updateNotice.className = 'cerb-motd-update-notice cerberus-anim-pop';
             updateNotice.innerHTML = `🐺 <b>${t('motd.updateAvail')} ${CerberusData.latestVersion}</b> <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/latest" target="_blank" style="color: #4ade80; text-decoration: underline; margin-left: 10px;">Download</a>`;
             
-            // Injeta esteticamente dentro do contêiner de texto do Fightcade
             const blocksContainer = motdWrapper.querySelector('.blocksContainer');
             if (blocksContainer) {
                 blocksContainer.appendChild(updateNotice);
@@ -782,7 +777,6 @@ function injectGlobalMenu() {
                 const blockedEl = Array.from(document.querySelectorAll('.usersIgnoredList .userItem')).find(el => el.dataset.currentUser === userKey);
                 
                 if (blockedEl) {
-                    // Resiliência de Scroll: Rola o contêiner mestre
                     const sidebarWrapper = document.querySelector('.usersListWrapper');
                     if (sidebarWrapper) {
                         sidebarWrapper.scrollTo({ top: sidebarWrapper.scrollHeight, behavior: 'smooth' });
@@ -888,6 +882,10 @@ const connectToChannelWhenAvailable = (FCADE, autoJoinConfig) => {
 // ==================== CORE PROCESSING (CHAT & SIDEBAR) ====================
 
 const updateChat = (FCADE, configFull) => {
+    // Garbage Collector
+    document.querySelectorAll('.messageWrapper:not(.motd) .cerb-motd-update-notice').forEach(el => el.remove());
+    document.querySelectorAll('.messageWrapper .cerb-clear-chat-btn').forEach(el => el.remove());
+
     const cfg = configFull.chatUserInfo;
     const filterCfg = configFull.countryFilter;
     const globalUsers = FCADE.globalUsers;
@@ -900,6 +898,20 @@ const updateChat = (FCADE, configFull) => {
     }
 
     const newMessages = document.querySelectorAll('.message:not([data-cerberus-processed])');
+    
+    // SMART BATCHING: Deteta o "In-Place Patching" do limite das 400 mensagens (Recriação de DOM)
+    const isBatchUpdate = newMessages.length > 5;
+
+    // Se o Vue.js tentar desenhar mais de 5 mensagens ao mesmo tempo, ativamos o "Modo Silencioso"
+    if (isBatchUpdate) {
+        document.body.classList.add('cerb-mass-update');
+        clearTimeout(window.cerbMassUpdateTimeout);
+        // Remove a trava silenciosa assim que o processamento interno terminar e for desenhado
+        window.cerbMassUpdateTimeout = setTimeout(() => {
+            document.body.classList.remove('cerb-mass-update');
+        }, 150);
+    }
+
     newMessages.forEach(msg => {
         try {
             const isChat = msg.classList.contains('chat');
@@ -911,17 +923,13 @@ const updateChat = (FCADE, configFull) => {
 
             const author = msg.querySelector('span.author');
             if (!author) {
-                let retries = parseInt(msg.dataset.cerberusRetries || "0");
-                if (retries >= 5) msg.dataset.cerberusProcessed = "true";
-                else msg.dataset.cerberusRetries = retries + 1;
+                msg.dataset.cerberusProcessed = "true";
                 return;
             }
             
             let userKey = normalizeUsername(author.textContent);
             if (!userKey) {
-                let retries = parseInt(msg.dataset.cerberusRetries || "0");
-                if (retries >= 5) msg.dataset.cerberusProcessed = "true";
-                else msg.dataset.cerberusRetries = retries + 1;
+                msg.dataset.cerberusProcessed = "true";
                 return;
             } 
 
@@ -934,12 +942,16 @@ const updateChat = (FCADE, configFull) => {
             const userFound = usersList?.$children?.find(ch => ch?.user?.id === userKey);
             const minPingVal = getMinPing(userFound);
 
+            let statusState = 'offline';
+            if (user && user.away === false) statusState = 'online';
+            else if (user && user.away === true) statusState = 'away';
+
             const elements = {
-                status: (cfg.enableStatus && user?.away !== undefined) ? createStatusElement(user.away) : null,
-                flag: (cfg.enableFlag && user?.country) ? createFlagElement(user.country) : null,
-                rank: (cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle) : null,
-                pingBar: (cfg.enablePingBars && userFound?.pingSrc) ? createPingElement(userFound.pingSrc, userFound.pingTitle) : null,
-                pingText: (cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal) : null
+                status: cfg.enableStatus ? createStatusElement(statusState, isBatchUpdate) : null,
+                flag: (cfg.enableFlag && user?.country) ? createFlagElement(user.country, isBatchUpdate) : null,
+                rank: (cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle, isBatchUpdate) : null,
+                pingBar: (cfg.enablePingBars && userFound?.pingSrc) ? createPingElement(userFound.pingSrc, userFound.pingTitle, isBatchUpdate) : null,
+                pingText: (cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal, isBatchUpdate) : null
             };
 
             if (cfg.enableReputation && userKey !== '<offline>' && !userKey.startsWith('<')) {
@@ -1037,8 +1049,7 @@ const updateSidebar = (FCADE, configFull) => {
             const userKey = normalizeUsername(playerNameEl.textContent);
             if (!userKey) return; 
             
-            // Solução da Reciclagem de DOM do Vue.js:
-            // Atualizar o Dataset EM TODAS as passagens limpa jogadores antigos da memória.
+            // Solução da Reciclagem de DOM do Vue.js: Atualiza a memória viva do elemento
             item.dataset.currentUser = userKey;
             
             if (cfg?.enableReputation) {
@@ -1060,7 +1071,7 @@ const updateSidebar = (FCADE, configFull) => {
                         if (!txt) {
                             txt = document.createElement('span');
                             txt.className = 'cerberus-ping-text cerberus-anim-pop';
-                            Object.assign(txt.style, { fontSize: '11px', fontWeight: 'bold', marginLeft: 'auto' });
+                            Object.assign(txt.style, { fontSize: '11px', fontWeight: 'bold', marginLeft: 'auto', verticalAlign: 'middle' });
                             pingWrapper.appendChild(txt);
                         }
                         txt.style.color = color;
@@ -1075,7 +1086,6 @@ const updateSidebar = (FCADE, configFull) => {
                  }
             }
 
-            // Se for offline, não testamos o filtro de país para não ocultar a match erroneamente
             if (countryFilterEnabled && userKey !== '<offline>' && !userKey.startsWith('<')) {
                 let userCountry = globalUsers[userKey]?.country?.iso_code?.toUpperCase();
                 if (!userCountry) {
@@ -1165,7 +1175,6 @@ function applyReputationStyleChat(author, msg, userKey, hideNegative) {
     msg.style.paddingLeft = '';
     msg.style.opacity = '';
     
-    // Ignorar formatação de reputation para <offline>
     if (userKey === '<offline>' || userKey.startsWith('<')) return;
 
     if (CerberusData.isPositive(userKey)) {
@@ -1177,7 +1186,7 @@ function applyReputationStyleChat(author, msg, userKey, hideNegative) {
         msg.style.paddingLeft = '5px';
     } 
     else if (CerberusData.isNegative(userKey)) {
-        author.style.color = '#888';
+        author.style.color = '#88888885';
         author.style.textDecoration = 'line-through';
         if (!hideNegative) {
             msg.style.opacity = '0.35';
@@ -1228,7 +1237,7 @@ function applyReputationStyleMatch(playerName, userKey) {
 }
 
 function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, type, hideNegative = false) {
-    hoverContainer.dataset.currentUser = userKey; // Sempre atualiza a memória interna
+    hoverContainer.dataset.currentUser = userKey;
 
     if (hoverContainer.dataset.cerbHoverAdded === "true") return;
     hoverContainer.dataset.cerbHoverAdded = "true";
@@ -1248,17 +1257,14 @@ function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, t
             
             const activeUserKey = hoverContainer.dataset.currentUser;
             
-            // Barreira de Segurança Letal contra o bug de Virtual DOM
             if (!activeUserKey || activeUserKey === '<offline>' || activeUserKey.startsWith('<')) {
                 return;
             }
             
-            // Lógica UX: Descobrir o estado nativo de bloqueio do utilizador varrendo a aba
             const isNativeBlocked = Array.from(document.querySelectorAll('.usersIgnoredList .userItem')).some(el => el.dataset.currentUser === activeUserKey);
             const isPos = CerberusData.isPositive(activeUserKey);
             const isNeg = CerberusData.isNegative(activeUserKey);
             
-            // UX Dinâmica: Ocultar opções irrelevantes para limpar o menu
             const btnLike = document.getElementById('cerbBtnLike');
             const btnDislike = document.getElementById('cerbBtnDislike');
             const btnClear = document.getElementById('cerbBtnClear');
@@ -1386,9 +1392,9 @@ function applyTheme(themeName) {
 }
 
 // ==================== VISUAL ELEMENTS ====================
-function createFlagElement(country) {
+function createFlagElement(country, isBatchUpdate = false) {
     const flag = document.createElement('span');
-    flag.className = 'flagWrapper cerberus-injected-flag cerberus-anim-pop';
+    flag.className = `flagWrapper cerberus-injected-flag ${isBatchUpdate ? '' : 'cerberus-anim-pop'}`;
     Object.assign(flag.style, {
         width: '20px',
         height: '14px',
@@ -1403,9 +1409,9 @@ function createFlagElement(country) {
     return flag;
 }
 
-function createPingElement(src, title) {
+function createPingElement(src, title, isBatchUpdate = false) {
     const ping = document.createElement('span');
-    ping.className = 'pingWrapper cerberus-injected-pingbar cerberus-anim-pop';
+    ping.className = `pingWrapper cerberus-injected-pingbar ${isBatchUpdate ? '' : 'cerberus-anim-pop'}`;
     Object.assign(ping.style, {
         width: '15px',
         height: '15px',
@@ -1419,9 +1425,9 @@ function createPingElement(src, title) {
     return ping;
 }
 
-function createRankElement(src, title) {
+function createRankElement(src, title, isBatchUpdate = false) {
     const rank = document.createElement('span');
-    rank.className = 'rankWrapper cerberus-injected-rank cerberus-anim-pop';
+    rank.className = `rankWrapper cerberus-injected-rank ${isBatchUpdate ? '' : 'cerberus-anim-pop'}`;
     Object.assign(rank.style, {
         width: '15px',
         height: '15px',
@@ -1435,9 +1441,9 @@ function createRankElement(src, title) {
     return rank;
 }
 
-function createPingTextElement(minPing) {
+function createPingTextElement(minPing, isBatchUpdate = false) {
     const text = document.createElement('span');
-    text.className = 'cerberus-injected-pingtext cerberus-anim-pop';
+    text.className = `cerberus-injected-pingtext ${isBatchUpdate ? '' : 'cerberus-anim-pop'}`;
     
     let color = '#aaa';
     if (minPing !== null) {
@@ -1449,24 +1455,41 @@ function createPingTextElement(minPing) {
         fontSize: '10px',
         marginLeft: '5px',
         fontWeight: 'normal',
-        color: color
+        color: color,
+        verticalAlign: 'middle'
     });
     text.innerHTML = minPing !== null ? `(${minPing}ms)` : '';
     return text;
 }
 
-function createStatusElement(isAway) {
+function createStatusElement(state, isBatchUpdate = false) {
     const status = document.createElement('div');
-    status.className = 'statusWrapper cerberus-injected-status cerberus-anim-pop';
-    status.title = isAway ? 'Away' : 'Online';
+    status.className = `statusWrapper cerberus-injected-status ${isBatchUpdate ? '' : 'cerberus-anim-pop'}`;
+    
+    let color = '#ff4444'; // Offline/Unknown por padrão (UX Placeholder)
+    let shadow = 'red';
+    let title = 'Offline / Unknown';
+    
+    if (state === 'online') {
+        color = '#00ff00';
+        shadow = 'green';
+        title = 'Online';
+    } else if (state === 'away') {
+        color = '#ffaa00';
+        shadow = 'orange';
+        title = 'Away';
+    }
+
+    status.title = title;
     Object.assign(status.style, {
         width: '8px',
         height: '8px',
         display: 'inline-block',
         borderRadius: '50%',
-        backgroundColor: isAway ? '#ffaa00' : '#00ff00',
+        backgroundColor: color,
         marginRight: '5px',
-        boxShadow: isAway ? '0 0 2px orange' : '0 0 2px green'
+        boxShadow: `0 0 2px ${shadow}`,
+        verticalAlign: 'middle'
     });
     return status;
 }
@@ -1487,6 +1510,20 @@ function injectStyles() {
             animation: cerbPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
+        /* Cloak de Opacidade: Esconde o cabeçalho para evitar o pulo (CLS) */
+        .messageWrapper.chat .message:not([data-cerberus-processed="true"]) header .authorAndTime {
+            opacity: 0 !important;
+        }
+        .messageWrapper.chat .message header .authorAndTime {
+            transition: opacity 0.2s ease-in !important;
+        }
+        
+        /* Bypass de Transição e Opacidade durante Recriação em Lote (Smart Batching) */
+        body.cerb-mass-update .messageWrapper.chat .message header .authorAndTime {
+            transition: none !important;
+            opacity: 1 !important;
+        }
+
         /* Animação de UX: Piscar vermelho ao bloquear usuário */
         @keyframes cerbBlockPulse {
             0% { background-color: rgba(255, 68, 68, 0.4); box-shadow: inset 4px 0 0px #ff4444; }
@@ -1494,31 +1531,35 @@ function injectStyles() {
             100% { background-color: transparent; box-shadow: none; }
         }
         .cerberus-anim-block-pulse {
-            /* Animação de 2 segundos, repetida 2 vezes (total 4s) */
             animation: cerbBlockPulse 2s ease-in-out 2 forwards !important;
         }
 
-        /* Elementos da Área MOTD (Avisos do Sistema) */
-        .cerb-clear-chat-btn {
+        /* Floating Action Button (FAB) - Botão Limpar Chat */
+        .cerb-clear-chat-fab {
             position: absolute;
             right: 15px;
-            top: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 6px;
-            color: #ddd;
-            padding: 6px 12px;
+            bottom: 65px; /* Flutua exatamente acima do input de chat nativo */
+            background: rgba(30, 30, 35, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px; /* Estilo Pílula (Pill) */
+            color: #ccc;
+            padding: 6px 14px;
             font-size: 11px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
-            z-index: 10;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
         }
-        .cerb-clear-chat-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
+        .cerb-clear-chat-fab:hover {
+            background: rgba(50, 50, 60, 0.95);
             color: #fff;
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
         }
+
+        /* Elemento MOTD da Notificação de Atualização */
         .cerb-motd-update-notice {
             background: rgba(255, 165, 0, 0.15);
             border-left: 4px solid #ffaa00;
@@ -2111,9 +2152,9 @@ window.updateCountryTabVisibility = updateCountryTabVisibility;
 /* ==========================================================================
    CHANGELOG DO PROJETO
    ==========================================================================
-   v1.7.14 - [UX & Core] Implementada proteção absoluta contra o fantasma <offline>, 
-             impedindo fugas de memória e menus bugados em jogadores desconectados. 
-             Adicionado botão tático "Limpar Chat" (Clear) no canto superior da aba MOTD. 
-             A notificação de atualização agora é tratada de forma assíncrona, sendo 
-             injetada nas regras do chat de forma nativa e livre de Race Conditions.
+   v1.7.18 - [Smart Batching] Implementada defesa ativa contra o "DOM Patching" nativo 
+             do Fightcade. O script agora deteta quando o chat atinge o limite e recria 
+             as 400 mensagens simultaneamente, ativando o "Modo Silencioso". 
+             Isso suspende o Opacity Cloak e as animações de Pop In apenas durante 
+             esse ciclo, erradicando o bug onde a tela inteira piscava massivamente.
    ========================================================================== */

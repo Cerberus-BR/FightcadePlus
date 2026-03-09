@@ -35,16 +35,22 @@ const Locales = {
             blurIndiv: "Individual",
             blurAll: "All",
             extras: "Extras",
-            unlockThemes: "Unlock Color Themes"
+            unlockThemes: "Unlock Color Themes",
+            liveQueue: "Live Queue (Streamers)",
+            queueEnable: "Enable Auto !join Parser",
+            queueKeyword: "Keyword (e.g. !join)",
+            queueLimit: "Queue Limit",
+            queueStreamer: "Streamer Nick (Exclude)",
+            queueReply: "Auto Chat Reply Bot (15s)"
         },
         about: {
-            title: "Fightcade Plus 1.7.18",
+            title: "Fightcade Plus 1.8.3",
             subtitle: "By Cerberus",
-            feat1: "Auto Join Channels",
+            feat1: "Live Player Queue Bot (!join)",
             feat2: "Geographic Country Filter",
-            feat3: "Chat visual improvements (Flags, Ping text, Rank)",
+            feat3: "Chat visual improvements (Flags, Ping text)",
             feat4: "Global Reputation System (👍/👎)",
-            feat5: "Privacy Mode (Chat Blur)",
+            feat5: "Anti-Blink DOM Stabilization",
             feat6: "Premium Themes Unlock",
             note: "Developed with a focus on high performance and optimization.",
             updateBtn: "🔄 Check for Updates",
@@ -59,7 +65,19 @@ const Locales = {
         },
         motd: {
             clearChat: "Clear Chat",
+            queueTitle: "Players Queue",
             updateAvail: "Update Available:"
+        },
+        queue: {
+            title: "Live Queue",
+            addBtn: "Add",
+            clearBtn: "Clear All",
+            empty: "Queue is empty.",
+            inputPh: "Player nickname...",
+            mark: "Mark as Played/Unplayed",
+            remove: "Remove Player",
+            up: "Move Up",
+            down: "Move Down"
         }
     },
     pt: {
@@ -84,7 +102,7 @@ const Locales = {
             showRanks: "Mostrar Rank",
             showPingBars: "Mostrar Barras de Ping",
             showPingText: "Mostrar Ping em Texto",
-            replacePingBar: "Trocar Barra por Texto na Lista",
+            replacePingBar: "Trocar Barra por Texto (Lista)",
             reputation: "Reputação",
             enableRep: "Sistema de Reputação (👍/👎)",
             hideNeg: "Ocultar chat de negativados",
@@ -94,18 +112,24 @@ const Locales = {
             blurIndiv: "Individual",
             blurAll: "Tudo",
             extras: "Extras",
-            unlockThemes: "Desbloquear Temas de Cor"
+            unlockThemes: "Desbloquear Temas de Cor",
+            liveQueue: "Fila de Live (Streamers)",
+            queueEnable: "Ativar Módulo de Fila da Live",
+            queueKeyword: "Palavra-chave (ex: !join)",
+            queueLimit: "Limite de Jogadores na Lista",
+            queueStreamer: "Nick do Streamer (Exceção)",
+            queueReply: "Bot de Resposta no Chat (15s)"
         },
         about: {
-            title: "Fightcade Plus 1.7.18",
+            title: "Fightcade Plus 1.8.3",
             subtitle: "By Cerberus",
-            feat1: "Entrada automática em canais (Auto Join)",
+            feat1: "Bot de Fila para Live (!join)",
             feat2: "Filtro Geográfico de Países",
-            feat3: "Melhorias visuais no chat (Bandeiras, Ping em texto, Rank)",
+            feat3: "Melhorias visuais no chat (Bandeiras, Ping em texto)",
             feat4: "Sistema de Reputação Global (👍/👎)",
-            feat5: "Modo de Privacidade (Desfoque de chat)",
+            feat5: "Estabilização de DOM",
             feat6: "Desbloqueio de Temas Premium",
-            note: "Desenvolvido com foco em alta performance e otimização.",
+            note: "Desenvolvido com carinho para a comunidade KOF2002 BR",
             updateBtn: "🔄 Verificar Atualizações",
             updateAvailable: "⚠️ Atualização Disponível: "
         },
@@ -118,7 +142,19 @@ const Locales = {
         },
         motd: {
             clearChat: "Limpar Chat",
+            queueTitle: "Fila de Jogadores",
             updateAvail: "Atualização Disponível:"
+        },
+        queue: {
+            title: "Fila da Live",
+            addBtn: "Adicionar",
+            clearBtn: "Limpar Fila",
+            empty: "A fila está vazia.",
+            inputPh: "Nick do jogador...",
+            mark: "Marcar como Jogado/Não Jogado",
+            remove: "Remover Jogador",
+            up: "Subir na Fila",
+            down: "Descer na Fila"
         }
     },
     es: {
@@ -153,31 +189,49 @@ const Locales = {
             blurIndiv: "Individual",
             blurAll: "Todo",
             extras: "Extras",
-            unlockThemes: "Desbloquear Temas de Color"
+            unlockThemes: "Desbloquear Temas de Color",
+            liveQueue: "Cola de Live (Streamers)",
+            queueEnable: "Activar Módulo de Cola",
+            queueKeyword: "Palabra clave (ej: !join)",
+            queueLimit: "Límite de Jugadores",
+            queueStreamer: "Nick del Streamer (Excepción)",
+            queueReply: "Bot de Respuesta en Chat (15s)"
         },
         about: {
-            title: "Fightcade Plus 1.7.18",
+            title: "Fightcade Plus 1.8.3",
             subtitle: "By Cerberus",
-            feat1: "Entrada automática a canales (Auto Join)",
+            feat1: "Bot de Cola para Live (!join)",
             feat2: "Filtro Geográfico de Países",
-            feat3: "Mejoras visuales en el chat (Banderas, Ping en texto, Rango)",
+            feat3: "Mejoras visuales en el chat (Banderas, Ping)",
             feat4: "Sistema de Reputación Global (👍/👎)",
-            feat5: "Modo de Privacidad (Desenfoque de chat)",
+            feat5: "Estabilización de DOM (Anti-Blink)",
             feat6: "Desbloqueo de Temas Premium",
             note: "Desarrollado con enfoque en alto rendimiento y optimización.",
             updateBtn: "🔄 Buscar Actualizaciones",
             updateAvailable: "⚠️ Actualización Disponible: "
         },
         rep: {
-            like: "Destacar",
+            like: "Destacar (Bypass Filtro)",
             dislike: "Negativar",
             clear: "Limpiar Reputación",
-            block: "Bloquear",
-            unblock: "Desbloquear"
+            block: "Bloquear (Nativo)",
+            unblock: "Desbloquear (Nativo)"
         },
         motd: {
             clearChat: "Limpiar Chat",
+            queueTitle: "Cola de Jugadores",
             updateAvail: "Actualización Disponible:"
+        },
+        queue: {
+            title: "Cola del Live",
+            addBtn: "Añadir",
+            clearBtn: "Limpiar Cola",
+            empty: "La cola está vacía.",
+            inputPh: "Nick del jugador...",
+            mark: "Marcar como Jugado/No Jugado",
+            remove: "Eliminar Jugador",
+            up: "Subir",
+            down: "Bajar"
         }
     }
 };
@@ -220,13 +274,20 @@ const defaultConfig = {
         hideNegativeMessages: true, 
         unlockColorThemes: true, 
         blurMode: 'none'
+    },
+    liveQueue: {
+        enabled: false,
+        keyword: '!join',
+        limit: 20,
+        streamerNick: '',
+        autoReply: false
     }
 };
 
 const dataPath = path.join(__dirname, 'cerberus_data.json');
 const configPath = path.join(__dirname, 'config.json');
 
-const CURRENT_VERSION = "1.7.18";
+const CURRENT_VERSION = "1.8.3";
 let runtimeConfig = null;
 
 module.exports = (FCADE) => {
@@ -236,6 +297,30 @@ module.exports = (FCADE) => {
         console.error("Cerberus Fatal Error:", e);
     }
 };
+
+// ==================== AUDIO SYNTH (Pop Sound) ====================
+function playPopSound() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.1);
+        
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+    } catch(e) {}
+}
 
 // ==================== GESTÃO DE ESTADO & CACHE ====================
 function invalidateCountryFilterCache() {
@@ -256,6 +341,7 @@ const CerberusData = {
     selectedTheme: 'bretema',
     lastUpdateCheck: 0,
     latestVersion: null,
+    liveQueue: [], 
 
     load() {
         let rawData = null;
@@ -274,10 +360,10 @@ const CerberusData = {
                 this.selectedTheme = data.selectedTheme || 'bretema';
                 this.lastUpdateCheck = data.lastUpdateCheck || 0;
                 this.latestVersion = data.latestVersion || null;
+                this.liveQueue = data.liveQueue || [];
                 
                 fs.writeFileSync(dataPath + '.bak', rawData, 'utf8');
             } catch (error) {
-                console.warn('❌ [Cerberus] Dados JSON corrompidos. A tentar restaurar a cópia de segurança...');
                 try {
                     if (fs.existsSync(dataPath + '.bak')) {
                         const backupData = JSON.parse(fs.readFileSync(dataPath + '.bak', 'utf8'));
@@ -287,7 +373,7 @@ const CerberusData = {
                         this.selectedTheme = backupData.selectedTheme || 'bretema';
                         this.lastUpdateCheck = backupData.lastUpdateCheck || 0;
                         this.latestVersion = backupData.latestVersion || null;
-                        console.log('✅ [Cerberus] Cópia de segurança restaurada com sucesso!');
+                        this.liveQueue = backupData.liveQueue || [];
                         return;
                     }
                 } catch(errBak) {}
@@ -309,17 +395,61 @@ const CerberusData = {
                     selectedTheme: this.selectedTheme,
                     lastUpdateCheck: this.lastUpdateCheck,
                     latestVersion: this.latestVersion,
+                    liveQueue: this.liveQueue,
                     lastUpdated: new Date().toISOString()
                 };
                 const jsonStr = JSON.stringify(dataToSave, null, 2);
                 fs.writeFileSync(dataPath, jsonStr, 'utf8');
                 fs.writeFileSync(dataPath + '.bak', jsonStr, 'utf8');
-            } catch (error) {
-                console.error('❌ [Cerberus] Erro ao guardar dados:', error);
-            }
+            } catch (error) {}
         }, 500); 
     },
 
+    // --- Queue Management ---
+    addQueue(playerName) {
+        if (!playerName || playerName.trim() === '') return false;
+        const name = playerName.trim();
+        const limit = ConfigManager.getSetting('liveQueue.limit') || 20;
+        
+        if (this.liveQueue.length >= limit) return false;
+        if (this.liveQueue.some(q => q.name.toLowerCase() === name.toLowerCase())) return false;
+        if (this.isNegative(name)) return false; 
+        
+        this.liveQueue.push({ name: name, played: false });
+        this.save();
+        renderQueueList();
+        return true;
+    },
+    removeQueue(index) {
+        this.liveQueue.splice(index, 1);
+        this.save();
+        renderQueueList();
+    },
+    togglePlayedQueue(index) {
+        if (this.liveQueue[index]) {
+            this.liveQueue[index].played = !this.liveQueue[index].played;
+            this.save();
+            renderQueueList();
+        }
+    },
+    moveQueue(index, direction) {
+        if (index < 0 || index >= this.liveQueue.length) return;
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= this.liveQueue.length) return;
+        
+        const temp = this.liveQueue[index];
+        this.liveQueue[index] = this.liveQueue[newIndex];
+        this.liveQueue[newIndex] = temp;
+        this.save();
+        renderQueueList();
+    },
+    clearQueue() {
+        this.liveQueue = [];
+        this.save();
+        renderQueueList();
+    },
+    
+    // --- Existing Data Methods ---
     addCountry(code) {
         if (!code) return;
         code = code.toUpperCase();
@@ -329,52 +459,43 @@ const CerberusData = {
             invalidateCountryFilterCache();
         }
     },
-
     removeCountry(code) {
         if (!code) return;
         this.allowedCountries = this.allowedCountries.filter(c => c !== code.toUpperCase());
         this.save();
         invalidateCountryFilterCache();
     },
-
     isCountryAllowed(code) {
         if (!code) return true;
         return this.allowedCountries.includes(code.toUpperCase());
     },
-
     allowAllCountries() {
         this.allowedCountries = Object.keys(AVAILABLE_COUNTRIES);
         this.save();
         invalidateCountryFilterCache();
     },
-
     clearAllCountries() {
         this.allowedCountries = [];
         this.save();
         invalidateCountryFilterCache();
     },
-
     markPositive(userId) {
         this.positive.add(userId);
         this.negative.delete(userId);
         this.save();
     },
-
     markNegative(userId) {
         this.negative.add(userId);
         this.positive.delete(userId);
         this.save();
     },
-
     clearReputation(userId) {
         this.positive.delete(userId);
         this.negative.delete(userId);
         this.save();
     },
-
     isPositive(userId) { return this.positive.has(userId); },
     isNegative(userId) { return this.negative.has(userId); },
-
     setTheme(theme) {
         this.selectedTheme = theme;
         this.save();
@@ -398,14 +519,13 @@ const ConfigManager = {
                 runtimeConfig.autoJoin = { ...defaultConfig.autoJoin, ...(runtimeConfig.autoJoin || {}) };
                 runtimeConfig.countryFilter = { ...defaultConfig.countryFilter, ...(runtimeConfig.countryFilter || {}) };
                 runtimeConfig.chatUserInfo = { ...defaultConfig.chatUserInfo, ...(runtimeConfig.chatUserInfo || {}) };
+                runtimeConfig.liveQueue = { ...defaultConfig.liveQueue, ...(runtimeConfig.liveQueue || {}) };
                 fs.writeFileSync(configPath + '.bak', rawConfig, 'utf8');
             } catch (error) {
-                console.warn('❌ [Cerberus] Config JSON corrompido. A tentar restaurar a cópia de segurança...');
                 try {
                     if (fs.existsSync(configPath + '.bak')) {
                         const backupConfig = JSON.parse(fs.readFileSync(configPath + '.bak', 'utf8'));
                         runtimeConfig = { ...defaultConfig, ...(backupConfig.cerberus || {}) };
-                        console.log('✅ [Cerberus] Cópia de segurança restaurada com sucesso!');
                         return;
                     }
                 } catch(errBak) {}
@@ -430,9 +550,7 @@ const ConfigManager = {
                 const jsonStr = JSON.stringify(fullConfig, null, 2);
                 fs.writeFileSync(configPath, jsonStr, 'utf8');
                 fs.writeFileSync(configPath + '.bak', jsonStr, 'utf8');
-            } catch (error) {
-                console.error('❌ [Cerberus] Erro ao guardar config:', error);
-            }
+            } catch (error) {}
         }, 500);
     },
 
@@ -456,6 +574,11 @@ const ConfigManager = {
         
         if (pathStr === 'countryFilter.enabled' || pathStr === 'chatUserInfo.hideNegativeMessages') {
             invalidateCountryFilterCache();
+        }
+        
+        // Destruição ou criação dinâmica da UI da Fila caso alterado no painel
+        if (pathStr === 'liveQueue.enabled') {
+            injectUIEnhancements();
         }
     },
 
@@ -487,7 +610,6 @@ function isNewerVersion(latest, current) {
 async function checkForUpdates() {
     const now = Date.now();
     const ONE_DAY = 24 * 60 * 60 * 1000;
-    
     if (!CerberusData.lastUpdateCheck || (now - CerberusData.lastUpdateCheck > ONE_DAY)) {
         try {
             const response = await fetch('https://api.github.com/repos/Cerberus-BR/FightcadePlus/releases/latest');
@@ -499,9 +621,7 @@ async function checkForUpdates() {
                     CerberusData.save();
                 }
             }
-        } catch (e) {
-            // Falha silenciosa
-        }
+        } catch (e) {}
     }
 }
 
@@ -551,8 +671,15 @@ window.changeCerberusLanguage = function(lang) {
     const menu = document.getElementById('cerbGlobalMenu');
     if (menu) menu.remove();
     injectGlobalMenu();
-    
     injectButtonIntoHeader();
+    
+    const queuePanel = document.getElementById('cerberusQueueWindow');
+    if (queuePanel) {
+        queuePanel.remove();
+        if (ConfigManager.getSetting('liveQueue.enabled')) {
+            createQueuePanel();
+        }
+    }
 };
 
 function normalizeUsername(username) {
@@ -588,11 +715,9 @@ function unfilterAllUsers() {
     });
 }
 
-// Injeção de Bypass de Reatividade para comandos nativos
 function executeChatCommand(command) {
     const inputEl = document.querySelector('.chatInput input.input');
     if (!inputEl) return;
-    
     const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
     nativeSetter.call(inputEl, command);
     inputEl.dispatchEvent(new Event('input', { bubbles: true }));
@@ -604,6 +729,24 @@ ConfigManager.loadConfig();
 
 window.CerberusData = CerberusData;
 window.ConfigManager = ConfigManager;
+window.cerbReplyQueue = [];
+
+// ==================== AUTO JOIN ====================
+const connectToChannelWhenAvailable = (FCADE, autoJoinConfig) => {
+    const checkInterval = setInterval(() => {
+        if (FCADE.initializingApp === false) {
+            clearInterval(checkInterval);
+            if (autoJoinConfig?.channelId) {
+                FCADE.selectChannel(autoJoinConfig.channelId);
+            } else {
+                const gameChannels = FCADE.channels.filter(ch => 'gameid' in ch);
+                if (gameChannels.length > 0) {
+                    FCADE.selectChannel(gameChannels[0].id);
+                }
+            }
+        }
+    }, 500);
+};
 
 // ==================== PLUGIN MAIN LOOP ====================
 
@@ -626,31 +769,81 @@ const runPlugin = (FCADE) => {
             injectButtonIntoHeader();
             injectUIEnhancements(); 
             maintainChatObserver(FCADE, runtimeConfig.chatUserInfo);
-            
             updateSidebar(FCADE, runtimeConfig);
             updateChat(FCADE, runtimeConfig);
 
             if (runtimeConfig.chatUserInfo?.unlockColorThemes !== false) {
                 unlockColorThemes();
             }
-        } catch (err) {
-            console.error("Cerberus Loop Error:", err);
-        }
+        } catch (err) {}
     }, 1000);
+    
+    // Bot Aggregator (Input Restorer)
+    setInterval(() => {
+        if (window.cerbReplyQueue.length > 0 && ConfigManager.getSetting('liveQueue.autoReply')) {
+            const inputEl = document.querySelector('.chatInput input.input');
+            if (!inputEl) return;
+
+            const currentVal = inputEl.value; // Snapshot do texto do streamer
+            const names = window.cerbReplyQueue.join(', ');
+            window.cerbReplyQueue = []; // Limpa fila local
+            
+            const msg = `[Fila] Adicionado(s): ${names}`;
+            
+            const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+            nativeSetter.call(inputEl, msg);
+            inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+            inputEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }));
+            
+            // Restaura o input em 50ms para evitar Input Hijacking
+            setTimeout(() => {
+                nativeSetter.call(inputEl, currentVal);
+                inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+            }, 50);
+        }
+    }, 15000);
 
     setTimeout(() => applyTheme(CerberusData.selectedTheme), 2500);
 };
 
 // ==================== UI / FAB INJECTION ====================
 function injectUIEnhancements() {
-    // Botão Limpar Chat (Floating Action Button) - Fixo no chatWrapper
     const chatWrapper = document.querySelector('.chatWrapper');
-    if (chatWrapper && !document.querySelector('.cerb-clear-chat-fab')) {
+    if (!chatWrapper) return;
+
+    // FAB Limpar Chat (Sempre visível)
+    if (!document.querySelector('.cerb-clear-chat-fab')) {
         const clearBtn = document.createElement('button');
         clearBtn.className = 'cerb-clear-chat-fab cerberus-anim-pop';
         clearBtn.innerHTML = `🧹 ${t('motd.clearChat')}`;
         clearBtn.onclick = () => executeChatCommand('/clear');
         chatWrapper.appendChild(clearBtn);
+    }
+
+    // FAB Live Queue (Apenas visível se ativado nas configs)
+    const qEnabled = ConfigManager.getSetting('liveQueue.enabled') === true;
+    const existingFab = document.querySelector('.cerb-queue-fab');
+    const existingWindow = document.getElementById('cerberusQueueWindow');
+
+    if (qEnabled) {
+        if (!existingFab) {
+            const queueBtn = document.createElement('button');
+            queueBtn.className = 'cerb-queue-fab cerberus-anim-pop';
+            queueBtn.innerHTML = `📝 ${t('motd.queueTitle')}`;
+            queueBtn.onclick = () => {
+                const panel = document.getElementById('cerberusQueueWindow');
+                if (panel) {
+                    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+                    if (panel.style.display === 'flex') renderQueueList();
+                }
+            };
+            chatWrapper.appendChild(queueBtn);
+        }
+        createQueuePanel();
+    } else {
+        // Aniquilação Dinâmica de DOM: Destrói interface se desligado
+        if (existingFab) existingFab.remove();
+        if (existingWindow) existingWindow.remove();
     }
 
     // Notificação Dinâmica de Atualização
@@ -660,16 +853,118 @@ function injectUIEnhancements() {
             const updateNotice = document.createElement('div');
             updateNotice.className = 'cerb-motd-update-notice cerberus-anim-pop';
             updateNotice.innerHTML = `🐺 <b>${t('motd.updateAvail')} ${CerberusData.latestVersion}</b> <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/latest" target="_blank" style="color: #4ade80; text-decoration: underline; margin-left: 10px;">Download</a>`;
-            
             const blocksContainer = motdWrapper.querySelector('.blocksContainer');
-            if (blocksContainer) {
-                blocksContainer.appendChild(updateNotice);
-            } else {
-                motdWrapper.appendChild(updateNotice);
-            }
+            if (blocksContainer) blocksContainer.appendChild(updateNotice);
+            else motdWrapper.appendChild(updateNotice);
             motdWrapper.dataset.cerbUpdateAdded = "true";
         }
     }
+}
+
+// ==================== LIVE QUEUE PANEL ====================
+function createQueuePanel() {
+    if (document.getElementById('cerberusQueueWindow')) return;
+
+    const panel = document.createElement('div');
+    panel.id = 'cerberusQueueWindow';
+    panel.style.display = 'none';
+
+    panel.innerHTML = `
+        <div class="q-header" id="cerberusQueueHeader">
+            <span class="q-title">📝 ${t('queue.title')} <small id="cerbQueueCount">(0)</small></span>
+            <button class="q-close" onclick="document.getElementById('cerberusQueueWindow').style.display='none'">×</button>
+        </div>
+        <div class="q-add-box">
+            <input type="text" id="cerbQueueInput" placeholder="${t('queue.inputPh')}">
+            <button id="cerbQueueAddBtn">${t('queue.addBtn')}</button>
+        </div>
+        <div class="q-list" id="cerbQueueList"></div>
+        <div class="q-footer">
+            <button id="cerbQueueClearBtn" class="q-clear-btn">🧹 ${t('queue.clearBtn')}</button>
+        </div>
+    `;
+
+    document.body.appendChild(panel);
+    makeDraggable(panel, 'cerberusQueueHeader');
+
+    document.getElementById('cerbQueueAddBtn').onclick = () => {
+        const input = document.getElementById('cerbQueueInput');
+        CerberusData.addQueue(input.value);
+        input.value = '';
+    };
+
+    document.getElementById('cerbQueueInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            CerberusData.addQueue(e.target.value);
+            e.target.value = '';
+        }
+    });
+
+    document.getElementById('cerbQueueClearBtn').onclick = () => {
+        CerberusData.clearQueue();
+    };
+
+    renderQueueList();
+}
+
+function renderQueueList() {
+    const listEl = document.getElementById('cerbQueueList');
+    const countEl = document.getElementById('cerbQueueCount');
+    if (!listEl || !countEl) return;
+
+    listEl.innerHTML = '';
+    const limit = ConfigManager.getSetting('liveQueue.limit') || 20;
+    countEl.innerText = `(${CerberusData.liveQueue.length}/${limit})`;
+
+    if (CerberusData.liveQueue.length === 0) {
+        listEl.innerHTML = `<div class="q-empty">${t('queue.empty')}</div>`;
+        return;
+    }
+
+    CerberusData.liveQueue.forEach((player, index) => {
+        const item = document.createElement('div');
+        item.className = 'q-item cerberus-anim-pop';
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'q-name';
+        if (player.played) nameSpan.classList.add('played');
+        nameSpan.innerText = `${index + 1}. ${player.name}`;
+
+        const controls = document.createElement('div');
+        controls.className = 'q-controls';
+
+        const btnPlay = document.createElement('button');
+        btnPlay.innerHTML = player.played ? '↩️' : '✅';
+        btnPlay.title = t('queue.mark');
+        btnPlay.onclick = () => CerberusData.togglePlayedQueue(index);
+
+        const btnUp = document.createElement('button');
+        btnUp.innerHTML = '⬆️';
+        btnUp.title = t('queue.up');
+        btnUp.disabled = index === 0;
+        if (!btnUp.disabled) btnUp.onclick = () => CerberusData.moveQueue(index, -1);
+
+        const btnDown = document.createElement('button');
+        btnDown.innerHTML = '⬇️';
+        btnDown.title = t('queue.down');
+        btnDown.disabled = index === CerberusData.liveQueue.length - 1;
+        if (!btnDown.disabled) btnDown.onclick = () => CerberusData.moveQueue(index, 1);
+
+        const btnDel = document.createElement('button');
+        btnDel.innerHTML = '❌';
+        btnDel.title = t('queue.remove');
+        btnDel.className = 'danger';
+        btnDel.onclick = () => CerberusData.removeQueue(index);
+
+        controls.appendChild(btnPlay);
+        controls.appendChild(btnUp);
+        controls.appendChild(btnDown);
+        controls.appendChild(btnDel);
+
+        item.appendChild(nameSpan);
+        item.appendChild(controls);
+        listEl.appendChild(item);
+    });
 }
 
 // ==================== MUTATION OBSERVER DO CHAT ====================
@@ -687,9 +982,7 @@ function maintainChatObserver(FCADE, cfg) {
             for (let mut of mutations) {
                 if (mut.addedNodes.length > 0) {
                     for (let node of mut.addedNodes) {
-                        if (node.nodeType === 1 && node.classList && node.classList.contains('cerberus-anim-pop')) {
-                            continue;
-                        }
+                        if (node.nodeType === 1 && node.classList && node.classList.contains('cerberus-anim-pop')) continue;
                         hasValidNewNodes = true;
                         break;
                     }
@@ -697,19 +990,13 @@ function maintainChatObserver(FCADE, cfg) {
                 if (hasValidNewNodes) break;
             }
             if (hasValidNewNodes) {
-                try {
-                    updateChat(FCADE, cfg);
-                } catch (err) {
-                    console.error("Cerberus Observer Error:", err);
-                }
+                try { updateChat(FCADE, cfg); } catch (err) {}
             }
         });
         
         chatObserver.observe(chatContent, { childList: true, subtree: true });
         
-        try {
-            updateChat(FCADE, cfg);
-        } catch (e) {}
+        try { updateChat(FCADE, cfg); } catch (e) {}
     }
 }
 
@@ -720,6 +1007,8 @@ function injectGlobalMenu() {
     const menu = document.createElement('div');
     menu.id = 'cerbGlobalMenu';
     menu.innerHTML = `
+        <span id="cerbBtnQueueAdd" title="${t('queue.addBtn')}" style="font-size:16px;">➕</span>
+        <div class="cerb-menu-divider" id="cerbDivQueue"></div>
         <span id="cerbBtnLike" title="${t('rep.like')}">👍</span>
         <span id="cerbBtnDislike" title="${t('rep.dislike')}">👎</span>
         <span id="cerbBtnClear" title="${t('rep.clear')}">🧹</span>
@@ -745,9 +1034,7 @@ function injectGlobalMenu() {
     const action = (fn) => {
         const userKey = menu.dataset.user;
         if (!userKey || userKey === '<offline>' || userKey.startsWith('<')) return;
-        
         fn(userKey);
-        
         if (menu.dataset.type === 'match') {
             const playerNames = document.querySelectorAll('.playerName');
             playerNames.forEach(el => {
@@ -756,9 +1043,16 @@ function injectGlobalMenu() {
                 }
             });
         }
-        
         const hideNeg = menu.dataset.hideNegative === 'true';
         reprocessUserMessages(userKey, hideNeg);
+    };
+
+    document.getElementById('cerbBtnQueueAdd').onclick = () => {
+        const userKey = menu.dataset.user;
+        if (userKey && userKey !== '<offline>' && !userKey.startsWith('<')) {
+            CerberusData.addQueue(userKey);
+            menu.classList.remove('visible');
+        }
     };
 
     document.getElementById('cerbBtnLike').onclick = () => action(k => CerberusData.markPositive(k));
@@ -771,29 +1065,18 @@ function injectGlobalMenu() {
             executeChatCommand(`/ignore ${userKey}`);
             
             let attempts = 0;
-            const maxAttempts = 30; // Timeout de segurança: 3 segundos
             const scrollInterval = setInterval(() => {
                 attempts++;
                 const blockedEl = Array.from(document.querySelectorAll('.usersIgnoredList .userItem')).find(el => el.dataset.currentUser === userKey);
-                
                 if (blockedEl) {
                     const sidebarWrapper = document.querySelector('.usersListWrapper');
-                    if (sidebarWrapper) {
-                        sidebarWrapper.scrollTo({ top: sidebarWrapper.scrollHeight, behavior: 'smooth' });
-                    } else {
-                        blockedEl.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                    }
-                    
+                    if (sidebarWrapper) sidebarWrapper.scrollTo({ top: sidebarWrapper.scrollHeight, behavior: 'smooth' });
                     blockedEl.classList.remove('cerberus-anim-block-pulse'); 
                     void blockedEl.offsetWidth; 
                     blockedEl.classList.add('cerberus-anim-block-pulse');
-                    
-                    setTimeout(() => {
-                        if (blockedEl) blockedEl.classList.remove('cerberus-anim-block-pulse');
-                    }, 4500);
-
+                    setTimeout(() => { if (blockedEl) blockedEl.classList.remove('cerberus-anim-block-pulse'); }, 4500);
                     clearInterval(scrollInterval);
-                } else if (attempts >= maxAttempts) {
+                } else if (attempts >= 30) {
                     clearInterval(scrollInterval); 
                 }
             }, 100);
@@ -803,9 +1086,7 @@ function injectGlobalMenu() {
     
     document.getElementById('cerbBtnUnblock').onclick = () => {
         const userKey = menu.dataset.user;
-        if (userKey && userKey !== '<offline>' && !userKey.startsWith('<')) {
-            executeChatCommand(`/unignore ${userKey}`);
-        }
+        if (userKey && userKey !== '<offline>' && !userKey.startsWith('<')) executeChatCommand(`/unignore ${userKey}`);
         menu.classList.remove('visible');
     };
 }
@@ -861,33 +1142,15 @@ function injectButtonIntoHeader() {
     }
 }
 
-// ==================== AUTO JOIN ====================
-const connectToChannelWhenAvailable = (FCADE, autoJoinConfig) => {
-    const checkInterval = setInterval(() => {
-        if (FCADE.initializingApp === false) {
-            clearInterval(checkInterval);
-            
-            if (autoJoinConfig?.channelId) {
-                FCADE.selectChannel(autoJoinConfig.channelId);
-            } else {
-                const gameChannels = FCADE.channels.filter(ch => 'gameid' in ch);
-                if (gameChannels.length > 0) {
-                    FCADE.selectChannel(gameChannels[0].id);
-                }
-            }
-        }
-    }, 500);
-};
-
 // ==================== CORE PROCESSING (CHAT & SIDEBAR) ====================
 
 const updateChat = (FCADE, configFull) => {
-    // Garbage Collector
     document.querySelectorAll('.messageWrapper:not(.motd) .cerb-motd-update-notice').forEach(el => el.remove());
     document.querySelectorAll('.messageWrapper .cerb-clear-chat-btn').forEach(el => el.remove());
 
     const cfg = configFull.chatUserInfo;
     const filterCfg = configFull.countryFilter;
+    const queueCfg = configFull.liveQueue;
     const globalUsers = FCADE.globalUsers;
     if (!globalUsers || !cfg) return;
 
@@ -899,14 +1162,12 @@ const updateChat = (FCADE, configFull) => {
 
     const newMessages = document.querySelectorAll('.message:not([data-cerberus-processed])');
     
-    // SMART BATCHING: Deteta o "In-Place Patching" do limite das 400 mensagens (Recriação de DOM)
+    // SMART BATCHING: Ativado se o Vue recriar massivamente o DOM (limite das 300 msgs)
     const isBatchUpdate = newMessages.length > 5;
 
-    // Se o Vue.js tentar desenhar mais de 5 mensagens ao mesmo tempo, ativamos o "Modo Silencioso"
     if (isBatchUpdate) {
         document.body.classList.add('cerb-mass-update');
         clearTimeout(window.cerbMassUpdateTimeout);
-        // Remove a trava silenciosa assim que o processamento interno terminar e for desenhado
         window.cerbMassUpdateTimeout = setTimeout(() => {
             document.body.classList.remove('cerb-mass-update');
         }, 150);
@@ -932,6 +1193,26 @@ const updateChat = (FCADE, configFull) => {
                 msg.dataset.cerberusProcessed = "true";
                 return;
             } 
+
+            // Live Queue Auto-Parser
+            if (queueCfg && queueCfg.enabled && queueCfg.keyword) {
+                let msgText = '';
+                msg.querySelectorAll('.blocksContainer .blocks .regular').forEach(span => {
+                    msgText += span.textContent;
+                });
+                msgText = msgText.trim().toLowerCase();
+                
+                const streamerNick = queueCfg.streamerNick || '';
+                
+                if (msgText === queueCfg.keyword.toLowerCase() && userKey.toLowerCase() !== streamerNick.toLowerCase()) {
+                    const wasAdded = CerberusData.addQueue(userKey);
+                    if (wasAdded) {
+                        playPopSound();
+                        if (!window.cerbReplyQueue) window.cerbReplyQueue = [];
+                        window.cerbReplyQueue.push(userKey);
+                    }
+                }
+            }
 
             const user = globalUsers[userKey];
             let userCountry = null;
@@ -972,7 +1253,6 @@ const updateChat = (FCADE, configFull) => {
             if (userCountry) msg.dataset.cerberusCountry = userCountry; 
 
         } catch (e) {
-            console.error("Cerberus Process Message Error:", e);
             msg.dataset.cerberusProcessed = "true"; 
         }
     });
@@ -1030,7 +1310,6 @@ const updateSidebar = (FCADE, configFull) => {
         document.body.classList.remove('cerb-hide-sidebar-ping');
     }
     
-    // UX Patch: Renomear visualmente "Ignored" para "BLOCKED" sem destruir o Span do Vue.js
     const ignoredTitleNodes = document.querySelectorAll('.usersIgnoredTitle');
     ignoredTitleNodes.forEach(titleEl => {
         titleEl.childNodes.forEach(node => {
@@ -1040,7 +1319,6 @@ const updateSidebar = (FCADE, configFull) => {
         });
     });
 
-    // 1. Processar Lista de Utilizadores
     document.querySelectorAll('.userItem').forEach(item => {
         try {
             const playerNameEl = item.querySelector('.playerName');
@@ -1049,7 +1327,6 @@ const updateSidebar = (FCADE, configFull) => {
             const userKey = normalizeUsername(playerNameEl.textContent);
             if (!userKey) return; 
             
-            // Solução da Reciclagem de DOM do Vue.js: Atualiza a memória viva do elemento
             item.dataset.currentUser = userKey;
             
             if (cfg?.enableReputation) {
@@ -1066,7 +1343,6 @@ const updateSidebar = (FCADE, configFull) => {
                     
                     if (minPing !== null) {
                         let color = minPing < 60 ? '#00ff00' : (minPing > 90 ? '#ff4444' : '#aaa');
-                        
                         let txt = pingWrapper.querySelector('.cerberus-ping-text');
                         if (!txt) {
                             txt = document.createElement('span');
@@ -1110,7 +1386,6 @@ const updateSidebar = (FCADE, configFull) => {
         } catch(e) { }
     });
 
-    // 2. Processar Lista de Partidas Atuais (Playing)
     document.querySelectorAll('.matchesList .matchItem').forEach(match => {
         try {
             let shouldHideMatch = countryFilterEnabled; 
@@ -1186,7 +1461,7 @@ function applyReputationStyleChat(author, msg, userKey, hideNegative) {
         msg.style.paddingLeft = '5px';
     } 
     else if (CerberusData.isNegative(userKey)) {
-        author.style.color = '#88888885';
+        author.style.color = '#888';
         author.style.textDecoration = 'line-through';
         if (!hideNegative) {
             msg.style.opacity = '0.35';
@@ -1270,7 +1545,14 @@ function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, t
             const btnClear = document.getElementById('cerbBtnClear');
             const btnBlock = document.getElementById('cerbBtnBlock');
             const btnUnblock = document.getElementById('cerbBtnUnblock');
+            const divQueue = document.getElementById('cerbDivQueue');
+            const btnQueue = document.getElementById('cerbBtnQueueAdd');
             
+            const qEnabled = ConfigManager.getSetting('liveQueue.enabled') === true;
+            
+            if (btnQueue) btnQueue.style.display = qEnabled ? 'inline-block' : 'none';
+            if (divQueue) divQueue.style.display = qEnabled ? 'block' : 'none';
+
             if (btnLike) btnLike.style.display = isPos ? 'none' : 'inline-block';
             if (btnDislike) btnDislike.style.display = isNeg ? 'none' : 'inline-block';
             if (btnClear) btnClear.style.display = (isPos || isNeg) ? 'inline-block' : 'none';
@@ -1287,10 +1569,7 @@ function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, t
             
             const menuWidth = menu.offsetWidth || 150; 
             let leftPos = rect.right + 12;
-            
-            if (leftPos + menuWidth > window.innerWidth - 10) {
-                leftPos = window.innerWidth - menuWidth - 10;
-            }
+            if (leftPos + menuWidth > window.innerWidth - 10) leftPos = window.innerWidth - menuWidth - 10;
             
             menu.style.left = leftPos + 'px';
             menu.style.top = (rect.top + rect.height / 2) + 'px';
@@ -1488,6 +1767,7 @@ function createStatusElement(state, isBatchUpdate = false) {
         borderRadius: '50%',
         backgroundColor: color,
         marginRight: '5px',
+        flexShrink: '0', 
         boxShadow: `0 0 2px ${shadow}`,
         verticalAlign: 'middle'
     });
@@ -1501,324 +1781,147 @@ function injectStyles() {
     const style = document.createElement('style');
     style.id = 'cerberusStyles';
     style.textContent = `
-        /* Premium Anim: Smooth Pop-In for injected icons */
+        /* Premium Anim: Smooth Pop-In */
         @keyframes cerbPopIn {
             0% { opacity: 0; transform: scale(0.8) translateX(-4px); }
             100% { opacity: 1; transform: scale(1) translateX(0); }
         }
-        .cerberus-anim-pop {
-            animation: cerbPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+        .cerberus-anim-pop { animation: cerbPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
-        /* Cloak de Opacidade: Esconde o cabeçalho para evitar o pulo (CLS) */
-        .messageWrapper.chat .message:not([data-cerberus-processed="true"]) header .authorAndTime {
-            opacity: 0 !important;
-        }
-        .messageWrapper.chat .message header .authorAndTime {
-            transition: opacity 0.2s ease-in !important;
-        }
+        /* Cloak de Opacidade */
+        .messageWrapper.chat .message:not([data-cerberus-processed="true"]) header .authorAndTime { opacity: 0 !important; }
+        .messageWrapper.chat .message header .authorAndTime { transition: opacity 0.2s ease-in !important; }
         
-        /* Bypass de Transição e Opacidade durante Recriação em Lote (Smart Batching) */
         body.cerb-mass-update .messageWrapper.chat .message header .authorAndTime {
-            transition: none !important;
-            opacity: 1 !important;
+            transition: none !important; opacity: 1 !important;
         }
 
-        /* Animação de UX: Piscar vermelho ao bloquear usuário */
+        /* Animação de UX: Piscar vermelho */
         @keyframes cerbBlockPulse {
             0% { background-color: rgba(255, 68, 68, 0.4); box-shadow: inset 4px 0 0px #ff4444; }
             50% { background-color: rgba(255, 68, 68, 0.05); box-shadow: inset 4px 0 0px #ff4444; }
             100% { background-color: transparent; box-shadow: none; }
         }
-        .cerberus-anim-block-pulse {
-            animation: cerbBlockPulse 2s ease-in-out 2 forwards !important;
-        }
+        .cerberus-anim-block-pulse { animation: cerbBlockPulse 2s ease-in-out 2 forwards !important; }
 
-        /* Floating Action Button (FAB) - Botão Limpar Chat */
+        /* Floating Action Buttons (FABs) */
         .cerb-clear-chat-fab {
-            position: absolute;
-            right: 15px;
-            bottom: 65px; /* Flutua exatamente acima do input de chat nativo */
-            background: rgba(30, 30, 35, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px; /* Estilo Pílula (Pill) */
-            color: #ccc;
-            padding: 6px 14px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            z-index: 100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
+            position: absolute; right: 15px; bottom: 65px;
+            background: rgba(30, 30, 35, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;
+            color: #ccc; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease;
+            z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px);
         }
-        .cerb-clear-chat-fab:hover {
-            background: rgba(50, 50, 60, 0.95);
-            color: #fff;
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.3);
+        .cerb-clear-chat-fab:hover { background: rgba(50, 50, 60, 0.95); color: #fff; transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.3); }
+
+        .cerb-queue-fab {
+            position: absolute; right: 15px; bottom: 105px;
+            background: rgba(30, 30, 35, 0.9); border: 1px solid rgba(102, 126, 234, 0.4); border-radius: 20px;
+            color: #a3bffa; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease;
+            z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px);
         }
+        .cerb-queue-fab:hover { background: rgba(102, 126, 234, 0.3); color: #fff; transform: translateY(-2px); }
 
         /* Elemento MOTD da Notificação de Atualização */
         .cerb-motd-update-notice {
-            background: rgba(255, 165, 0, 0.15);
-            border-left: 4px solid #ffaa00;
-            padding: 10px 15px;
-            margin-top: 15px;
-            border-radius: 4px;
-            color: #ffdca5;
-            font-size: 13px;
-            display: inline-block;
-            width: calc(100% - 10px);
-            box-sizing: border-box;
-            line-height: 1.4;
+            background: rgba(255, 165, 0, 0.15); border-left: 4px solid #ffaa00; padding: 10px 15px; margin-top: 15px;
+            border-radius: 4px; color: #ffdca5; font-size: 13px; display: inline-block; width: calc(100% - 10px); box-sizing: border-box; line-height: 1.4;
         }
 
-        /* Ancoramento Estrito do CSS da barra lateral para prevenir side-effects globais */
-        body.cerb-hide-sidebar-ping .usersListToolbar .userItem .pingWrapper img.ping {
-            display: none !important;
-        }
+        body.cerb-hide-sidebar-ping .usersListToolbar .userItem .pingWrapper img.ping { display: none !important; }
 
         /* Blur */
-        .message.blur-individual .line .blocksContainer {
-            filter: blur(5px);
-            transition: filter 0.2s ease;
-            user-select: none;
-        }
-        .message.blur-individual:hover .line .blocksContainer {
-            filter: blur(0);
-            user-select: text;
-        }
-        .chatContent.blur-all .message .line .blocksContainer {
-            filter: blur(5px);
-            transition: filter 0.2s ease;
-            user-select: none;
-        }
-        .chatContent.blur-all:hover .message .line .blocksContainer {
-            filter: blur(0);
-            user-select: text;
-        }
+        .message.blur-individual .line .blocksContainer { filter: blur(5px); transition: filter 0.2s ease; user-select: none; }
+        .message.blur-individual:hover .line .blocksContainer { filter: blur(0); user-select: text; }
+        .chatContent.blur-all .message .line .blocksContainer { filter: blur(5px); transition: filter 0.2s ease; user-select: none; }
+        .chatContent.blur-all:hover .message .line .blocksContainer { filter: blur(0); user-select: text; }
         
         /* Global Floating Menu */
         #cerbGlobalMenu {
-            position: fixed;
-            background: rgba(20, 20, 25, 0.95);
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            border-radius: 8px;
-            padding: 4px 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 100000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            transform: translateY(-50%) translateX(15px) scale(0.95);
-            user-select: none;
-            white-space: nowrap;
+            position: fixed; background: rgba(20, 20, 25, 0.95); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 8px;
+            padding: 4px 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); display: flex; align-items: center; gap: 8px;
+            z-index: 100000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateY(-50%) translateX(15px) scale(0.95); user-select: none; white-space: nowrap;
         }
-        #cerbGlobalMenu.visible {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(-50%) translateX(0) scale(1);
-        }
-        #cerbGlobalMenu span {
-            cursor: pointer;
-            font-size: 14px;
-            transition: transform 0.1s;
-            display: inline-block;
-        }
-        #cerbGlobalMenu span:hover {
-            transform: scale(1.3);
-        }
-        .cerb-menu-divider {
-            width: 1px;
-            height: 16px;
-            background: rgba(255, 255, 255, 0.2);
-            margin: 0 2px;
-        }
+        #cerbGlobalMenu.visible { opacity: 1; pointer-events: auto; transform: translateY(-50%) translateX(0) scale(1); }
+        #cerbGlobalMenu span { cursor: pointer; font-size: 14px; transition: transform 0.1s; display: inline-block; }
+        #cerbGlobalMenu span:hover { transform: scale(1.3); }
+        .cerb-menu-divider { width: 1px; height: 16px; background: rgba(255, 255, 255, 0.2); margin: 0 2px; }
 
         /* Update Button in About Tab */
         .cerb-update-btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: rgba(102, 126, 234, 0.15);
-            border: 1px solid rgba(102, 126, 234, 0.4);
-            border-radius: 8px;
-            color: #a3bffa;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            font-size: 14px;
+            display: inline-block; margin-top: 20px; padding: 10px 20px; background: rgba(102, 126, 234, 0.15); border: 1px solid rgba(102, 126, 234, 0.4);
+            border-radius: 8px; color: #a3bffa; text-decoration: none; font-weight: 600; transition: all 0.2s ease; font-size: 14px;
         }
-        .cerb-update-btn:hover {
-            background: rgba(102, 126, 234, 0.3);
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-        }
+        .cerb-update-btn:hover { background: rgba(102, 126, 234, 0.3); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2); }
 
         /* Modern Control Panel */
         #cerberusPanel {
-            position: fixed;
-            width: 480px;
-            max-height: 85vh;
-            background: rgba(23, 23, 28, 0.95);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            z-index: 10000;
-            color: #ececec;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-            display: none;
-            overflow: hidden;
-            flex-direction: column;
+            position: fixed; width: 480px; max-height: 85vh; background: rgba(23, 23, 28, 0.95); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; z-index: 10000; color: #ececec;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7); display: none; overflow: hidden; flex-direction: column;
         }
+        @media (max-width: 768px) { #cerberusPanel { width: 95%; max-height: 90vh; } }
         
-        @media (max-width: 768px) {
-            #cerberusPanel { width: 95%; max-height: 90vh; }
+        #cerberusPanel .header, #cerberusQueueWindow .q-header {
+            display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid rgba(255, 255, 255, 0.08); cursor: move; user-select: none;
         }
+        #cerberusPanel .header .title, #cerberusQueueWindow .q-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: #fff; letter-spacing: 0.5px; }
         
-        #cerberusPanel .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            cursor: move;
-            user-select: none;
+        #cerberusPanel .closeBtn, #cerberusQueueWindow .q-close {
+            background: transparent; border: none; color: rgba(255, 255, 255, 0.6); font-size: 24px; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s;
         }
+        #cerberusPanel .closeBtn:hover, #cerberusQueueWindow .q-close:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
         
-        #cerberusPanel .header .title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-            letter-spacing: 0.5px;
-        }
-        
-        #cerberusPanel .closeBtn {
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 24px;
-            cursor: pointer;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-        
-        #cerberusPanel .closeBtn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-        
-        #cerberusPanel .tabs {
-            display: flex;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0 10px;
-        }
-        
-        #cerberusPanel .tab {
-            padding: 14px 20px;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid transparent;
-            color: rgba(255, 255, 255, 0.6);
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        
+        #cerberusPanel .tabs { display: flex; background: rgba(0, 0, 0, 0.2); padding: 0 10px; }
+        #cerberusPanel .tab { padding: 14px 20px; background: transparent; border: none; border-bottom: 2px solid transparent; color: rgba(255, 255, 255, 0.6); cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
         #cerberusPanel .tab:hover { color: #fff; }
-        
-        #cerberusPanel .tab.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
-        }
-        
-        #cerberusPanel .tab.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        
-        #cerberusPanel .content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
+        #cerberusPanel .tab.active { color: #667eea; border-bottom-color: #667eea; }
+        #cerberusPanel .tab.disabled { opacity: 0.3; cursor: not-allowed; }
+        #cerberusPanel .content { flex: 1; overflow-y: auto; padding: 20px; }
         
         /* Modern Toggle Switch */
-        .modern-toggle {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            margin-bottom: 8px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
+        .modern-toggle { display: flex; justify-content: space-between; align-items: center; padding: 12px; margin-bottom: 8px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; transition: background 0.2s; }
         .modern-toggle:hover { background: rgba(255, 255, 255, 0.05); }
-        
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #444;
-            transition: .3s;
-            border-radius: 24px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
         input:checked + .slider { background-color: #667eea; }
         input:checked + .slider:before { transform: translateX(20px); }
         
-        /* Search Bar */
-        .search-bar {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: white;
-            margin-bottom: 15px;
-            font-size: 14px;
-            outline: none;
-        }
+        .search-bar { width: 100%; padding: 10px 14px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: white; margin-bottom: 15px; font-size: 14px; outline: none; }
         .search-bar:focus { border-color: #667eea; }
-        
-        /* Scrollbar */
-        #cerberusPanel .content::-webkit-scrollbar { width: 6px; }
-        #cerberusPanel .content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
-        #cerberusPanel .content::-webkit-scrollbar-track { background: transparent; }
+
+        /* LIVE QUEUE WINDOW */
+        #cerberusQueueWindow {
+            position: fixed; right: 20px; bottom: 150px; width: 320px; max-height: 400px;
+            background: rgba(23, 23, 28, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 12px;
+            z-index: 10000; color: #ececec; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; overflow: hidden;
+        }
+        #cerbQueueCount { color: #a3bffa; margin-left: 5px; font-size: 12px; }
+        .q-add-box { display: flex; padding: 10px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); gap: 8px; }
+        .q-add-box input { flex: 1; padding: 6px 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff; font-size: 12px; outline: none; }
+        .q-add-box input:focus { border-color: #667eea; }
+        .q-add-box button { background: #667eea; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: background 0.2s; }
+        .q-add-box button:hover { background: #5a67d8; }
+        .q-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .q-empty { text-align: center; color: #888; font-size: 12px; padding: 20px 0; font-style: italic; }
+        .q-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 6px; border-left: 3px solid #667eea; }
+        .q-name { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; }
+        .q-name.played { text-decoration: line-through; color: #888; border-left-color: #444; }
+        .q-controls { display: flex; gap: 4px; }
+        .q-controls button { background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; cursor: pointer; font-size: 11px; padding: 4px; transition: all 0.2s; color: #ccc; }
+        .q-controls button:hover:not(:disabled) { background: rgba(255,255,255,0.1); transform: scale(1.1); }
+        .q-controls button:disabled { opacity: 0.3; cursor: not-allowed; }
+        .q-controls button.danger:hover { background: rgba(255,68,68,0.2); border-color: #ff4444; }
+        .q-footer { padding: 10px; background: rgba(0,0,0,0.3); text-align: right; border-top: 1px solid rgba(255,255,255,0.05); }
+        .q-clear-btn { background: transparent; border: 1px solid rgba(255,68,68,0.4); color: #ff4444; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+        .q-clear-btn:hover { background: rgba(255,68,68,0.2); }
+
+        /* Scrollbars */
+        #cerberusPanel .content::-webkit-scrollbar, .q-list::-webkit-scrollbar { width: 6px; }
+        #cerberusPanel .content::-webkit-scrollbar-thumb, .q-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+        #cerberusPanel .content::-webkit-scrollbar-track, .q-list::-webkit-scrollbar-track { background: transparent; }
     `;
     document.head.appendChild(style);
 }
@@ -1851,7 +1954,7 @@ function createControlPanel() {
     `;
 
     document.body.appendChild(panel);
-    makeDraggable(panel);
+    makeDraggable(panel, 'cerberusHeader');
 
     // Tab Logic
     panel.querySelectorAll('.tab').forEach(tab => {
@@ -1874,29 +1977,33 @@ function createControlPanel() {
     updateCountryTabVisibility(ConfigManager.getSetting('countryFilter.enabled') === true);
 }
 
-function makeDraggable(element) {
-    const header = document.getElementById('cerberusHeader');
+function makeDraggable(element, headerId) {
+    const header = document.getElementById(headerId);
     if (!header) return;
     
     let isDragging = false;
     let currentX, currentY, initialX, initialY;
     let xOffset = 0, yOffset = 0;
 
-    xOffset = (window.innerWidth - 480) / 2; 
-    yOffset = (window.innerHeight - 500) / 2;
-    setTranslate(xOffset, yOffset, element);
+    // Apenas centra se for o painel principal, a Queue nasce no canto
+    if (headerId === 'cerberusHeader') {
+        xOffset = (window.innerWidth - 480) / 2; 
+        yOffset = (window.innerHeight - 500) / 2;
+        setTranslate(xOffset, yOffset, element);
+    }
 
-    // Adiciona o ouvinte inicial estritamente ao cabeçalho (Destruído com o Painel)
     header.addEventListener("mousedown", dragStart);
 
     function dragStart(e) {
         if (e.target === header || header.contains(e.target)) {
             if (e.target.tagName !== 'BUTTON') {
+                const rect = element.getBoundingClientRect();
+                xOffset = rect.left;
+                yOffset = rect.top;
                 initialX = e.clientX - xOffset;
                 initialY = e.clientY - yOffset;
                 isDragging = true;
                 
-                // Anexa listeners ao documento APENAS durante o arrasto
                 document.addEventListener("mouseup", dragEnd);
                 document.addEventListener("mousemove", drag);
             }
@@ -1908,8 +2015,6 @@ function makeDraggable(element) {
             initialX = currentX;
             initialY = currentY;
             isDragging = false;
-            
-            // Destroi listeners nativos imediatamente ao soltar o clique (Anti-Leak)
             document.removeEventListener("mouseup", dragEnd);
             document.removeEventListener("mousemove", drag);
         }
@@ -1932,6 +2037,12 @@ function makeDraggable(element) {
             xOffset = currentX;
             yOffset = currentY;
             setTranslate(currentX, currentY, element);
+            
+            // Remove o ancoramento right e bottom nativos ao iniciar arrasto
+            if (element.id === 'cerberusQueueWindow') {
+                element.style.right = 'auto';
+                element.style.bottom = 'auto';
+            }
         }
     }
 
@@ -2067,6 +2178,17 @@ function createSettingsTab() {
         `;
     };
 
+    const settingInput = (key, label, type="text") => {
+        const val = ConfigManager.getSetting(key) || ''; 
+        return `
+            <div class="modern-toggle">
+                <span style="font-size: 14px; color: #e0e0e0;">${label}</span>
+                <input type="${type}" value="${val}" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none; width: 100px; text-align: center;" 
+                        onchange="ConfigManager.updateSetting('${key}', ${type === 'number' ? 'parseInt(this.value)' : 'this.value'})">
+            </div>
+        `;
+    };
+
     const langSelect = `
         <div class="modern-toggle" style="margin-bottom: 24px;">
             <span style="font-size: 14px; color: #e0e0e0; font-weight: bold;">${t('settings.language')}</span>
@@ -2082,6 +2204,13 @@ function createSettingsTab() {
     tab.innerHTML = 
         langSelect +
         createSection(t('settings.global'), settingToggle('autoJoin.enabled', t('settings.autoJoin'))) +
+        createSection(t('settings.liveQueue'), 
+            settingToggle('liveQueue.enabled', t('settings.queueEnable')) +
+            settingInput('liveQueue.keyword', t('settings.queueKeyword')) +
+            settingInput('liveQueue.streamerNick', t('settings.queueStreamer')) +
+            settingInput('liveQueue.limit', t('settings.queueLimit'), 'number') +
+            settingToggle('liveQueue.autoReply', t('settings.queueReply'))
+        ) +
         createSection(t('settings.filters'), 
             settingToggle('countryFilter.enabled', t('settings.enableFilter'), true)
         ) +
@@ -2148,13 +2277,3 @@ function createAboutTab() {
 }
 
 window.updateCountryTabVisibility = updateCountryTabVisibility;
-
-/* ==========================================================================
-   CHANGELOG DO PROJETO
-   ==========================================================================
-   v1.7.18 - [Smart Batching] Implementada defesa ativa contra o "DOM Patching" nativo 
-             do Fightcade. O script agora deteta quando o chat atinge o limite e recria 
-             as 400 mensagens simultaneamente, ativando o "Modo Silencioso". 
-             Isso suspende o Opacity Cloak e as animações de Pop In apenas durante 
-             esse ciclo, erradicando o bug onde a tela inteira piscava massivamente.
-   ========================================================================== */

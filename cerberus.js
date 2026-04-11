@@ -1,5 +1,41 @@
 const fs = require('fs');
 const path = require('path');
+const fsPromises = fs.promises;
+
+// ==================== PERSISTÊNCIA SEGURA ====================
+async function atomicWriteJSON(filePath, data) {
+    const tmpPath = filePath + '.tmp';
+    const bakPath = filePath + '.bak';
+    const json = JSON.stringify(data, null, 2);
+    try {
+        await fsPromises.writeFile(tmpPath, json, 'utf8');
+        try { await fsPromises.copyFile(filePath, bakPath); } catch(e) { /* first write, no existing file */ }
+        await fsPromises.rename(tmpPath, filePath);
+    } catch (e) {
+        console.error('[Cerberus] Atomic write failed:', path.basename(filePath), e.message);
+        try { fs.writeFileSync(filePath, json, 'utf8'); } catch(e2) { /* silent fallback */ }
+    }
+}
+
+function safeLoadJSON(filePath, defaults) {
+    const bakPath = filePath + '.bak';
+    try {
+        if (fs.existsSync(filePath)) {
+            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        }
+    } catch (e) {
+        console.warn(`[Cerberus] Corrupted: ${path.basename(filePath)}, trying backup...`);
+    }
+    try {
+        if (fs.existsSync(bakPath)) {
+            console.log(`[Cerberus] Restored from backup: ${path.basename(bakPath)}`);
+            return JSON.parse(fs.readFileSync(bakPath, 'utf8'));
+        }
+    } catch (e) {
+        console.warn(`[Cerberus] Backup also corrupted: ${path.basename(bakPath)}`);
+    }
+    return typeof defaults === 'function' ? defaults() : (defaults || null);
+}
 
 // ==================== DICIONÁRIO DE IDIOMAS (i18n) ====================
 const Locales = {
@@ -22,51 +58,79 @@ const Locales = {
             chatVisual: "Chat Visuals",
             showStatus: "Show Status (Online/Away/Offline)",
             showFlags: "Show Flags",
-            showRanks: "Show Rank",
+            showRanks: "Show Rank Letters",
+            showNumericRanks: "Show Ranking Position Badge",
             showPingBars: "Show Ping Bars",
             showPingText: "Show Ping as Text",
-            replacePingBar: "Replace Bar with Text (List)",
+            replacePingBar: "Show Ping as Text in Sidebar",
             reputation: "Reputation",
             enableRep: "Reputation System (👍/👎)",
-            hideNeg: "Hide Negatived Users Chat",
+            hideNeg: "Hide Messages from Negative Users",
             privacy: "Privacy",
-            blurMode: "Blur Mode (Focus Chat)",
+            blurMode: "Blur Mode (Privacy)",
             blurNone: "Disabled",
             blurIndiv: "Individual",
             blurAll: "All",
+            rankingsApi: "Rankings (Online Sync)",
+            rankLimit: "Top Limit (⚠️ >500 is slower)",
+            rankCountry: "Country Filter (ISO 2-letters, e.g., BR)",
             extras: "Extras",
             unlockThemes: "Unlock Color Themes",
             liveQueue: "Live Queue (Streamers)",
-            queueEnable: "Enable Auto !join Parser",
+            queueEnable: "Enable Live Queue Module",
             queueKeyword: "Keyword (e.g. !join)",
             queueLimit: "Queue Limit",
-            queueStreamer: "Streamer Nick (Exclude)",
-            queueReply: "Auto Chat Reply Bot (15s)"
+            queueStreamer: "Streamer Nick (to Exclude)",
+            queueReply: "Auto-reply in Chat (every 15s)",
+            queuePromoEnable: "Enable 10-Min Promo Bot",
+            queuePromo: "Live Promo Msg"
         },
         about: {
-            title: "Fightcade Plus 1.8.3",
+            title: "Fightcade Plus 1.9.0",
             subtitle: "By Cerberus",
-            feat1: "Live Player Queue Bot (!join)",
-            feat2: "Geographic Country Filter",
-            feat3: "Chat visual improvements (Flags, Ping text)",
-            feat4: "Global Reputation System (👍/👎)",
-            feat5: "Anti-Blink DOM Stabilization",
-            feat6: "Premium Themes Unlock",
-            note: "Developed with a focus on high performance and optimization.",
+            catBot: "🤖 Streamer Tools",
+            feat1: "Live Player Queue via chat command (!join)",
+            feat2: "Automated welcome message for new players in queue",
+            feat3: "Promotional bot with custom messages (every 10min)",
+            catRank: "🏆 Rankings",
+            feat4: "Ranking position badge next to player names",
+            feat5: "Sync rankings per game with country filter",
+            catChat: "💬 Chat & Sidebar",
+            feat6: "Country flags, rank letters, and ping info on chat",
+            feat7: "Online/Away/Offline status indicators",
+            feat8: "Ping displayed as text or bars (configurable)",
+            catRep: "🛡️ Reputation & Privacy",
+            feat9: "Player reputation system (Favorite / Downvote)",
+            feat10: "Hide messages from downvoted users",
+            feat11: "Blur mode for stream privacy",
+            catFilter: "🌍 Filters & Customization",
+            feat12: "Country-based player filter (real-time)",
+            feat13: "Premium color themes unlock",
+            feat14: "Auto-join channel on startup",
+            feat15: "Multi-language support (EN/PT/ES)",
+            note: "Safe auto-save engine with crash protection.",
             updateBtn: "🔄 Check for Updates",
             updateAvailable: "⚠️ Update Available: "
         },
         rep: {
-            like: "Highlight (Bypass Filter)",
-            dislike: "Negative",
+            like: "Favorite (Ignores Filters)",
+            dislike: "Downvote",
             clear: "Clear Reputation",
-            block: "Block (Native)",
-            unblock: "Unblock (Native)"
+            block: "Block (Fightcade)",
+            unblock: "Unblock (Fightcade)"
         },
         motd: {
-            clearChat: "Clear Chat",
-            queueTitle: "Players Queue",
+            clearChat: "CLEAR CHAT",
+            queueTitle: "PLAYERS QUEUE",
             updateAvail: "Update Available:"
+        },
+        sync: {
+            rankingsBtn: "Sync Rankings",
+            wait30: "Wait 30 minutes",
+            clickCancel: "Click to cancel",
+            liveOn: "🟢 LIVE ON",
+            liveOff: "🔴 LIVE OFF",
+            confirmClear: "Are you sure you want to clear the entire queue?"
         },
         queue: {
             title: "Live Queue",
@@ -74,7 +138,7 @@ const Locales = {
             clearBtn: "Clear All",
             empty: "Queue is empty.",
             inputPh: "Player nickname...",
-            mark: "Mark as Played/Unplayed",
+            mark: "Toggle Played",
             remove: "Remove Player",
             up: "Move Up",
             down: "Move Down"
@@ -92,58 +156,86 @@ const Locales = {
         },
         settings: {
             global: "Global",
-            autoJoin: "Entrar Automático (Auto Join)",
+            autoJoin: "Entrar Automaticamente no Canal",
             language: "Idioma",
             filters: "Filtros",
             enableFilter: "Ativar Filtro de Países",
             chatVisual: "Chat Visual",
             showStatus: "Mostrar Status (Online/Ausente/Offline)",
             showFlags: "Mostrar Bandeiras",
-            showRanks: "Mostrar Rank",
+            showRanks: "Mostrar Letra de Rank",
+            showNumericRanks: "Mostrar Posição no Ranking",
             showPingBars: "Mostrar Barras de Ping",
             showPingText: "Mostrar Ping em Texto",
-            replacePingBar: "Trocar Barra por Texto (Lista)",
+            replacePingBar: "Mostrar Ping como Texto na Lista Lateral",
             reputation: "Reputação",
             enableRep: "Sistema de Reputação (👍/👎)",
-            hideNeg: "Ocultar chat de negativados",
+            hideNeg: "Ocultar mensagens de usuários negativados",
             privacy: "Privacidade",
-            blurMode: "Modo Blur (Focar Chat)",
+            blurMode: "Modo Blur (Privacidade)",
             blurNone: "Desativado",
             blurIndiv: "Individual",
             blurAll: "Tudo",
+            rankingsApi: "Rankings (Sincronização Online)",
+            rankLimit: "Top Ranking (⚠️ >500 demora)",
+            rankCountry: "Filtrar por País (Ex: BR, vazio=Todos)",
             extras: "Extras",
             unlockThemes: "Desbloquear Temas de Cor",
             liveQueue: "Fila de Live (Streamers)",
-            queueEnable: "Ativar Módulo de Fila da Live",
+            queueEnable: "Ativar Módulo para Streamers",
             queueKeyword: "Palavra-chave (ex: !join)",
-            queueLimit: "Limite de Jogadores na Lista",
-            queueStreamer: "Nick do Streamer (Exceção)",
-            queueReply: "Bot de Resposta no Chat (15s)"
+            queueLimit: "Limite de Jogadores",
+            queueStreamer: "Seu Nick do Fightcade (Exceção)",
+            queueReply: "Resposta Automática da Fila",
+            queuePromoEnable: "Ativar Bot Divulgação (a cada 10min)",
+            queuePromo: "Mensagem do Bot (a cada 10min)"
         },
         about: {
-            title: "Fightcade Plus 1.8.3",
+            title: "Fightcade Plus 1.9.0",
             subtitle: "By Cerberus",
-            feat1: "Bot de Fila para Live (!join)",
-            feat2: "Filtro Geográfico de Países",
-            feat3: "Melhorias visuais no chat (Bandeiras, Ping em texto)",
-            feat4: "Sistema de Reputação Global (👍/👎)",
-            feat5: "Estabilização de DOM",
-            feat6: "Desbloqueio de Temas Premium",
-            note: "Desenvolvido com carinho para a comunidade KOF2002 BR",
+            catBot: "🤖 Ferramentas para Streamers",
+            feat1: "Fila de jogadores via comando no chat (!join)",
+            feat2: "Mensagem automática de boas-vindas ao entrar na fila",
+            feat3: "Bot promocional com mensagem personalizada (a cada 10min)",
+            catRank: "🏆 Rankings",
+            feat4: "Exibir posição no ranking ao lado do nome",
+            feat5: "Sincronização de rankings por jogo com filtro de país",
+            catChat: "💬 Chat e Lista Lateral",
+            feat6: "Bandeiras, letras de rank e ping no chat",
+            feat7: "Indicadores de status (Online/Ausente/Offline)",
+            feat8: "Ping exibido como texto ou barras (configurável)",
+            catRep: "🛡️ Reputação e Privacidade",
+            feat9: "Sistema de reputação (Destacar / Negativar)",
+            feat10: "Ocultar mensagens de usuários negativados",
+            feat11: "Modo blur para privacidade em streams",
+            catFilter: "🌍 Filtros e Personalização",
+            feat12: "Filtro de jogadores por país (tempo real)",
+            feat13: "Desbloqueio de temas de cores premium",
+            feat14: "Auto-entrar no canal ao iniciar",
+            feat15: "Suporte multi-idioma (EN/PT/ES)",
+            note: "Motor de auto-save seguro com proteção contra falhas.",
             updateBtn: "🔄 Verificar Atualizações",
             updateAvailable: "⚠️ Atualização Disponível: "
         },
         rep: {
-            like: "Destacar",
+            like: "Destacar (Ignora Filtros)",
             dislike: "Negativar",
             clear: "Limpar Reputação",
-            block: "Bloquear",
-            unblock: "Desbloquear"
+            block: "Bloquear (Fightcade)",
+            unblock: "Desbloquear (Fightcade)"
         },
         motd: {
-            clearChat: "Limpar Chat",
-            queueTitle: "Fila de Jogadores",
+            clearChat: "LIMPAR CHAT",
+            queueTitle: "FILA DE JOGADORES",
             updateAvail: "Atualização Disponível:"
+        },
+        sync: {
+            rankingsBtn: "Sincronizar Rankings",
+            wait30: "Aguarde 30 minutos",
+            clickCancel: "Clique para cancelar",
+            liveOn: "🟢 LIVE ON",
+            liveOff: "🔴 LIVE OFF",
+            confirmClear: "Tem certeza que deseja limpar toda a fila?"
         },
         queue: {
             title: "Fila da Live",
@@ -151,7 +243,7 @@ const Locales = {
             clearBtn: "Limpar Fila",
             empty: "A fila está vazia.",
             inputPh: "Nick do jogador...",
-            mark: "Marcar como Jogado/Não Jogado",
+            mark: "Alternar Jogado",
             remove: "Remover Jogador",
             up: "Subir na Fila",
             down: "Descer na Fila"
@@ -169,25 +261,29 @@ const Locales = {
         },
         settings: {
             global: "Global",
-            autoJoin: "Entrar Automáticamente",
+            autoJoin: "Entrar Automáticamente al Canal",
             language: "Idioma",
             filters: "Filtros",
             enableFilter: "Activar Filtro de Países",
             chatVisual: "Visual del Chat",
             showStatus: "Mostrar Estado (Online/Ausente/Offline)",
             showFlags: "Mostrar Banderas",
-            showRanks: "Mostrar Rango",
+            showRanks: "Mostrar Letra de Rango",
+            showNumericRanks: "Mostrar Badge de Posición en el Ranking",
             showPingBars: "Mostrar Barras de Ping",
             showPingText: "Mostrar Ping en Texto",
-            replacePingBar: "Reemplazar Barra por Texto (Lista)",
+            replacePingBar: "Mostrar Ping como Texto en la Lista Lateral",
             reputation: "Reputación",
             enableRep: "Sistema de Reputación (👍/👎)",
-            hideNeg: "Ocultar chat de usuarios negativos",
+            hideNeg: "Ocultar mensajes de usuarios negativos",
             privacy: "Privacidad",
-            blurMode: "Modo Blur (Enfocar Chat)",
+            blurMode: "Modo Blur (Privacidad)",
             blurNone: "Desactivado",
             blurIndiv: "Individual",
             blurAll: "Todo",
+            rankingsApi: "Rankings (Sincronización Online)",
+            rankLimit: "Límite del Top (⚠️ >500 demora)",
+            rankCountry: "Filtrar por País (Ej: BR, vacío=Todos)",
             extras: "Extras",
             unlockThemes: "Desbloquear Temas de Color",
             liveQueue: "Cola de Live (Streamers)",
@@ -195,32 +291,56 @@ const Locales = {
             queueKeyword: "Palabra clave (ej: !join)",
             queueLimit: "Límite de Jugadores",
             queueStreamer: "Nick del Streamer (Excepción)",
-            queueReply: "Bot de Respuesta en Chat (15s)"
+            queueReply: "Respuesta Automática en el Chat (cada 15s)",
+            queuePromoEnable: "Activar Bot Promocional (10min)",
+            queuePromo: "Msg Promo"
         },
         about: {
-            title: "Fightcade Plus 1.8.3",
+            title: "Fightcade Plus 1.9.0",
             subtitle: "By Cerberus",
-            feat1: "Bot de Cola para Live (!join)",
-            feat2: "Filtro Geográfico de Países",
-            feat3: "Mejoras visuales en el chat (Banderas, Ping)",
-            feat4: "Sistema de Reputación Global (👍/👎)",
-            feat5: "Estabilización de DOM (Anti-Blink)",
-            feat6: "Desbloqueo de Temas Premium",
-            note: "Desarrollado con enfoque en alto rendimiento y optimización.",
+            catBot: "🤖 Herramientas para Streamers",
+            feat1: "Cola de jugadores vía comando en el chat (!join)",
+            feat2: "Mensaje automático de bienvenida al entrar en la cola",
+            feat3: "Bot promocional con mensaje personalizado (cada 10min)",
+            catRank: "🏆 Rankings",
+            feat4: "Badge de posición en el ranking junto al nombre",
+            feat5: "Sincronización de rankings por juego con filtro de país",
+            catChat: "💬 Chat y Lista Lateral",
+            feat6: "Banderas, letras de rango y ping en el chat",
+            feat7: "Indicadores de estado (Online/Ausente/Offline)",
+            feat8: "Ping mostrado como texto o barras (configurable)",
+            catRep: "🛡️ Reputación y Privacidad",
+            feat9: "Sistema de reputación (Destacar / Negativar)",
+            feat10: "Ocultar mensajes de usuarios negativos",
+            feat11: "Modo blur para privacidad en streams",
+            catFilter: "🌍 Filtros y Personalización",
+            feat12: "Filtro de jugadores por país (tiempo real)",
+            feat13: "Desbloqueo de temas de colores premium",
+            feat14: "Auto-entrar al canal al iniciar",
+            feat15: "Soporte multi-idioma (EN/PT/ES)",
+            note: "Motor de auto-guardado seguro con protección ante fallos.",
             updateBtn: "🔄 Buscar Actualizaciones",
             updateAvailable: "⚠️ Actualización Disponible: "
         },
         rep: {
-            like: "Destacar (Bypass Filtro)",
+            like: "Destacar (Ignora Filtros)",
             dislike: "Negativar",
             clear: "Limpiar Reputación",
-            block: "Bloquear (Nativo)",
-            unblock: "Desbloquear (Nativo)"
+            block: "Bloquear (Fightcade)",
+            unblock: "Desbloquear (Fightcade)"
         },
         motd: {
-            clearChat: "Limpiar Chat",
-            queueTitle: "Cola de Jugadores",
+            clearChat: "LIMPIAR CHAT",
+            queueTitle: "COLA DE JUGADORES",
             updateAvail: "Actualización Disponible:"
+        },
+        sync: {
+            rankingsBtn: "Sincronizar Rankings",
+            wait30: "Espere 30 minutos",
+            clickCancel: "Haga clic para cancelar",
+            liveOn: "🟢 LIVE ON",
+            liveOff: "🔴 LIVE OFF",
+            confirmClear: "¿Está seguro de que desea vaciar toda la cola?"
         },
         queue: {
             title: "Cola del Live",
@@ -228,7 +348,7 @@ const Locales = {
             clearBtn: "Limpiar Cola",
             empty: "La cola está vacía.",
             inputPh: "Nick del jugador...",
-            mark: "Marcar como Jugado/No Jugado",
+            mark: "Alternar Jugado",
             remove: "Eliminar Jugador",
             up: "Subir",
             down: "Bajar"
@@ -253,20 +373,58 @@ const COUNTRY_NAME_TO_CODE = Object.fromEntries(
     Object.entries(AVAILABLE_COUNTRIES).map(([code, name]) => [name, code])
 );
 
+// ==================== SELETORES DOM CENTRALIZADOS ====================
+const SELECTORS = {
+    rankedWrapper: '.channelInfo .rankedWrapper',
+    romName: '.channelInfo .name[title="Rom name"]',
+    gameLink: '.channelInfo a.link[href*="/game/"]',
+    chatInput: '.chatInput input.input',
+    usersOnlineTitle: '.usersOnlineTitle',
+    chatContent: '.chatContent',
+    chatWrapper: '.chatWrapper',
+    userItem: '.userItem',
+    playerName: '.playerName',
+    matchItem: '.matchesList .matchItem',
+    motdWrapper: '.messageWrapper.motd',
+    ignoredTitle: '.usersIgnoredTitle',
+};
+
+const _selectorMissCounts = {};
+let _healthCheckCounter = 0;
+
+function safeQuery(key, context) {
+    context = context || document;
+    const selector = SELECTORS[key] || key;
+    const el = context.querySelector(selector);
+    if (SELECTORS[key]) {
+        if (!el) _selectorMissCounts[key] = (_selectorMissCounts[key] || 0) + 1;
+        else _selectorMissCounts[key] = 0;
+    }
+    return el;
+}
+
+function domHealthCheck() {
+    _healthCheckCounter++;
+    if (_healthCheckCounter % 30 !== 0) return;
+    const critical = ['chatContent', 'usersOnlineTitle'];
+    const broken = critical.filter(k => (_selectorMissCounts[k] || 0) > 10);
+    if (broken.length > 0 && !window.CerberusState._healthWarned) {
+        console.warn('⚠️ [Cerberus] DOM selectors failing:', broken.join(', '), '— Plugin may need update.');
+        window.CerberusState._healthWarned = true;
+    }
+}
+
 // ==================== CONFIGURAÇÃO INICIAL ====================
 const defaultConfig = {
     language: 'en',
-    autoJoin: {
-        enabled: true,
-        channelId: ''
-    },
-    countryFilter: {
-        enabled: false 
-    },
+    autoJoin: { enabled: true, channelId: '' },
+    countryFilter: { enabled: false },
+    rankings: { limit: 500, country: '' },
     chatUserInfo: {
         enableStatus: true,
         enableFlag: true,
         enableRank: true,
+        showNumericRanks: true, 
         enablePingText: true,
         enablePingBars: false, 
         replacePingBarWithText: false,
@@ -276,34 +434,81 @@ const defaultConfig = {
         blurMode: 'none'
     },
     liveQueue: {
-        enabled: false,
-        keyword: '!join',
-        limit: 20,
-        streamerNick: '',
-        autoReply: false
+        enabled: false, 
+        keyword: '!join', 
+        limit: 10, 
+        streamerNick: '', 
+        autoReply: false, 
+        promoEnabled: false,
+        // Uso de string dupla \\n para forçar os caracteres a renderizarem visivelmente no painel HTML
+        promoMessage: '`[AO VIVO]` *Venham jogar e participar da live!*\nDigite a `palavra-chave` no chat para entrar na fila.\nAssista em: https://www.youtube.com/@Cerberus-BR'
     }
 };
 
+// Renomeação Crítica: Sandbox de Configuração isolado do sistema base
 const dataPath = path.join(__dirname, 'cerberus_data.json');
-const configPath = path.join(__dirname, 'config.json');
+const configPath = path.join(__dirname, 'cerberus_config.json');
+const rankingsPath = path.join(__dirname, 'cerberus_rankings.json');
 
-const CURRENT_VERSION = "1.8.3";
+const CURRENT_VERSION = "1.9.0";
 let runtimeConfig = null;
+let fullConfigCache = null;
+
+// Gestão de Estado Centralizada (RAM Only)
+window.CerberusState = {
+    liveMasterOn: false,
+    promoBotInterval: null,
+    replyQueue: [],
+    menuIsHovered: false,
+    menuHideTimeout: null,
+    menuShowTimeout: null,
+    menuCleanupInterval: null,
+    _healthWarned: false,
+};
 
 module.exports = (FCADE) => {
-    try {
-        runPlugin(FCADE);
-    } catch (e) {
-        console.error("Cerberus Fatal Error:", e);
-    }
+    try { runPlugin(FCADE); } catch (e) { console.error("Cerberus Fatal Error:", e); }
 };
 
-// ==================== AUDIO SYNTH (Pop Sound) ====================
+// ==================== EXTRATOR DE GAMEID (via DOM) ====================
+function isRankedChannel() {
+    return !!document.querySelector('.channelInfo .rankedWrapper');
+}
+
+function getActiveGameId(FCADE) {
+    try {
+        // Rankings só existem em canais rankeados
+        if (!isRankedChannel()) return null;
+
+        // Estratégia 1: Elemento com title="Rom name" na channelInfo
+        const romNameEl = document.querySelector('.channelInfo .name[title="Rom name"]');
+        if (romNameEl?.textContent?.trim()) {
+            return romNameEl.textContent.trim();
+        }
+
+        // Estratégia 2: Extrair do link de replays/rankings
+        const gameLink = document.querySelector('.channelInfo a.link[href*="/game/"]');
+        if (gameLink) {
+            const match = gameLink.href.match(/\/game\/([^/]+)\//);
+            if (match?.[1]) return match[1];
+        }
+
+        return null;
+    } catch(e) {
+        console.debug('[Cerberus] getActiveGameId error:', e);
+        return null;
+    }
+}
+
+// ==================== AUDIO SYNTH ====================
+let _popAudioCtx = null;
 function playPopSound() {
     try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        if (!_popAudioCtx) _popAudioCtx = new AudioContextClass();
+        const ctx = _popAudioCtx;
+        if (ctx.state === 'suspended') ctx.resume();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         
@@ -319,14 +524,217 @@ function playPopSound() {
         
         osc.start();
         osc.stop(ctx.currentTime + 0.1);
-    } catch(e) {}
+    } catch(e) { console.debug('[Cerberus] Audio error:', e.message); }
 }
 
-// ==================== GESTÃO DE ESTADO & CACHE ====================
+// ==================== GESTÃO DE RANKINGS ====================
+const RankCache = {
+    data: {}, 
+    isSyncing: false,
+    _abortController: null,
+
+    load() {
+        const data = safeLoadJSON(rankingsPath, null);
+        this.data = data || {};
+    },
+    save() {
+        atomicWriteJSON(rankingsPath, this.data)
+            .catch(e => console.debug('[Cerberus] Rank save error:', e));
+    },
+    cancelSync() {
+        if (this._abortController) {
+            this._abortController.abort();
+        }
+    },
+    _evictOldEntries(maxGames) {
+        maxGames = maxGames || 5;
+        const entries = Object.entries(this.data);
+        if (entries.length <= maxGames) return;
+        entries.sort(function(a, b) { return (b[1].lastUpdate || 0) - (a[1].lastUpdate || 0); });
+        entries.slice(maxGames).forEach(function(entry) { delete this.data[entry[0]]; }.bind(this));
+    },
+    getRank(gameId, username) {
+        if (!gameId || !username || !this.data[gameId]) return null;
+        return this.data[gameId].players[username.toLowerCase()] || null;
+    },
+    async syncRankings(gameId) {
+        if (!gameId) return;
+        
+        const lastSync = this.data[gameId]?.lastUpdate || 0;
+        const cooldownMs = 30 * 60 * 1000;
+        
+        if (Date.now() - lastSync < cooldownMs) {
+            const remaining = Math.ceil((cooldownMs - (Date.now() - lastSync)) / 60000);
+            console.warn(`⏳ [Cerberus Rank] Bloqueio de segurança ativo. Tente novamente em ${remaining} minutos.`);
+            return;
+        }
+
+        if (this.isSyncing) return;
+        this.isSyncing = true;
+
+        this._abortController = new AbortController();
+        const signal = this._abortController.signal;
+
+        const btn = document.getElementById('cerberusSyncBtn');
+        if (btn) {
+            btn.classList.add('syncing');
+            btn.innerHTML = '<span class="cerb-spin-icon"></span><span class="cerb-sync-progress">0/' + (ConfigManager.getSetting('rankings.limit') || 100) + '</span>';
+            btn.title = t('sync.clickCancel');
+        }
+
+        const initialGameId = gameId;
+        const targetLimit = ConfigManager.getSetting('rankings.limit') || 100;
+        const targetCountry = (ConfigManager.getSetting('rankings.country') || '').toUpperCase().trim();
+        
+        console.log(`🔄 [Cerberus Rank] Fetching Top ${targetLimit} for ${initialGameId} ${targetCountry ? '('+targetCountry+')' : '(Global)'}...`);
+        
+        const limitPerPage = 100;
+        let offset = 0;
+        let validPlayersFound = 0;
+        let pagesFetched = 0;
+        const maxPagesSafeguard = 50; 
+        const newCache = {};
+
+        while (validPlayersFound < targetLimit) {
+            try {
+                if (signal.aborted) { console.log('🛑 [Cerberus Rank] Sync cancelled.'); break; }
+
+                const currentGameId = getActiveGameId(window.CerberusFCADE);
+                if (currentGameId !== initialGameId) { console.log('🛑 [Cerberus Rank] Channel changed, aborting.'); break; }
+
+                if (pagesFetched >= maxPagesSafeguard) {
+                    console.warn(`🛑 [Cerberus Rank] Safety limit reached.`);
+                    break;
+                }
+
+                const res = await fetch('https://web.fightcade.com/api/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal,
+                    body: JSON.stringify({
+                        req: "searchrankings",
+                        gameid: initialGameId,
+                        limit: limitPerPage,
+                        offset: offset,
+                        byElo: true,
+                        recent: true
+                    })
+                });
+
+                if (!res.ok) {
+                    console.warn(`⚠️ [Cerberus Rank] HTTP ${res.status}. Parando extração.`);
+                    break;
+                }
+
+                const data = await res.json();
+                const players = data?.results?.results || [];
+                
+                if (players.length === 0) break;
+                pagesFetched++;
+
+                players.forEach((p) => {
+                    if (validPlayersFound >= targetLimit) return;
+                    if (!p.name) return;
+
+                    let shouldAdd = false;
+                    if (targetCountry !== '') {
+                        if (p.country && p.country.iso_code && p.country.iso_code.toUpperCase() === targetCountry) {
+                            shouldAdd = true;
+                        }
+                    } else {
+                        shouldAdd = true;
+                    }
+
+                    if (shouldAdd) {
+                        validPlayersFound++;
+                        newCache[p.name.toLowerCase()] = validPlayersFound; 
+                    }
+                });
+
+                if (players.length < limitPerPage) break; 
+                if (validPlayersFound >= targetLimit) break; 
+
+                offset += limitPerPage;
+                if (btn) {
+                    const p = btn.querySelector('.cerb-sync-progress');
+                    if (p) p.textContent = validPlayersFound + '/' + targetLimit;
+                }
+
+                await new Promise(function(resolve) {
+                    const timeout = setTimeout(resolve, 3000);
+                    signal.addEventListener('abort', function() { clearTimeout(timeout); resolve(); }, { once: true });
+                });
+
+            } catch (e) {
+                if (e.name === 'AbortError') { console.log('🛑 [Cerberus Rank] Sync aborted.'); break; }
+                console.error('❌ [Cerberus Rank] API error:', e.message);
+                break;
+            }
+        }
+
+        if (Object.keys(newCache).length > 0 && !signal.aborted) {
+            this.data[initialGameId] = {
+                lastUpdate: Date.now(),
+                players: newCache,
+                filter: { country: targetCountry, limit: targetLimit }
+            };
+            this._evictOldEntries();
+            this.save();
+            console.log(`✅ [Cerberus Rank] Done. ${Object.keys(newCache).length} players saved for ${initialGameId}.`);
+        }
+
+        this.isSyncing = false;
+        this._abortController = null;
+
+        if (btn) {
+            btn.classList.remove('syncing');
+            btn.innerHTML = '🔄';
+            const lastSyncNow = this.data[initialGameId]?.lastUpdate || 0;
+            if (Date.now() - lastSyncNow < cooldownMs) {
+                btn.style.opacity = '0.3';
+                btn.style.cursor = 'not-allowed';
+                btn.title = t('sync.wait30');
+            } else {
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btn.title = t('sync.rankingsBtn');
+            }
+        }
+
+        if (window.CerberusFCADE && runtimeConfig && !signal.aborted) {
+            const activeGame = getActiveGameId(window.CerberusFCADE);
+            const cfg = runtimeConfig.chatUserInfo;
+            if (cfg && cfg.showNumericRanks && activeGame) {
+                document.querySelectorAll('.message[data-cerberus-processed]').forEach(msg => {
+                    const author = msg.querySelector('span.author');
+                    if (!author) return;
+                    author.querySelectorAll('.cerb-rank-badge').forEach(el => el.remove());
+                    const userKey = normalizeUsername(author.textContent);
+                    if (!userKey) return;
+                    const numericRank = RankCache.getRank(activeGame, userKey);
+                    if (numericRank !== null) {
+                        const badge = document.createElement('span');
+                        badge.className = 'cerb-rank-badge';
+                        Object.assign(badge.style, {
+                            fontSize: '12px', fontWeight: 'normal', color: '#ffd700',
+                            backgroundColor: 'transparent', border: 'none',
+                            padding: '0', marginRight: '5px',
+                            verticalAlign: 'middle', display: 'inline-block'
+                        });
+                        badge.textContent = `🏅${numericRank}`;
+                        author.appendChild(badge);
+                    }
+                });
+            }
+            updateSidebar(window.CerberusFCADE, runtimeConfig);
+        }
+    }
+};
+
+// ==================== GESTÃO DE ESTADO (CerberusData) ====================
 function invalidateCountryFilterCache() {
     unfilterAllMessages();
     unfilterAllUsers();
-    
     if (window.CerberusFCADE && runtimeConfig) {
         updateChat(window.CerberusFCADE, runtimeConfig);
         updateSidebar(window.CerberusFCADE, runtimeConfig);
@@ -334,6 +742,52 @@ function invalidateCountryFilterCache() {
 }
 
 let dataSaveTimeout = null;
+
+// Garantir save síncrono ao fechar o app + cleanup de recursos
+window.addEventListener('beforeunload', () => {
+    clearTimeout(dataSaveTimeout);
+    clearTimeout(configSaveTimeout);
+
+    // Cancel ongoing sync
+    if (RankCache._abortController) RankCache._abortController.abort();
+
+    // Clean up intervals
+    if (mainLoopInterval) clearInterval(mainLoopInterval);
+    if (replyQueueInterval) clearInterval(replyQueueInterval);
+    if (window.CerberusState.promoBotInterval) clearInterval(window.CerberusState.promoBotInterval);
+    if (window.CerberusState.menuCleanupInterval) clearInterval(window.CerberusState.menuCleanupInterval);
+
+    // Clean up observer
+    if (chatObserver) { chatObserver.disconnect(); chatObserver = null; }
+
+    // Clean up AudioContext
+    if (_popAudioCtx) { try { _popAudioCtx.close(); } catch(e) {} }
+
+    // Sync save data (last resort)
+    try {
+        const dataObj = {
+            allowedCountries: CerberusData.allowedCountries,
+            positive: [...CerberusData.positive],
+            negative: [...CerberusData.negative],
+            selectedTheme: CerberusData.selectedTheme,
+            lastUpdateCheck: CerberusData.lastUpdateCheck,
+            latestVersion: CerberusData.latestVersion,
+            liveQueue: CerberusData.liveQueue,
+            queueTimestamp: CerberusData.queueTimestamp,
+            lastUpdated: new Date().toISOString()
+        };
+        try { fs.copyFileSync(dataPath, dataPath + '.bak'); } catch(e) {}
+        fs.writeFileSync(dataPath, JSON.stringify(dataObj, null, 2), 'utf8');
+    } catch(e) { console.debug('[Cerberus] beforeunload data save error:', e); }
+    try {
+        if (runtimeConfig) {
+            if (!fullConfigCache) fullConfigCache = {};
+            fullConfigCache.cerberus = runtimeConfig;
+            try { fs.copyFileSync(configPath, configPath + '.bak'); } catch(e) {}
+            fs.writeFileSync(configPath, JSON.stringify(fullConfigCache, null, 2), 'utf8');
+        }
+    } catch(e) { console.debug('[Cerberus] beforeunload config save error:', e); }
+});
 const CerberusData = {
     allowedCountries: Object.keys(AVAILABLE_COUNTRIES), 
     positive: new Set(),
@@ -342,70 +796,44 @@ const CerberusData = {
     lastUpdateCheck: 0,
     latestVersion: null,
     liveQueue: [], 
+    queueTimestamp: 0, 
 
     load() {
-        let rawData = null;
-        try {
-            if (fs.existsSync(dataPath)) {
-                rawData = fs.readFileSync(dataPath, 'utf8');
-            }
-        } catch (e) {}
-
-        if (rawData) {
-            try {
-                const data = JSON.parse(rawData);
-                this.allowedCountries = data.allowedCountries || Object.keys(AVAILABLE_COUNTRIES);
-                this.positive = new Set(data.positive || []);
-                this.negative = new Set(data.negative || []);
-                this.selectedTheme = data.selectedTheme || 'bretema';
-                this.lastUpdateCheck = data.lastUpdateCheck || 0;
-                this.latestVersion = data.latestVersion || null;
+        const data = safeLoadJSON(dataPath, null);
+        if (data) {
+            this.allowedCountries = data.allowedCountries || Object.keys(AVAILABLE_COUNTRIES);
+            this.positive = new Set(data.positive || []);
+            this.negative = new Set(data.negative || []);
+            this.selectedTheme = data.selectedTheme || 'bretema';
+            this.lastUpdateCheck = data.lastUpdateCheck || 0;
+            this.latestVersion = data.latestVersion || null;
+            
+            this.queueTimestamp = data.queueTimestamp || 0;
+            if (Date.now() - this.queueTimestamp > 43200000) {
+                this.liveQueue = []; 
+                this.queueTimestamp = Date.now();
+            } else {
                 this.liveQueue = data.liveQueue || [];
-                
-                fs.writeFileSync(dataPath + '.bak', rawData, 'utf8');
-            } catch (error) {
-                try {
-                    if (fs.existsSync(dataPath + '.bak')) {
-                        const backupData = JSON.parse(fs.readFileSync(dataPath + '.bak', 'utf8'));
-                        this.allowedCountries = backupData.allowedCountries || Object.keys(AVAILABLE_COUNTRIES);
-                        this.positive = new Set(backupData.positive || []);
-                        this.negative = new Set(backupData.negative || []);
-                        this.selectedTheme = backupData.selectedTheme || 'bretema';
-                        this.lastUpdateCheck = backupData.lastUpdateCheck || 0;
-                        this.latestVersion = backupData.latestVersion || null;
-                        this.liveQueue = backupData.liveQueue || [];
-                        return;
-                    }
-                } catch(errBak) {}
-                this.save();
             }
-        } else {
-            this.save();
         }
     },
-
     save() {
         clearTimeout(dataSaveTimeout);
         dataSaveTimeout = setTimeout(() => {
-            try {
-                const dataToSave = {
-                    allowedCountries: this.allowedCountries,
-                    positive: [...this.positive],
-                    negative: [...this.negative],
-                    selectedTheme: this.selectedTheme,
-                    lastUpdateCheck: this.lastUpdateCheck,
-                    latestVersion: this.latestVersion,
-                    liveQueue: this.liveQueue,
-                    lastUpdated: new Date().toISOString()
-                };
-                const jsonStr = JSON.stringify(dataToSave, null, 2);
-                fs.writeFileSync(dataPath, jsonStr, 'utf8');
-                fs.writeFileSync(dataPath + '.bak', jsonStr, 'utf8');
-            } catch (error) {}
-        }, 500); 
+            atomicWriteJSON(dataPath, {
+                allowedCountries: this.allowedCountries,
+                positive: [...this.positive],
+                negative: [...this.negative],
+                selectedTheme: this.selectedTheme,
+                lastUpdateCheck: this.lastUpdateCheck,
+                latestVersion: this.latestVersion,
+                liveQueue: this.liveQueue,
+                queueTimestamp: this.queueTimestamp,
+                lastUpdated: new Date().toISOString()
+            }).catch(e => console.debug('[Cerberus] Data save error:', e));
+        }, 100);
     },
 
-    // --- Queue Management ---
     addQueue(playerName) {
         if (!playerName || playerName.trim() === '') return false;
         const name = playerName.trim();
@@ -416,18 +844,26 @@ const CerberusData = {
         if (this.isNegative(name)) return false; 
         
         this.liveQueue.push({ name: name, played: false });
+        this.queueTimestamp = Date.now();
         this.save();
         renderQueueList();
         return true;
     },
     removeQueue(index) {
+        if (index < 0 || index >= this.liveQueue.length) return;
         this.liveQueue.splice(index, 1);
+        this.queueTimestamp = Date.now();
         this.save();
         renderQueueList();
     },
     togglePlayedQueue(index) {
         if (this.liveQueue[index]) {
             this.liveQueue[index].played = !this.liveQueue[index].played;
+            if (this.liveQueue[index].played) {
+                const item = this.liveQueue.splice(index, 1)[0];
+                this.liveQueue.push(item);
+            }
+            this.queueTimestamp = Date.now();
             this.save();
             renderQueueList();
         }
@@ -436,20 +872,19 @@ const CerberusData = {
         if (index < 0 || index >= this.liveQueue.length) return;
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= this.liveQueue.length) return;
-        
         const temp = this.liveQueue[index];
         this.liveQueue[index] = this.liveQueue[newIndex];
         this.liveQueue[newIndex] = temp;
+        this.queueTimestamp = Date.now();
         this.save();
         renderQueueList();
     },
-    clearQueue() {
-        this.liveQueue = [];
-        this.save();
-        renderQueueList();
+    clearQueue() { 
+        this.liveQueue = []; 
+        this.queueTimestamp = Date.now();
+        this.save(); 
+        renderQueueList(); 
     },
-    
-    // --- Existing Data Methods ---
     addCountry(code) {
         if (!code) return;
         code = code.toUpperCase();
@@ -469,91 +904,41 @@ const CerberusData = {
         if (!code) return true;
         return this.allowedCountries.includes(code.toUpperCase());
     },
-    allowAllCountries() {
-        this.allowedCountries = Object.keys(AVAILABLE_COUNTRIES);
-        this.save();
-        invalidateCountryFilterCache();
-    },
-    clearAllCountries() {
-        this.allowedCountries = [];
-        this.save();
-        invalidateCountryFilterCache();
-    },
-    markPositive(userId) {
-        this.positive.add(userId);
-        this.negative.delete(userId);
-        this.save();
-    },
-    markNegative(userId) {
-        this.negative.add(userId);
-        this.positive.delete(userId);
-        this.save();
-    },
-    clearReputation(userId) {
-        this.positive.delete(userId);
-        this.negative.delete(userId);
-        this.save();
-    },
+    allowAllCountries() { this.allowedCountries = Object.keys(AVAILABLE_COUNTRIES); this.save(); invalidateCountryFilterCache(); },
+    clearAllCountries() { this.allowedCountries = []; this.save(); invalidateCountryFilterCache(); },
+    markPositive(userId) { this.positive.add(userId); this.negative.delete(userId); this.save(); },
+    markNegative(userId) { this.negative.add(userId); this.positive.delete(userId); this.save(); },
+    clearReputation(userId) { this.positive.delete(userId); this.negative.delete(userId); this.save(); },
     isPositive(userId) { return this.positive.has(userId); },
     isNegative(userId) { return this.negative.has(userId); },
-    setTheme(theme) {
-        this.selectedTheme = theme;
-        this.save();
-    }
+    setTheme(theme) { this.selectedTheme = theme; this.save(); }
 };
 
 let configSaveTimeout = null;
 const ConfigManager = {
     loadConfig() {
-        let rawConfig = null;
-        try {
-            if (fs.existsSync(configPath)) {
-                rawConfig = fs.readFileSync(configPath, 'utf8');
-            }
-        } catch (e) {}
-
-        if (rawConfig) {
-            try {
-                const fullConfig = JSON.parse(rawConfig);
-                runtimeConfig = { ...defaultConfig, ...(fullConfig.cerberus || {}) };
-                runtimeConfig.autoJoin = { ...defaultConfig.autoJoin, ...(runtimeConfig.autoJoin || {}) };
-                runtimeConfig.countryFilter = { ...defaultConfig.countryFilter, ...(runtimeConfig.countryFilter || {}) };
-                runtimeConfig.chatUserInfo = { ...defaultConfig.chatUserInfo, ...(runtimeConfig.chatUserInfo || {}) };
-                runtimeConfig.liveQueue = { ...defaultConfig.liveQueue, ...(runtimeConfig.liveQueue || {}) };
-                fs.writeFileSync(configPath + '.bak', rawConfig, 'utf8');
-            } catch (error) {
-                try {
-                    if (fs.existsSync(configPath + '.bak')) {
-                        const backupConfig = JSON.parse(fs.readFileSync(configPath + '.bak', 'utf8'));
-                        runtimeConfig = { ...defaultConfig, ...(backupConfig.cerberus || {}) };
-                        return;
-                    }
-                } catch(errBak) {}
-                runtimeConfig = JSON.parse(JSON.stringify(defaultConfig));
-                this.saveConfig();
-            }
-        } else {
+        const fullConfig = safeLoadJSON(configPath, null);
+        if (fullConfig) {
+            fullConfigCache = fullConfig;
+            runtimeConfig = { ...defaultConfig, ...(fullConfig.cerberus || {}) };
+            runtimeConfig.chatUserInfo = { ...defaultConfig.chatUserInfo, ...(runtimeConfig.chatUserInfo || {}) };
+            runtimeConfig.liveQueue = { ...defaultConfig.liveQueue, ...(runtimeConfig.liveQueue || {}) };
+            runtimeConfig.rankings = { ...defaultConfig.rankings, ...(runtimeConfig.rankings || {}) };
+        } else { 
             runtimeConfig = JSON.parse(JSON.stringify(defaultConfig));
-            this.saveConfig();
+            fullConfigCache = { cerberus: runtimeConfig };
+            this.saveConfig(); 
         }
     },
-
     saveConfig() {
         clearTimeout(configSaveTimeout);
         configSaveTimeout = setTimeout(() => {
-            try {
-                let fullConfig = {};
-                if (fs.existsSync(configPath)) {
-                    try { fullConfig = JSON.parse(fs.readFileSync(configPath, 'utf8')); } catch(e){}
-                }
-                fullConfig.cerberus = runtimeConfig;
-                const jsonStr = JSON.stringify(fullConfig, null, 2);
-                fs.writeFileSync(configPath, jsonStr, 'utf8');
-                fs.writeFileSync(configPath + '.bak', jsonStr, 'utf8');
-            } catch (error) {}
-        }, 500);
+            if (!fullConfigCache) fullConfigCache = {};
+            fullConfigCache.cerberus = runtimeConfig;
+            atomicWriteJSON(configPath, fullConfigCache)
+                .catch(e => console.error('❌ [Cerberus] Config save failed:', e));
+        }, 100);
     },
-
     updateSetting(pathStr, value) {
         const keys = pathStr.split('.');
         let current = runtimeConfig;
@@ -566,9 +951,8 @@ const ConfigManager = {
 
         if (pathStr.startsWith('chatUserInfo.') && pathStr !== 'chatUserInfo.replacePingBarWithText') {
             document.querySelectorAll('.message').forEach(msg => {
-                msg.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext').forEach(el => el.remove());
+                msg.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
                 msg.removeAttribute('data-cerberus-processed');
-                msg.removeAttribute('data-cerberus-retries');
             });
         }
         
@@ -576,12 +960,10 @@ const ConfigManager = {
             invalidateCountryFilterCache();
         }
         
-        // Destruição ou criação dinâmica da UI da Fila caso alterado no painel
         if (pathStr === 'liveQueue.enabled') {
             injectUIEnhancements();
         }
     },
-
     getSetting(pathStr) {
         const keys = pathStr.split('.');
         let current = runtimeConfig;
@@ -593,7 +975,6 @@ const ConfigManager = {
     }
 };
 
-// ==================== UPDATER SYSTEM ====================
 function isNewerVersion(latest, current) {
     if (!latest || !current) return false;
     const l = latest.replace('v', '').split('.').map(Number);
@@ -621,28 +1002,15 @@ async function checkForUpdates() {
                     CerberusData.save();
                 }
             }
-        } catch (e) {}
+        } catch (e) { console.debug('[Cerberus] Update check error:', e); }
     }
 }
 
-// ==================== TRADUTOR (i18n) ====================
 function t(keyPath) {
     const lang = ConfigManager.getSetting('language') || 'en';
     const keys = keyPath.split('.');
-    
     let result = Locales[lang];
-    for (let k of keys) {
-        if (result === undefined) break;
-        result = result[k];
-    }
-    
-    if (result === undefined && lang !== 'en') {
-        result = Locales['en'];
-        for (let k of keys) {
-            if (result === undefined) return keyPath;
-            result = result[k];
-        }
-    }
+    for (let k of keys) { if (result === undefined) break; result = result[k]; }
     return result || keyPath;
 }
 
@@ -671,7 +1039,7 @@ window.changeCerberusLanguage = function(lang) {
     const menu = document.getElementById('cerbGlobalMenu');
     if (menu) menu.remove();
     injectGlobalMenu();
-    injectButtonIntoHeader();
+    injectHeaderButtons(window.CerberusFCADE);
     
     const queuePanel = document.getElementById('cerberusQueueWindow');
     if (queuePanel) {
@@ -682,11 +1050,7 @@ window.changeCerberusLanguage = function(lang) {
     }
 };
 
-function normalizeUsername(username) {
-    if (!username) return '';
-    return username.replace(/\s+/g, ' ').trim();
-}
-
+function normalizeUsername(username) { return !username ? '' : username.replace(/\s+/g, ' ').trim(); }
 function extractMinPing(title) {
     if (!title) return null;
     const match = title.match(/(\d+)~(\d+)/);
@@ -694,10 +1058,7 @@ function extractMinPing(title) {
     const single = title.match(/(\d+)/);
     return single ? parseInt(single[1]) : null;
 }
-
-function getMinPing(userFound) {
-    return extractMinPing(userFound?.pingTitle);
-}
+function getMinPing(userFound) { return extractMinPing(userFound?.pingTitle); }
 
 function unfilterAllMessages() {
     document.querySelectorAll('[data-cerberus-hidden]').forEach(msg => {
@@ -724,16 +1085,38 @@ function executeChatCommand(command) {
     inputEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }));
 }
 
-CerberusData.load();
-ConfigManager.loadConfig();
+// MACRO EXECUTOR
+function executeChatMacro(lines) {
+    const inputEl = document.querySelector('.chatInput input.input');
+    if (!inputEl || !lines || lines.length === 0) return;
+    
+    const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+    const currentVal = inputEl.value; 
 
-window.CerberusData = CerberusData;
-window.ConfigManager = ConfigManager;
-window.cerbReplyQueue = [];
+    let i = 0;
+    function sendNext() {
+        if (i < lines.length) {
+            nativeSetter.call(inputEl, lines[i]);
+            inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+            inputEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true }));
+            i++;
+            setTimeout(sendNext, 250); 
+        } else {
+            setTimeout(() => {
+                nativeSetter.call(inputEl, currentVal);
+                inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+            }, 50);
+        }
+    }
+    sendNext();
+}
 
 // ==================== AUTO JOIN ====================
 const connectToChannelWhenAvailable = (FCADE, autoJoinConfig) => {
+    let attempts = 0;
     const checkInterval = setInterval(() => {
+        attempts++;
+        if (attempts > 120) { clearInterval(checkInterval); return; } // timeout 60s
         if (FCADE.initializingApp === false) {
             clearInterval(checkInterval);
             if (autoJoinConfig?.channelId) {
@@ -749,10 +1132,17 @@ const connectToChannelWhenAvailable = (FCADE, autoJoinConfig) => {
 };
 
 // ==================== PLUGIN MAIN LOOP ====================
+let mainLoopInterval = null;
+let replyQueueInterval = null;
 
 const runPlugin = (FCADE) => {
     console.log(`🐺 Cerberus v${CURRENT_VERSION} (Fightcade Plus) Inicializado`);
     window.CerberusFCADE = FCADE; 
+
+    CerberusData.load();
+    ConfigManager.loadConfig();
+    RankCache.load();
+    window.CerberusState.replyQueue = [];
 
     checkForUpdates();
 
@@ -763,64 +1153,161 @@ const runPlugin = (FCADE) => {
     injectStyles();
     injectGlobalMenu();
     createControlPanel();
+    
+    if (runtimeConfig.liveQueue?.enabled === true) {
+        createQueuePanel();
+    }
 
-    setInterval(() => {
+    if (mainLoopInterval) clearInterval(mainLoopInterval);
+    mainLoopInterval = setInterval(() => {
         try {
-            injectButtonIntoHeader();
+            injectHeaderButtons(FCADE);
             injectUIEnhancements(); 
             maintainChatObserver(FCADE, runtimeConfig.chatUserInfo);
             updateSidebar(FCADE, runtimeConfig);
             updateChat(FCADE, runtimeConfig);
+            domHealthCheck();
 
             if (runtimeConfig.chatUserInfo?.unlockColorThemes !== false) {
                 unlockColorThemes();
             }
-        } catch (err) {}
+        } catch (err) { console.debug('[Cerberus] Main loop error:', err); }
     }, 1000);
     
-    // Bot Aggregator (Input Restorer)
-    setInterval(() => {
-        if (window.cerbReplyQueue.length > 0 && ConfigManager.getSetting('liveQueue.autoReply')) {
-            const inputEl = document.querySelector('.chatInput input.input');
-            if (!inputEl) return;
-
-            const currentVal = inputEl.value; // Snapshot do texto do streamer
-            const names = window.cerbReplyQueue.join(', ');
-            window.cerbReplyQueue = []; // Limpa fila local
+    // BOT AGREGADOR DE FILA (!join)
+    if (replyQueueInterval) clearInterval(replyQueueInterval);
+    replyQueueInterval = setInterval(() => {
+        if (window.CerberusState.liveMasterOn && window.CerberusState.replyQueue.length > 0 && ConfigManager.getSetting('liveQueue.autoReply')) {
+            const names = window.CerberusState.replyQueue.join(', ');
+            window.CerberusState.replyQueue = []; 
             
-            const msg = `[Fila] Adicionado(s): ${names}`;
+            const msg1 = `\`[Fila] Bem-vindo(s): ${names}\``;
+            let queueStr = CerberusData.liveQueue.filter(p => !p.played).map((p, i) => `${i+1}. ${p.name}`).join(', ');
             
-            const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-            nativeSetter.call(inputEl, msg);
-            inputEl.dispatchEvent(new Event('input', { bubbles: true }));
-            inputEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }));
-            
-            // Restaura o input em 50ms para evitar Input Hijacking
-            setTimeout(() => {
-                nativeSetter.call(inputEl, currentVal);
-                inputEl.dispatchEvent(new Event('input', { bubbles: true }));
-            }, 50);
+            if (queueStr) {
+                const msg2 = `*Fila atual:* ${queueStr}`;
+                executeChatMacro([msg1, msg2]); 
+            } else {
+                executeChatMacro([msg1]);
+            }
+        } else {
+            window.CerberusState.replyQueue = []; 
         }
     }, 15000);
 
     setTimeout(() => applyTheme(CerberusData.selectedTheme), 2500);
+
+    // Safety cleanup: menu flutuante que fica preso visível
+    window.CerberusState.menuCleanupInterval = setInterval(() => {
+        const menu = document.getElementById('cerbGlobalMenu');
+        if (menu && menu.classList.contains('visible') && !window.CerberusState.menuIsHovered) {
+            menu.classList.remove('visible');
+        }
+    }, 3000);
 };
+
+// ==================== BOT PROMOCIONAL (10 MIN) ====================
+function triggerPromoBot() {
+    if (!window.CerberusState.liveMasterOn) return; 
+    if (!ConfigManager.getSetting('liveQueue.promoEnabled')) return; 
+    
+    const msg = ConfigManager.getSetting('liveQueue.promoMessage');
+    if (!msg || msg.trim() === '') return;
+    
+    const lines = msg.split(/\\n|\n/);
+    executeChatMacro(lines);
+}
+
+// ==================== HEADER BUTTONS & SYNC ====================
+function injectHeaderButtons(FCADE) {
+    const headerTitle = document.querySelector('.usersOnlineTitle');
+    if (!headerTitle) return;
+
+    headerTitle.style.display = 'flex';
+    headerTitle.style.alignItems = 'center';
+
+    if (!headerTitle.querySelector('#cerberusBtn')) {
+        const btn = document.createElement('span');
+        btn.id = 'cerberusBtn';
+        btn.textContent = '⚙️';
+        btn.title = t('btnTitle');
+        Object.assign(btn.style, { cursor: 'pointer', fontSize: '16px', marginLeft: 'auto', marginRight: '8px', opacity: '0.8' });
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            const panel = document.getElementById('cerberusPanel');
+            if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+        };
+        headerTitle.appendChild(btn);
+    }
+
+    const showRankBtn = ConfigManager.getSetting('chatUserInfo.showNumericRanks') === true;
+    const existingSyncBtn = headerTitle.querySelector('#cerberusSyncBtn');
+    
+    const gameId = getActiveGameId(FCADE);
+    const lastSync = RankCache.data[gameId]?.lastUpdate || 0;
+    const isLocked = (Date.now() - lastSync < 30 * 60 * 1000);
+
+    if (showRankBtn) {
+        if (!existingSyncBtn) {
+            const syncBtn = document.createElement('button');
+            syncBtn.id = 'cerberusSyncBtn';
+            syncBtn.textContent = '🔄';
+            
+            Object.assign(syncBtn.style, {
+                cursor: 'pointer', fontSize: '15px', background: 'transparent', 
+                border: 'none', borderRadius: '50%',
+                width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#fff', outline: 'none', padding: '0', marginRight: '5px',
+                transition: 'background 0.2s'
+            });
+
+            if (isLocked) {
+                syncBtn.style.opacity = '0.3';
+                syncBtn.style.cursor = 'not-allowed';
+                syncBtn.title = t('sync.wait30');
+            } else {
+                syncBtn.title = t('sync.rankingsBtn');
+            }
+
+            syncBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (RankCache.isSyncing) {
+                    RankCache.cancelSync();
+                } else {
+                    const currentGameId = getActiveGameId(FCADE);
+                    if (currentGameId) RankCache.syncRankings(currentGameId);
+                }
+            };
+            headerTitle.insertBefore(syncBtn, headerTitle.querySelector('#cerberusBtn'));
+        } else {
+            if (isLocked && !RankCache.isSyncing) {
+                existingSyncBtn.style.opacity = '0.3';
+                existingSyncBtn.style.cursor = 'not-allowed';
+                existingSyncBtn.title = t('sync.wait30');
+            } else if (!isLocked && !RankCache.isSyncing) {
+                existingSyncBtn.style.opacity = '1';
+                existingSyncBtn.style.cursor = 'pointer';
+                existingSyncBtn.title = t('sync.rankingsBtn');
+            }
+        }
+    } else if (existingSyncBtn) {
+        existingSyncBtn.remove();
+    }
+}
 
 // ==================== UI / FAB INJECTION ====================
 function injectUIEnhancements() {
     const chatWrapper = document.querySelector('.chatWrapper');
     if (!chatWrapper) return;
 
-    // FAB Limpar Chat (Sempre visível)
     if (!document.querySelector('.cerb-clear-chat-fab')) {
         const clearBtn = document.createElement('button');
-        clearBtn.className = 'cerb-clear-chat-fab cerberus-anim-pop';
-        clearBtn.innerHTML = `🧹 ${t('motd.clearChat')}`;
+        clearBtn.className = 'cerb-clear-chat-fab';
+        clearBtn.innerHTML = t('motd.clearChat');
         clearBtn.onclick = () => executeChatCommand('/clear');
         chatWrapper.appendChild(clearBtn);
     }
 
-    // FAB Live Queue (Apenas visível se ativado nas configs)
     const qEnabled = ConfigManager.getSetting('liveQueue.enabled') === true;
     const existingFab = document.querySelector('.cerb-queue-fab');
     const existingWindow = document.getElementById('cerberusQueueWindow');
@@ -828,8 +1315,8 @@ function injectUIEnhancements() {
     if (qEnabled) {
         if (!existingFab) {
             const queueBtn = document.createElement('button');
-            queueBtn.className = 'cerb-queue-fab cerberus-anim-pop';
-            queueBtn.innerHTML = `📝 ${t('motd.queueTitle')}`;
+            queueBtn.className = 'cerb-queue-fab';
+            queueBtn.innerHTML = t('motd.queueTitle');
             queueBtn.onclick = () => {
                 const panel = document.getElementById('cerberusQueueWindow');
                 if (panel) {
@@ -841,17 +1328,15 @@ function injectUIEnhancements() {
         }
         createQueuePanel();
     } else {
-        // Aniquilação Dinâmica de DOM: Destrói interface se desligado
         if (existingFab) existingFab.remove();
         if (existingWindow) existingWindow.remove();
     }
 
-    // Notificação Dinâmica de Atualização
     const motdWrapper = document.querySelector('.messageWrapper.motd');
     if (motdWrapper && CerberusData.latestVersion && isNewerVersion(CerberusData.latestVersion, CURRENT_VERSION)) {
         if (motdWrapper.dataset.cerbUpdateAdded !== "true") {
             const updateNotice = document.createElement('div');
-            updateNotice.className = 'cerb-motd-update-notice cerberus-anim-pop';
+            updateNotice.className = 'cerb-motd-update-notice';
             updateNotice.innerHTML = `🐺 <b>${t('motd.updateAvail')} ${CerberusData.latestVersion}</b> <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/latest" target="_blank" style="color: #4ade80; text-decoration: underline; margin-left: 10px;">Download</a>`;
             const blocksContainer = motdWrapper.querySelector('.blocksContainer');
             if (blocksContainer) blocksContainer.appendChild(updateNotice);
@@ -872,14 +1357,15 @@ function createQueuePanel() {
     panel.innerHTML = `
         <div class="q-header" id="cerberusQueueHeader">
             <span class="q-title">📝 ${t('queue.title')} <small id="cerbQueueCount">(0)</small></span>
-            <button class="q-close" onclick="document.getElementById('cerberusQueueWindow').style.display='none'">×</button>
+            <button class="q-close" id="cerbQueueCloseBtn">×</button>
         </div>
         <div class="q-add-box">
             <input type="text" id="cerbQueueInput" placeholder="${t('queue.inputPh')}">
             <button id="cerbQueueAddBtn">${t('queue.addBtn')}</button>
         </div>
         <div class="q-list" id="cerbQueueList"></div>
-        <div class="q-footer">
+        <div class="q-footer" style="display:flex; justify-content:space-between;">
+            <button id="cerbLiveMasterBtn" class="q-live-btn off">${t('sync.liveOff')}</button>
             <button id="cerbQueueClearBtn" class="q-clear-btn">🧹 ${t('queue.clearBtn')}</button>
         </div>
     `;
@@ -887,11 +1373,37 @@ function createQueuePanel() {
     document.body.appendChild(panel);
     makeDraggable(panel, 'cerberusQueueHeader');
 
-    document.getElementById('cerbQueueAddBtn').onclick = () => {
+    const masterBtn = document.getElementById('cerbLiveMasterBtn');
+    if (window.CerberusState.liveMasterOn) {
+        masterBtn.className = 'q-live-btn on';
+        masterBtn.innerHTML = t('sync.liveOn');
+    }
+
+    masterBtn.addEventListener('click', (e) => {
+        const btn = e.currentTarget;
+        if (btn.classList.contains('off')) {
+            window.CerberusState.liveMasterOn = true;
+            btn.className = 'q-live-btn on';
+            btn.innerHTML = t('sync.liveOn');
+            triggerPromoBot(); 
+            window.CerberusState.promoBotInterval = setInterval(triggerPromoBot, 10 * 60 * 1000);
+        } else {
+            window.CerberusState.liveMasterOn = false;
+            btn.className = 'q-live-btn off';
+            btn.innerHTML = t('sync.liveOff');
+            clearInterval(window.CerberusState.promoBotInterval);
+        }
+    });
+
+    document.getElementById('cerbQueueCloseBtn').addEventListener('click', () => {
+        document.getElementById('cerberusQueueWindow').style.display = 'none';
+    });
+
+    document.getElementById('cerbQueueAddBtn').addEventListener('click', () => {
         const input = document.getElementById('cerbQueueInput');
         CerberusData.addQueue(input.value);
         input.value = '';
-    };
+    });
 
     document.getElementById('cerbQueueInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -900,9 +1412,11 @@ function createQueuePanel() {
         }
     });
 
-    document.getElementById('cerbQueueClearBtn').onclick = () => {
-        CerberusData.clearQueue();
-    };
+    document.getElementById('cerbQueueClearBtn').addEventListener('click', () => {
+        if (CerberusData.liveQueue.length === 0 || confirm(t('sync.confirmClear'))) {
+            CerberusData.clearQueue();
+        }
+    });
 
     renderQueueList();
 }
@@ -923,7 +1437,7 @@ function renderQueueList() {
 
     CerberusData.liveQueue.forEach((player, index) => {
         const item = document.createElement('div');
-        item.className = 'q-item cerberus-anim-pop';
+        item.className = 'q-item';
         
         const nameSpan = document.createElement('span');
         nameSpan.className = 'q-name';
@@ -982,7 +1496,7 @@ function maintainChatObserver(FCADE, cfg) {
             for (let mut of mutations) {
                 if (mut.addedNodes.length > 0) {
                     for (let node of mut.addedNodes) {
-                        if (node.nodeType === 1 && node.classList && node.classList.contains('cerberus-anim-pop')) continue;
+                        if (node.nodeType === 1 && node.classList && node.classList.contains('cerberus-injected-flag')) continue;
                         hasValidNewNodes = true;
                         break;
                     }
@@ -990,13 +1504,13 @@ function maintainChatObserver(FCADE, cfg) {
                 if (hasValidNewNodes) break;
             }
             if (hasValidNewNodes) {
-                try { updateChat(FCADE, cfg); } catch (err) {}
+                try { updateChat(FCADE, cfg); } catch (err) { console.debug('[Cerberus] Chat observer error:', err); }
             }
         });
         
         chatObserver.observe(chatContent, { childList: true, subtree: true });
         
-        try { updateChat(FCADE, cfg); } catch (e) {}
+        try { updateChat(FCADE, cfg); } catch (e) { console.debug('[Cerberus] Initial chat update error:', e); }
     }
 }
 
@@ -1019,14 +1533,14 @@ function injectGlobalMenu() {
     document.body.appendChild(menu);
 
     menu.addEventListener('mouseenter', () => {
-        window.cerbMenuIsHovered = true;
-        clearTimeout(window.cerbMenuHideTimeout);
-        clearTimeout(window.cerbMenuShowTimeout); 
+        window.CerberusState.menuIsHovered = true;
+        clearTimeout(window.CerberusState.menuHideTimeout);
+        clearTimeout(window.CerberusState.menuShowTimeout); 
     });
     
     menu.addEventListener('mouseleave', () => {
-        window.cerbMenuIsHovered = false;
-        window.cerbMenuHideTimeout = setTimeout(() => {
+        window.CerberusState.menuIsHovered = false;
+        window.CerberusState.menuHideTimeout = setTimeout(() => {
             menu.classList.remove('visible');
         }, 200);
     });
@@ -1091,57 +1605,6 @@ function injectGlobalMenu() {
     };
 }
 
-function injectButtonIntoHeader() {
-    const headerTitle = document.querySelector('.usersOnlineTitle');
-    
-    if (headerTitle && !headerTitle.querySelector('#cerberusBtn')) {
-        const oldBtn = document.getElementById('cerberusBtn');
-        if (oldBtn) oldBtn.remove();
-
-        headerTitle.style.display = 'flex';
-        headerTitle.style.alignItems = 'center';
-
-        const btn = document.createElement('span');
-        btn.id = 'cerberusBtn';
-        btn.textContent = '⚙️';
-        btn.title = t('btnTitle');
-        
-        Object.assign(btn.style, {
-            cursor: 'pointer',
-            fontSize: '16px',
-            marginLeft: 'auto',
-            marginRight: '10px',
-            opacity: '0.8',
-            transition: 'all 0.2s'
-        });
-
-        btn.onmouseenter = () => {
-            btn.style.opacity = '1';
-            btn.style.transform = 'scale(1.2) rotate(30deg)';
-        };
-        btn.onmouseleave = () => {
-            btn.style.opacity = '0.8';
-            btn.style.transform = 'scale(1) rotate(0deg)';
-        };
-
-        btn.onclick = (e) => {
-            e.stopPropagation();
-            const panel = document.getElementById('cerberusPanel');
-            if (panel) {
-                if (!panel.style.top) {
-                    panel.style.top = '50%';
-                    panel.style.left = '50%';
-                    panel.style.transform = 'translate(-50%, -50%)';
-                }
-                panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
-                if (panel.style.display === 'flex') updateCountryList();
-            }
-        };
-
-        headerTitle.appendChild(btn);
-    }
-}
-
 // ==================== CORE PROCESSING (CHAT & SIDEBAR) ====================
 
 const updateChat = (FCADE, configFull) => {
@@ -1160,18 +1623,8 @@ const updateChat = (FCADE, configFull) => {
         else chatContent.classList.remove('blur-all');
     }
 
+    const activeGameId = getActiveGameId(FCADE);
     const newMessages = document.querySelectorAll('.message:not([data-cerberus-processed])');
-    
-    // SMART BATCHING: Ativado se o Vue recriar massivamente o DOM (limite das 300 msgs)
-    const isBatchUpdate = newMessages.length > 5;
-
-    if (isBatchUpdate) {
-        document.body.classList.add('cerb-mass-update');
-        clearTimeout(window.cerbMassUpdateTimeout);
-        window.cerbMassUpdateTimeout = setTimeout(() => {
-            document.body.classList.remove('cerb-mass-update');
-        }, 150);
-    }
 
     newMessages.forEach(msg => {
         try {
@@ -1194,8 +1647,11 @@ const updateChat = (FCADE, configFull) => {
                 return;
             } 
 
-            // Live Queue Auto-Parser
-            if (queueCfg && queueCfg.enabled && queueCfg.keyword) {
+            // Limpeza Estrita
+            author.parentElement.querySelectorAll('.cerberus-injected-status').forEach(el => el.remove());
+            author.querySelectorAll('.cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
+
+            if (queueCfg && queueCfg.enabled && queueCfg.keyword && window.CerberusState.liveMasterOn) {
                 let msgText = '';
                 msg.querySelectorAll('.blocksContainer .blocks .regular').forEach(span => {
                     msgText += span.textContent;
@@ -1208,8 +1664,8 @@ const updateChat = (FCADE, configFull) => {
                     const wasAdded = CerberusData.addQueue(userKey);
                     if (wasAdded) {
                         playPopSound();
-                        if (!window.cerbReplyQueue) window.cerbReplyQueue = [];
-                        window.cerbReplyQueue.push(userKey);
+                        if (!window.CerberusState.replyQueue) window.CerberusState.replyQueue = [];
+                        window.CerberusState.replyQueue.push(userKey);
                     }
                 }
             }
@@ -1227,12 +1683,29 @@ const updateChat = (FCADE, configFull) => {
             if (user && user.away === false) statusState = 'online';
             else if (user && user.away === true) statusState = 'away';
 
+            // RANK NUMÉRICO INJEÇÃO
+            if (cfg.showNumericRanks && activeGameId) {
+                const numericRank = RankCache.getRank(activeGameId, userKey);
+                if (numericRank !== null) {
+                    const badge = document.createElement('span');
+                    badge.className = 'cerb-rank-badge';
+                    Object.assign(badge.style, {
+                        fontSize: '12px', fontWeight: 'normal', color: '#ffd700',
+                        backgroundColor: 'transparent', border: 'none',
+                        padding: '0', marginRight: '5px',
+                        verticalAlign: 'middle', display: 'inline-block'
+                    });
+                    badge.textContent = `🏅${numericRank}`;
+                    author.appendChild(badge);
+                }
+            }
+
             const elements = {
-                status: cfg.enableStatus ? createStatusElement(statusState, isBatchUpdate) : null,
-                flag: (cfg.enableFlag && user?.country) ? createFlagElement(user.country, isBatchUpdate) : null,
-                rank: (cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle, isBatchUpdate) : null,
-                pingBar: (cfg.enablePingBars && userFound?.pingSrc) ? createPingElement(userFound.pingSrc, userFound.pingTitle, isBatchUpdate) : null,
-                pingText: (cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal, isBatchUpdate) : null
+                status: cfg.enableStatus ? createStatusElement(statusState) : null,
+                flag: (cfg.enableFlag && user?.country) ? createFlagElement(user.country) : null,
+                rank: (cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle) : null,
+                pingBar: (cfg.enablePingBars && userFound?.pingSrc) ? createPingElement(userFound.pingSrc, userFound.pingTitle) : null,
+                pingText: (cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal) : null
             };
 
             if (cfg.enableReputation && userKey !== '<offline>' && !userKey.startsWith('<')) {
@@ -1253,6 +1726,7 @@ const updateChat = (FCADE, configFull) => {
             if (userCountry) msg.dataset.cerberusCountry = userCountry; 
 
         } catch (e) {
+            console.debug('[Cerberus] Chat message error:', e);
             msg.dataset.cerberusProcessed = "true"; 
         }
     });
@@ -1303,6 +1777,7 @@ const updateSidebar = (FCADE, configFull) => {
     
     const cfg = configFull.chatUserInfo;
     const countryFilterEnabled = configFull.countryFilter?.enabled === true;
+    const activeGameId = getActiveGameId(FCADE);
 
     if (cfg?.replacePingBarWithText) {
         document.body.classList.add('cerb-hide-sidebar-ping');
@@ -1314,7 +1789,7 @@ const updateSidebar = (FCADE, configFull) => {
     ignoredTitleNodes.forEach(titleEl => {
         titleEl.childNodes.forEach(node => {
             if (node.nodeType === Node.TEXT_NODE && node.nodeValue.includes('Ignored')) {
-                node.nodeValue = node.nodeValue.replace('Ignored', 'BLOCKED');
+                node.nodeValue = node.nodeValue.replace('Ignored', 'Blocked');
             }
         });
     });
@@ -1328,6 +1803,41 @@ const updateSidebar = (FCADE, configFull) => {
             if (!userKey) return; 
             
             item.dataset.currentUser = userKey;
+
+            // INJEÇÃO SIDEBAR: Rank Numérico
+            if (cfg.showNumericRanks && activeGameId) {
+                const numericRank = RankCache.getRank(activeGameId, userKey);
+                let badge = item.querySelector('.cerb-rank-badge');
+
+                if (numericRank !== null) {
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.className = 'cerb-rank-badge';
+                        Object.assign(badge.style, {
+                            fontSize: '12px', fontWeight: 'normal', color: '#ffd700',
+                            backgroundColor: 'transparent', border: 'none',
+                            padding: '0', marginRight: '5px',
+                            verticalAlign: 'middle', display: 'inline-block'
+                        });
+                        
+                        const rankEl = item.querySelector('.rankWrapper, .rank'); 
+                        if (rankEl && rankEl.parentNode) {
+                            rankEl.parentNode.insertBefore(badge, rankEl);
+                        } else {
+                            const pingWrapper = item.querySelector('.pingWrapper');
+                            if (pingWrapper && pingWrapper.parentNode) {
+                                pingWrapper.parentNode.insertBefore(badge, pingWrapper);
+                            }
+                        }
+                    }
+                    badge.textContent = `🏅${numericRank}`;
+                } else if (badge) {
+                    badge.remove(); 
+                }
+            } else {
+                const badge = item.querySelector('.cerb-rank-badge');
+                if (badge) badge.remove();
+            }
             
             if (cfg?.enableReputation) {
                 applyReputationStyleList(playerNameEl, item, userKey);
@@ -1346,7 +1856,7 @@ const updateSidebar = (FCADE, configFull) => {
                         let txt = pingWrapper.querySelector('.cerberus-ping-text');
                         if (!txt) {
                             txt = document.createElement('span');
-                            txt.className = 'cerberus-ping-text cerberus-anim-pop';
+                            txt.className = 'cerberus-ping-text';
                             Object.assign(txt.style, { fontSize: '11px', fontWeight: 'bold', marginLeft: 'auto', verticalAlign: 'middle' });
                             pingWrapper.appendChild(txt);
                         }
@@ -1383,7 +1893,7 @@ const updateSidebar = (FCADE, configFull) => {
                     }
                 }
             }
-        } catch(e) { }
+        } catch(e) { console.debug('[Cerberus] Sidebar item error:', e); }
     });
 
     document.querySelectorAll('.matchesList .matchItem').forEach(match => {
@@ -1431,7 +1941,7 @@ const updateSidebar = (FCADE, configFull) => {
                     match.dataset.countryBlocked = "false";
                 }
             }
-        } catch(e) { }
+        } catch(e) { console.debug('[Cerberus] Match item error:', e); }
     });
     
     if (!countryFilterEnabled) {
@@ -1521,11 +2031,11 @@ function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, t
     const anchorEl = timeEl || playerNameEl;
 
     hoverContainer.addEventListener('mouseenter', () => {
-        if (window.cerbMenuIsHovered) return;
+        if (window.CerberusState.menuIsHovered) return;
 
-        clearTimeout(window.cerbMenuHideTimeout);
-        window.cerbMenuShowTimeout = setTimeout(() => {
-            if (window.cerbMenuIsHovered) return;
+        clearTimeout(window.CerberusState.menuHideTimeout);
+        window.CerberusState.menuShowTimeout = setTimeout(() => {
+            if (window.CerberusState.menuIsHovered) return;
             
             const menu = document.getElementById('cerbGlobalMenu');
             if (!menu) return;
@@ -1578,8 +2088,8 @@ function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, t
     });
 
     hoverContainer.addEventListener('mouseleave', () => {
-        clearTimeout(window.cerbMenuShowTimeout);
-        window.cerbMenuHideTimeout = setTimeout(() => {
+        clearTimeout(window.CerberusState.menuShowTimeout);
+        window.CerberusState.menuHideTimeout = setTimeout(() => {
             const menu = document.getElementById('cerbGlobalMenu');
             if (menu) menu.classList.remove('visible');
         }, 200);
@@ -1671,9 +2181,9 @@ function applyTheme(themeName) {
 }
 
 // ==================== VISUAL ELEMENTS ====================
-function createFlagElement(country, isBatchUpdate = false) {
+function createFlagElement(country) {
     const flag = document.createElement('span');
-    flag.className = `flagWrapper cerberus-injected-flag ${isBatchUpdate ? '' : 'cerberus-anim-pop'}`;
+    flag.className = `flagWrapper cerberus-injected-flag`; 
     Object.assign(flag.style, {
         width: '20px',
         height: '14px',
@@ -1688,9 +2198,9 @@ function createFlagElement(country, isBatchUpdate = false) {
     return flag;
 }
 
-function createPingElement(src, title, isBatchUpdate = false) {
+function createPingElement(src, title) {
     const ping = document.createElement('span');
-    ping.className = `pingWrapper cerberus-injected-pingbar ${isBatchUpdate ? '' : 'cerberus-anim-pop'}`;
+    ping.className = `pingWrapper cerberus-injected-pingbar`; 
     Object.assign(ping.style, {
         width: '15px',
         height: '15px',
@@ -1704,9 +2214,9 @@ function createPingElement(src, title, isBatchUpdate = false) {
     return ping;
 }
 
-function createRankElement(src, title, isBatchUpdate = false) {
+function createRankElement(src, title) {
     const rank = document.createElement('span');
-    rank.className = `rankWrapper cerberus-injected-rank ${isBatchUpdate ? '' : 'cerberus-anim-pop'}`;
+    rank.className = `rankWrapper cerberus-injected-rank`; 
     Object.assign(rank.style, {
         width: '15px',
         height: '15px',
@@ -1720,9 +2230,9 @@ function createRankElement(src, title, isBatchUpdate = false) {
     return rank;
 }
 
-function createPingTextElement(minPing, isBatchUpdate = false) {
+function createPingTextElement(minPing) {
     const text = document.createElement('span');
-    text.className = `cerberus-injected-pingtext ${isBatchUpdate ? '' : 'cerberus-anim-pop'}`;
+    text.className = `cerberus-injected-pingtext`; 
     
     let color = '#aaa';
     if (minPing !== null) {
@@ -1741,11 +2251,11 @@ function createPingTextElement(minPing, isBatchUpdate = false) {
     return text;
 }
 
-function createStatusElement(state, isBatchUpdate = false) {
+function createStatusElement(state) {
     const status = document.createElement('div');
-    status.className = `statusWrapper cerberus-injected-status ${isBatchUpdate ? '' : 'cerberus-anim-pop'}`;
+    status.className = `statusWrapper cerberus-injected-status`; 
     
-    let color = '#ff4444'; // Offline/Unknown por padrão (UX Placeholder)
+    let color = '#ff4444'; 
     let shadow = 'red';
     let title = 'Offline / Unknown';
     
@@ -1781,22 +2291,40 @@ function injectStyles() {
     const style = document.createElement('style');
     style.id = 'cerberusStyles';
     style.textContent = `
-        /* Premium Anim: Smooth Pop-In */
-        @keyframes cerbPopIn {
-            0% { opacity: 0; transform: scale(0.8) translateX(-4px); }
-            100% { opacity: 1; transform: scale(1) translateX(0); }
-        }
-        .cerberus-anim-pop { animation: cerbPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        /* Settings Panel Inputs */
+        #settingsTab textarea::selection, #settingsTab input::selection { background: rgba(100, 149, 237, 0.5); color: #fff; }
+        #settingsTab textarea::-moz-selection, #settingsTab input::-moz-selection { background: rgba(100, 149, 237, 0.5); color: #fff; }
 
-        /* Cloak de Opacidade */
-        .messageWrapper.chat .message:not([data-cerberus-processed="true"]) header .authorAndTime { opacity: 0 !important; }
-        .messageWrapper.chat .message header .authorAndTime { transition: opacity 0.2s ease-in !important; }
-        
-        body.cerb-mass-update .messageWrapper.chat .message header .authorAndTime {
-            transition: none !important; opacity: 1 !important;
+        /* Sync Button */
+        @keyframes cerbSpin { 100% { transform: rotate(360deg); } }
+        @keyframes cerbPulseGlow { 0%, 100% { box-shadow: 0 0 4px rgba(255, 215, 0, 0.15); } 50% { box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); } }
+        #cerberusSyncBtn { transition: width 0.3s ease, border-radius 0.3s ease, background 0.2s ease, padding 0.3s ease; margin-left: 8px; }
+        #cerberusSyncBtn.syncing {
+            width: auto !important; min-width: 28px; border-radius: 14px !important;
+            background: rgba(255, 215, 0, 0.08) !important; border: 1px solid rgba(255, 215, 0, 0.25) !important;
+            padding: 0 10px !important; cursor: pointer !important; opacity: 1 !important;
+            animation: cerbPulseGlow 2.5s ease-in-out infinite;
+            gap: 5px;
         }
+        #cerberusSyncBtn.syncing .cerb-spin-icon {
+            display: inline-block; width: 12px; height: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.25); border-top-color: #ffd700;
+            border-radius: 50%; animation: cerbSpin 0.7s linear infinite; vertical-align: middle;
+            flex-shrink: 0;
+        }
+        #cerberusSyncBtn .cerb-sync-progress {
+            font-size: 11px; color: #ffd700; font-weight: 600; vertical-align: middle;
+            letter-spacing: 0.3px; white-space: nowrap; margin-left: 3px;
+        }
+        #cerberusSyncBtn:hover:not(.syncing) { background: rgba(255,255,255,0.1) !important; }
+        #cerberusSyncBtn.syncing:hover {
+            background: rgba(255, 68, 68, 0.12) !important; border-color: rgba(255, 68, 68, 0.4) !important;
+            animation: none; box-shadow: 0 0 8px rgba(255, 68, 68, 0.3);
+        }
+        #cerberusSyncBtn.syncing:hover .cerb-spin-icon { border-top-color: #ff6b6b; border-color: rgba(255, 68, 68, 0.25); }
+        #cerberusSyncBtn.syncing:hover .cerb-sync-progress { color: #ff6b6b; }
 
-        /* Animação de UX: Piscar vermelho */
+        /* Animação de UX: Piscar vermelho ao bloquear nativo */
         @keyframes cerbBlockPulse {
             0% { background-color: rgba(255, 68, 68, 0.4); box-shadow: inset 4px 0 0px #ff4444; }
             50% { background-color: rgba(255, 68, 68, 0.05); box-shadow: inset 4px 0 0px #ff4444; }
@@ -1807,19 +2335,31 @@ function injectStyles() {
         /* Floating Action Buttons (FABs) */
         .cerb-clear-chat-fab {
             position: absolute; right: 15px; bottom: 65px;
-            background: rgba(30, 30, 35, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;
+            background: rgba(30, 30, 35, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase;
             color: #ccc; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease;
             z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px);
         }
         .cerb-clear-chat-fab:hover { background: rgba(50, 50, 60, 0.95); color: #fff; transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.3); }
 
         .cerb-queue-fab {
-            position: absolute; right: 15px; bottom: 105px;
-            background: rgba(30, 30, 35, 0.9); border: 1px solid rgba(102, 126, 234, 0.4); border-radius: 20px;
+            position: absolute; right: 15px; bottom: 100px;
+            background: rgba(30, 30, 35, 0.9); border: 1px solid rgba(102, 126, 234, 0.4); 
+            border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase;
             color: #a3bffa; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease;
             z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px);
         }
         .cerb-queue-fab:hover { background: rgba(102, 126, 234, 0.3); color: #fff; transform: translateY(-2px); }
+
+        /* Botão LIVE Toggle na Fila */
+        .q-live-btn {
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 5px 10px; font-size: 11px;
+            font-weight: bold; cursor: pointer; transition: all 0.2s; color: white;
+        }
+        .q-live-btn.on { background: rgba(0, 170, 0, 0.3); border-color: #00aa00; }
+        .q-live-btn.on:hover { background: rgba(0, 170, 0, 0.5); }
+        .q-live-btn.off { background: rgba(170, 0, 0, 0.3); border-color: #ff4444; }
+        .q-live-btn.off:hover { background: rgba(170, 0, 0, 0.5); }
 
         /* Elemento MOTD da Notificação de Atualização */
         .cerb-motd-update-notice {
@@ -1902,7 +2442,7 @@ function injectStyles() {
         .q-add-box { display: flex; padding: 10px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); gap: 8px; }
         .q-add-box input { flex: 1; padding: 6px 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff; font-size: 12px; outline: none; }
         .q-add-box input:focus { border-color: #667eea; }
-        .q-add-box button { background: #667eea; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: background 0.2s; }
+        .q-add-box button { background: #667eea; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: background 0.2s; text-transform: uppercase; }
         .q-add-box button:hover { background: #5a67d8; }
         .q-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
         .q-empty { text-align: center; color: #888; font-size: 12px; padding: 20px 0; font-style: italic; }
@@ -1915,7 +2455,7 @@ function injectStyles() {
         .q-controls button:disabled { opacity: 0.3; cursor: not-allowed; }
         .q-controls button.danger:hover { background: rgba(255,68,68,0.2); border-color: #ff4444; }
         .q-footer { padding: 10px; background: rgba(0,0,0,0.3); text-align: right; border-top: 1px solid rgba(255,255,255,0.05); }
-        .q-clear-btn { background: transparent; border: 1px solid rgba(255,68,68,0.4); color: #ff4444; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+        .q-clear-btn { background: transparent; border: 1px solid rgba(255,68,68,0.4); color: #ff4444; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
         .q-clear-btn:hover { background: rgba(255,68,68,0.2); }
 
         /* Scrollbars */
@@ -1939,7 +2479,7 @@ function createControlPanel() {
                 <span>🐺</span>
                 <span>${t('panelTitle')}</span>
             </div>
-            <button class="closeBtn" onclick="document.getElementById('cerberusPanel').style.display='none'">×</button>
+            <button class="closeBtn" id="cerbPanelCloseBtn">×</button>
         </div>
         <div class="tabs">
             <button class="tab" data-tab="countries" id="countriesTabBtn">${t('tabs.countries')}</button>
@@ -1956,7 +2496,10 @@ function createControlPanel() {
     document.body.appendChild(panel);
     makeDraggable(panel, 'cerberusHeader');
 
-    // Tab Logic
+    document.getElementById('cerbPanelCloseBtn').addEventListener('click', () => {
+        document.getElementById('cerberusPanel').style.display = 'none';
+    });
+
     panel.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => {
             if (tab.classList.contains('disabled')) return;
@@ -1985,7 +2528,6 @@ function makeDraggable(element, headerId) {
     let currentX, currentY, initialX, initialY;
     let xOffset = 0, yOffset = 0;
 
-    // Apenas centra se for o painel principal, a Queue nasce no canto
     if (headerId === 'cerberusHeader') {
         xOffset = (window.innerWidth - 480) / 2; 
         yOffset = (window.innerHeight - 500) / 2;
@@ -2038,7 +2580,6 @@ function makeDraggable(element, headerId) {
             yOffset = currentY;
             setTranslate(currentX, currentY, element);
             
-            // Remove o ancoramento right e bottom nativos ao iniciar arrasto
             if (element.id === 'cerberusQueueWindow') {
                 element.style.right = 'auto';
                 element.style.bottom = 'auto';
@@ -2082,8 +2623,15 @@ function createCountriesTab() {
         <div id="countriesContainer"></div>
     `;
 
-    document.getElementById('allowAllBtn').onclick = () => { CerberusData.allowAllCountries(); updateCountryList(); };
-    document.getElementById('clearAllBtn').onclick = () => { CerberusData.clearAllCountries(); updateCountryList(); };
+    document.getElementById('allowAllBtn').addEventListener('click', () => { 
+        CerberusData.allowAllCountries(); 
+        updateCountryList(); 
+    });
+    
+    document.getElementById('clearAllBtn').addEventListener('click', () => { 
+        CerberusData.clearAllCountries(); 
+        updateCountryList(); 
+    });
     
     document.getElementById('countrySearch').addEventListener('input', (e) => {
         updateCountryList(e.target.value);
@@ -2144,7 +2692,7 @@ function createModernToggle(checked, onChange) {
     const input = document.createElement('input');
     input.type = 'checkbox';
     input.checked = checked;
-    input.onchange = onChange;
+    input.addEventListener('change', onChange);
     const span = document.createElement('span');
     span.className = 'slider';
     label.appendChild(input);
@@ -2162,29 +2710,59 @@ function createSettingsTab() {
         </div>
     `;
 
-    const settingToggle = (key, label, isMain = false) => {
+    const settingToggle = (key, label) => {
         const val = ConfigManager.getSetting(key) === true; 
-        const extraAction = isMain ? 'updateCountryTabVisibility(this.checked);' : '';
-        const fn = `ConfigManager.updateSetting('${key}', this.checked); ${extraAction}`;
-        
         return `
             <div class="modern-toggle">
                 <span style="font-size: 14px; color: #e0e0e0;">${label}</span>
                 <label class="switch">
-                    <input type="checkbox" ${val ? 'checked' : ''} onchange="${fn}">
+                    <input type="checkbox" data-setting="${key}" ${val ? 'checked' : ''}>
                     <span class="slider"></span>
                 </label>
             </div>
         `;
     };
 
-    const settingInput = (key, label, type="text") => {
-        const val = ConfigManager.getSetting(key) || ''; 
+    const settingInput = (key, label, type="text", max="") => {
+        let val = ConfigManager.getSetting(key); 
+        if (val === undefined || val === null) val = '';
+        
+        // Prevenção Crítica: Escapar aspas duplas no valor para não destruir a string HTML do atributo 'value'
+        const safeVal = val.toString().replace(/"/g, '&quot;');
+        
+        if (type === 'textarea') {
+            // Decodificar \\n para quebras de linha reais no textarea
+            const displayVal = safeVal.replace(/\\n/g, '\n');
+            return `
+                <div class="modern-toggle" style="flex-wrap: wrap;">
+                    <span style="font-size: 14px; color: #e0e0e0; flex: 1; min-width: 150px;">${label}</span>
+                    <textarea data-setting="${key}" rows="3" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 6px 8px; border-radius: 4px; outline: none; width: 100%; margin-top: 8px; resize: vertical; font-family: inherit; font-size: 13px; line-height: 1.4; user-select: text; -webkit-user-select: text;">${displayVal}</textarea>
+                    <div style="width: 100%; margin-top: 4px; font-size: 11px; color: rgba(255,255,255,0.35); display: flex; gap: 10px;">
+                        <span>Normal</span>
+                        <span style="margin-left: 5px;"><b>*Bold*</b></span>
+                        <span style="color: rgb(51, 241, 229); margin-left: 5px; font-weight: 700;">&#96;highlight&#96;</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        return `
+            <div class="modern-toggle" style="flex-wrap: wrap;">
+                <span style="font-size: 14px; color: #e0e0e0; flex: 1; min-width: 150px;">${label}</span>
+                <input type="${type}" ${max ? `maxlength="${max}"` : ''} data-setting="${key}" value="${safeVal}" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none; width: ${key === 'liveQueue.promoMessage' ? '100%' : '100px'}; text-align: ${key === 'liveQueue.promoMessage' ? 'left' : 'center'}; text-transform: ${max==='2' ? 'uppercase' : 'none'}; margin-top: ${key === 'liveQueue.promoMessage' ? '8px' : '0'};">
+            </div>
+        `;
+    };
+
+    const settingSelect = (key, label, options) => {
+        const currentVal = ConfigManager.getSetting(key) || options[0].value;
+        let optsHtml = options.map(opt => `<option value="${opt.value}" ${currentVal == opt.value ? 'selected' : ''}>${opt.text}</option>`).join('');
         return `
             <div class="modern-toggle">
                 <span style="font-size: 14px; color: #e0e0e0;">${label}</span>
-                <input type="${type}" value="${val}" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none; width: 100px; text-align: center;" 
-                        onchange="ConfigManager.updateSetting('${key}', ${type === 'number' ? 'parseInt(this.value)' : 'this.value'})">
+                <select data-setting="${key}" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none;">
+                    ${optsHtml}
+                </select>
             </div>
         `;
     };
@@ -2192,8 +2770,7 @@ function createSettingsTab() {
     const langSelect = `
         <div class="modern-toggle" style="margin-bottom: 24px;">
             <span style="font-size: 14px; color: #e0e0e0; font-weight: bold;">${t('settings.language')}</span>
-            <select style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 4px; outline: none; font-size: 13px; cursor: pointer;" 
-                    onchange="window.changeCerberusLanguage(this.value)">
+            <select id="cerbLangSelect" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 4px; outline: none; font-size: 13px; cursor: pointer;">
                 <option value="en" ${ConfigManager.getSetting('language') === 'en' ? 'selected' : ''}>🇺🇸 English</option>
                 <option value="pt" ${ConfigManager.getSetting('language') === 'pt' ? 'selected' : ''}>🇧🇷 Português</option>
                 <option value="es" ${ConfigManager.getSetting('language') === 'es' ? 'selected' : ''}>🇪🇸 Español</option>
@@ -2209,15 +2786,26 @@ function createSettingsTab() {
             settingInput('liveQueue.keyword', t('settings.queueKeyword')) +
             settingInput('liveQueue.streamerNick', t('settings.queueStreamer')) +
             settingInput('liveQueue.limit', t('settings.queueLimit'), 'number') +
-            settingToggle('liveQueue.autoReply', t('settings.queueReply'))
+            settingToggle('liveQueue.autoReply', t('settings.queueReply')) +
+            settingToggle('liveQueue.promoEnabled', t('settings.queuePromoEnable')) +
+            settingInput('liveQueue.promoMessage', t('settings.queuePromo'), 'textarea')
+        ) +
+        createSection(t('settings.rankingsApi'),
+            settingSelect('rankings.limit', t('settings.rankLimit'), [
+                {value: 100, text: "100"}, {value: 200, text: "200"}, 
+                {value: 400, text: "400"}, {value: 500, text: "500"},
+				{value: 800, text: "800"}, {value: 999, text: "999"}
+            ]) +
+            settingInput('rankings.country', t('settings.rankCountry'), 'text', '2')
         ) +
         createSection(t('settings.filters'), 
-            settingToggle('countryFilter.enabled', t('settings.enableFilter'), true)
+            settingToggle('countryFilter.enabled', t('settings.enableFilter'))
         ) +
         createSection(t('settings.chatVisual'), 
             settingToggle('chatUserInfo.enableStatus', t('settings.showStatus')) +
             settingToggle('chatUserInfo.enableFlag', t('settings.showFlags')) +
             settingToggle('chatUserInfo.enableRank', t('settings.showRanks')) +
+            settingToggle('chatUserInfo.showNumericRanks', t('settings.showNumericRanks')) +
             settingToggle('chatUserInfo.enablePingBars', t('settings.showPingBars')) +
             settingToggle('chatUserInfo.enablePingText', t('settings.showPingText')) +
             settingToggle('chatUserInfo.replacePingBarWithText', t('settings.replacePingBar'))
@@ -2229,8 +2817,7 @@ function createSettingsTab() {
         createSection(t('settings.privacy'), `
             <div class="modern-toggle">
                 <span style="font-size: 14px; color: #e0e0e0;">${t('settings.blurMode')}</span>
-                <select style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none;" 
-                        onchange="ConfigManager.updateSetting('chatUserInfo.blurMode', this.value)">
+                <select data-setting="chatUserInfo.blurMode" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none;">
                     <option value="none" ${ConfigManager.getSetting('chatUserInfo.blurMode') === 'none' ? 'selected' : ''}>${t('settings.blurNone')}</option>
                     <option value="individual" ${ConfigManager.getSetting('chatUserInfo.blurMode') === 'individual' ? 'selected' : ''}>${t('settings.blurIndiv')}</option>
                     <option value="all" ${ConfigManager.getSetting('chatUserInfo.blurMode') === 'all' ? 'selected' : ''}>${t('settings.blurAll')}</option>
@@ -2238,13 +2825,49 @@ function createSettingsTab() {
             </div>
         `) +
         createSection(t('settings.extras'), settingToggle('chatUserInfo.unlockColorThemes', t('settings.unlockThemes')));
+
+    document.querySelectorAll('#settingsTab input[data-setting], #settingsTab select[data-setting], #settingsTab textarea[data-setting]').forEach(input => {
+        const handleSettingChange = (e) => {
+            const key = e.target.getAttribute('data-setting');
+            let val = e.target.value;
+            
+            if (e.target.type === 'checkbox') val = e.target.checked;
+            else if (e.target.type === 'number' || key === 'rankings.limit') val = parseInt(e.target.value);
+            else if (key === 'rankings.country') val = e.target.value.toUpperCase().trim();
+            else if (e.target.tagName === 'TEXTAREA') { val = e.target.value.split(String.fromCharCode(10)).join(String.fromCharCode(92) + 'n'); }
+
+            ConfigManager.updateSetting(key, val);
+            
+            if (key === 'countryFilter.enabled') {
+                updateCountryTabVisibility(val);
+            }
+        };
+
+        input.addEventListener('change', handleSettingChange);
+
+        // Para campos de texto/número: salvar ao digitar (com debounce)
+        if (input.type === 'text' || input.type === 'number') {
+            let inputDebounce = null;
+            input.addEventListener('input', (e) => {
+                clearTimeout(inputDebounce);
+                inputDebounce = setTimeout(() => handleSettingChange(e), 500);
+            });
+        }
+    });
+
+    const langSelectObj = document.getElementById('cerbLangSelect');
+    if (langSelectObj) {
+        langSelectObj.addEventListener('change', (e) => {
+            window.changeCerberusLanguage(e.target.value);
+        });
+    }
 }
 
 function createAboutTab() {
     let updateHtml = '';
     if (isNewerVersion(CerberusData.latestVersion, CURRENT_VERSION)) {
         updateHtml = `
-            <div style="background: rgba(255, 165, 0, 0.2); border: 1px solid rgba(255, 165, 0, 0.5); padding: 10px; border-radius: 8px; margin-top: 15px; color: #ffdca5; font-weight: bold; animation: cerbPopIn 0.3s ease;">
+            <div style="background: rgba(255, 165, 0, 0.2); border: 1px solid rgba(255, 165, 0, 0.5); padding: 10px; border-radius: 8px; margin-top: 15px; color: #ffdca5; font-weight: bold;">
                 ${t('about.updateAvailable')} ${CerberusData.latestVersion}
             </div>
         `;
@@ -2259,15 +2882,47 @@ function createAboutTab() {
             ${updateHtml}
 
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-top: 20px; text-align: left;">
-                <ul style="opacity: 0.9; padding-left: 20px; line-height: 1.6; font-size: 14px; margin-top: 0;">
-                    <li>${t('about.feat1')}</li>
-                    <li>${t('about.feat2')}</li>
-                    <li>${t('about.feat3')}</li>
-                    <li>${t('about.feat4')}</li>
-                    <li>${t('about.feat5')}</li>
-                    <li>${t('about.feat6')}</li>
-                </ul>
-                <p style="font-size: 12px; opacity: 0.5; font-style: italic; margin-top: 15px; text-align: center;">${t('about.note')}</p>
+                <div style="margin-bottom: 12px;">
+                    <div style="font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #a5b4fc;">${t('about.catBot')}</div>
+                    <ul style="opacity: 0.9; padding-left: 20px; line-height: 1.5; font-size: 13px; margin: 0;">
+                        <li>${t('about.feat1')}</li>
+                        <li>${t('about.feat2')}</li>
+                        <li>${t('about.feat3')}</li>
+                    </ul>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <div style="font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #fbbf24;">${t('about.catRank')}</div>
+                    <ul style="opacity: 0.9; padding-left: 20px; line-height: 1.5; font-size: 13px; margin: 0;">
+                        <li>${t('about.feat4')}</li>
+                        <li>${t('about.feat5')}</li>
+                    </ul>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <div style="font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #34d399;">${t('about.catChat')}</div>
+                    <ul style="opacity: 0.9; padding-left: 20px; line-height: 1.5; font-size: 13px; margin: 0;">
+                        <li>${t('about.feat6')}</li>
+                        <li>${t('about.feat7')}</li>
+                        <li>${t('about.feat8')}</li>
+                    </ul>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <div style="font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #f87171;">${t('about.catRep')}</div>
+                    <ul style="opacity: 0.9; padding-left: 20px; line-height: 1.5; font-size: 13px; margin: 0;">
+                        <li>${t('about.feat9')}</li>
+                        <li>${t('about.feat10')}</li>
+                        <li>${t('about.feat11')}</li>
+                    </ul>
+                </div>
+                <div style="margin-bottom: 8px;">
+                    <div style="font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #60a5fa;">${t('about.catFilter')}</div>
+                    <ul style="opacity: 0.9; padding-left: 20px; line-height: 1.5; font-size: 13px; margin: 0;">
+                        <li>${t('about.feat12')}</li>
+                        <li>${t('about.feat13')}</li>
+                        <li>${t('about.feat14')}</li>
+                        <li>${t('about.feat15')}</li>
+                    </ul>
+                </div>
+                <p style="font-size: 11px; opacity: 0.4; font-style: italic; margin-top: 15px; text-align: center;">${t('about.note')}</p>
             </div>
             <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/latest" target="_blank" class="cerb-update-btn">
                 ${t('about.updateBtn')}

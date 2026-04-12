@@ -1,41 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const fsPromises = fs.promises;
-
-// ==================== PERSISTÊNCIA SEGURA ====================
-async function atomicWriteJSON(filePath, data) {
-    const tmpPath = filePath + '.tmp';
-    const bakPath = filePath + '.bak';
-    const json = JSON.stringify(data, null, 2);
-    try {
-        await fsPromises.writeFile(tmpPath, json, 'utf8');
-        try { await fsPromises.copyFile(filePath, bakPath); } catch(e) { /* first write, no existing file */ }
-        await fsPromises.rename(tmpPath, filePath);
-    } catch (e) {
-        console.error('[Cerberus] Atomic write failed:', path.basename(filePath), e.message);
-        try { fs.writeFileSync(filePath, json, 'utf8'); } catch(e2) { /* silent fallback */ }
-    }
-}
-
-function safeLoadJSON(filePath, defaults) {
-    const bakPath = filePath + '.bak';
-    try {
-        if (fs.existsSync(filePath)) {
-            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-        }
-    } catch (e) {
-        console.warn(`[Cerberus] Corrupted: ${path.basename(filePath)}, trying backup...`);
-    }
-    try {
-        if (fs.existsSync(bakPath)) {
-            console.log(`[Cerberus] Restored from backup: ${path.basename(bakPath)}`);
-            return JSON.parse(fs.readFileSync(bakPath, 'utf8'));
-        }
-    } catch (e) {
-        console.warn(`[Cerberus] Backup also corrupted: ${path.basename(bakPath)}`);
-    }
-    return typeof defaults === 'function' ? defaults() : (defaults || null);
-}
 
 // ==================== DICIONÁRIO DE IDIOMAS (i18n) ====================
 const Locales = {
@@ -86,7 +50,7 @@ const Locales = {
             queuePromo: "Live Promo Msg"
         },
         about: {
-            title: "Fightcade Plus 1.9.0",
+            title: "Fightcade Plus 1.9.2",
             subtitle: "By Cerberus",
             catBot: "🤖 Streamer Tools",
             feat1: "Live Player Queue via chat command (!join)",
@@ -108,7 +72,7 @@ const Locales = {
             feat13: "Premium color themes unlock",
             feat14: "Auto-join channel on startup",
             feat15: "Multi-language support (EN/PT/ES)",
-            note: "Safe auto-save engine with crash protection.",
+            note: "Vue.js DOM Recycling & Challenge visibility fixed.",
             updateBtn: "🔄 Check for Updates",
             updateAvailable: "⚠️ Update Available: "
         },
@@ -191,7 +155,7 @@ const Locales = {
             queuePromo: "Mensagem do Bot (a cada 10min)"
         },
         about: {
-            title: "Fightcade Plus 1.9.0",
+            title: "Fightcade Plus 1.9.2",
             subtitle: "By Cerberus",
             catBot: "🤖 Ferramentas para Streamers",
             feat1: "Fila de jogadores via comando no chat (!join)",
@@ -213,7 +177,7 @@ const Locales = {
             feat13: "Desbloqueio de temas de cores premium",
             feat14: "Auto-entrar no canal ao iniciar",
             feat15: "Suporte multi-idioma (EN/PT/ES)",
-            note: "Motor de auto-save seguro com proteção contra falhas.",
+            note: "Bug de reciclagem de memória (Convites Ocultos) resolvido.",
             updateBtn: "🔄 Verificar Atualizações",
             updateAvailable: "⚠️ Atualização Disponível: "
         },
@@ -296,7 +260,7 @@ const Locales = {
             queuePromo: "Msg Promo"
         },
         about: {
-            title: "Fightcade Plus 1.9.0",
+            title: "Fightcade Plus 1.9.2",
             subtitle: "By Cerberus",
             catBot: "🤖 Herramientas para Streamers",
             feat1: "Cola de jugadores vía comando en el chat (!join)",
@@ -318,7 +282,7 @@ const Locales = {
             feat13: "Desbloqueo de temas de colores premium",
             feat14: "Auto-entrar al canal al iniciar",
             feat15: "Soporte multi-idioma (EN/PT/ES)",
-            note: "Motor de auto-guardado seguro con protección ante fallos.",
+            note: "Bug de reciclaje del DOM de Vue resuelto.",
             updateBtn: "🔄 Buscar Actualizaciones",
             updateAvailable: "⚠️ Actualización Disponible: "
         },
@@ -373,47 +337,6 @@ const COUNTRY_NAME_TO_CODE = Object.fromEntries(
     Object.entries(AVAILABLE_COUNTRIES).map(([code, name]) => [name, code])
 );
 
-// ==================== SELETORES DOM CENTRALIZADOS ====================
-const SELECTORS = {
-    rankedWrapper: '.channelInfo .rankedWrapper',
-    romName: '.channelInfo .name[title="Rom name"]',
-    gameLink: '.channelInfo a.link[href*="/game/"]',
-    chatInput: '.chatInput input.input',
-    usersOnlineTitle: '.usersOnlineTitle',
-    chatContent: '.chatContent',
-    chatWrapper: '.chatWrapper',
-    userItem: '.userItem',
-    playerName: '.playerName',
-    matchItem: '.matchesList .matchItem',
-    motdWrapper: '.messageWrapper.motd',
-    ignoredTitle: '.usersIgnoredTitle',
-};
-
-const _selectorMissCounts = {};
-let _healthCheckCounter = 0;
-
-function safeQuery(key, context) {
-    context = context || document;
-    const selector = SELECTORS[key] || key;
-    const el = context.querySelector(selector);
-    if (SELECTORS[key]) {
-        if (!el) _selectorMissCounts[key] = (_selectorMissCounts[key] || 0) + 1;
-        else _selectorMissCounts[key] = 0;
-    }
-    return el;
-}
-
-function domHealthCheck() {
-    _healthCheckCounter++;
-    if (_healthCheckCounter % 30 !== 0) return;
-    const critical = ['chatContent', 'usersOnlineTitle'];
-    const broken = critical.filter(k => (_selectorMissCounts[k] || 0) > 10);
-    if (broken.length > 0 && !window.CerberusState._healthWarned) {
-        console.warn('⚠️ [Cerberus] DOM selectors failing:', broken.join(', '), '— Plugin may need update.');
-        window.CerberusState._healthWarned = true;
-    }
-}
-
 // ==================== CONFIGURAÇÃO INICIAL ====================
 const defaultConfig = {
     language: 'en',
@@ -440,17 +363,15 @@ const defaultConfig = {
         streamerNick: '', 
         autoReply: false, 
         promoEnabled: false,
-        // Uso de string dupla \\n para forçar os caracteres a renderizarem visivelmente no painel HTML
         promoMessage: '`[AO VIVO]` *Venham jogar e participar da live!*\nDigite a `palavra-chave` no chat para entrar na fila.\nAssista em: https://www.youtube.com/@Cerberus-BR'
     }
 };
 
-// Renomeação Crítica: Sandbox de Configuração isolado do sistema base
 const dataPath = path.join(__dirname, 'cerberus_data.json');
 const configPath = path.join(__dirname, 'cerberus_config.json');
 const rankingsPath = path.join(__dirname, 'cerberus_rankings.json');
 
-const CURRENT_VERSION = "1.9.0";
+const CURRENT_VERSION = "1.9.2";
 let runtimeConfig = null;
 let fullConfigCache = null;
 
@@ -462,40 +383,79 @@ window.CerberusState = {
     menuIsHovered: false,
     menuHideTimeout: null,
     menuShowTimeout: null,
-    menuCleanupInterval: null,
-    _healthWarned: false,
+    menuCleanupInterval: null
 };
 
 module.exports = (FCADE) => {
     try { runPlugin(FCADE); } catch (e) { console.error("Cerberus Fatal Error:", e); }
 };
 
-// ==================== EXTRATOR DE GAMEID (via DOM) ====================
+// ==================== PERSISTÊNCIA SEGURA ====================
+function atomicWriteJSON(filePath, data) {
+    return new Promise((resolve, reject) => {
+        const tmpPath = filePath + '.tmp';
+        const bakPath = filePath + '.bak';
+        const json = JSON.stringify(data, null, 2);
+        
+        fs.writeFile(tmpPath, json, 'utf8', (err) => {
+            if (err) {
+                try { fs.writeFileSync(filePath, json, 'utf8'); resolve(); } catch(e2) { reject(e2); }
+                return;
+            }
+            fs.copyFile(filePath, bakPath, () => {
+                fs.rename(tmpPath, filePath, (errRen) => {
+                    if (errRen) reject(errRen); else resolve();
+                });
+            });
+        });
+    });
+}
+
+function safeLoadJSON(filePath, defaults) {
+    const bakPath = filePath + '.bak';
+    try {
+        if (fs.existsSync(filePath)) return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    } catch (e) {}
+    
+    try {
+        if (fs.existsSync(bakPath)) return JSON.parse(fs.readFileSync(bakPath, 'utf8'));
+    } catch (e) {}
+    
+    return typeof defaults === 'function' ? defaults() : (defaults || null);
+}
+
+// ==================== EXTRATOR DE GAMEID ====================
 function isRankedChannel() {
     return !!document.querySelector('.channelInfo .rankedWrapper');
 }
 
 function getActiveGameId(FCADE) {
     try {
-        // Rankings só existem em canais rankeados
         if (!isRankedChannel()) return null;
 
-        // Estratégia 1: Elemento com title="Rom name" na channelInfo
         const romNameEl = document.querySelector('.channelInfo .name[title="Rom name"]');
         if (romNameEl?.textContent?.trim()) {
             return romNameEl.textContent.trim();
         }
 
-        // Estratégia 2: Extrair do link de replays/rankings
         const gameLink = document.querySelector('.channelInfo a.link[href*="/game/"]');
         if (gameLink) {
             const match = gameLink.href.match(/\/game\/([^/]+)\//);
             if (match?.[1]) return match[1];
         }
 
+        if (FCADE && FCADE.activeChannelId) {
+            const chan = FCADE.channels?.find(c => c.id === FCADE.activeChannelId);
+            if (chan && chan.gameid) return chan.gameid;
+
+            if (FCADE.activeChannelId.includes('-')) {
+                return FCADE.activeChannelId.split('-')[0];
+            }
+            return FCADE.activeChannelId;
+        }
+
         return null;
     } catch(e) {
-        console.debug('[Cerberus] getActiveGameId error:', e);
         return null;
     }
 }
@@ -524,7 +484,7 @@ function playPopSound() {
         
         osc.start();
         osc.stop(ctx.currentTime + 0.1);
-    } catch(e) { console.debug('[Cerberus] Audio error:', e.message); }
+    } catch(e) { }
 }
 
 // ==================== GESTÃO DE RANKINGS ====================
@@ -538,8 +498,7 @@ const RankCache = {
         this.data = data || {};
     },
     save() {
-        atomicWriteJSON(rankingsPath, this.data)
-            .catch(e => console.debug('[Cerberus] Rank save error:', e));
+        atomicWriteJSON(rankingsPath, this.data).catch(() => {});
     },
     cancelSync() {
         if (this._abortController) {
@@ -563,11 +522,7 @@ const RankCache = {
         const lastSync = this.data[gameId]?.lastUpdate || 0;
         const cooldownMs = 30 * 60 * 1000;
         
-        if (Date.now() - lastSync < cooldownMs) {
-            const remaining = Math.ceil((cooldownMs - (Date.now() - lastSync)) / 60000);
-            console.warn(`⏳ [Cerberus Rank] Bloqueio de segurança ativo. Tente novamente em ${remaining} minutos.`);
-            return;
-        }
+        if (Date.now() - lastSync < cooldownMs) return;
 
         if (this.isSyncing) return;
         this.isSyncing = true;
@@ -586,8 +541,6 @@ const RankCache = {
         const targetLimit = ConfigManager.getSetting('rankings.limit') || 100;
         const targetCountry = (ConfigManager.getSetting('rankings.country') || '').toUpperCase().trim();
         
-        console.log(`🔄 [Cerberus Rank] Fetching Top ${targetLimit} for ${initialGameId} ${targetCountry ? '('+targetCountry+')' : '(Global)'}...`);
-        
         const limitPerPage = 100;
         let offset = 0;
         let validPlayersFound = 0;
@@ -597,15 +550,12 @@ const RankCache = {
 
         while (validPlayersFound < targetLimit) {
             try {
-                if (signal.aborted) { console.log('🛑 [Cerberus Rank] Sync cancelled.'); break; }
+                if (signal.aborted) break;
 
                 const currentGameId = getActiveGameId(window.CerberusFCADE);
-                if (currentGameId !== initialGameId) { console.log('🛑 [Cerberus Rank] Channel changed, aborting.'); break; }
+                if (currentGameId !== initialGameId) break;
 
-                if (pagesFetched >= maxPagesSafeguard) {
-                    console.warn(`🛑 [Cerberus Rank] Safety limit reached.`);
-                    break;
-                }
+                if (pagesFetched >= maxPagesSafeguard) break;
 
                 const res = await fetch('https://web.fightcade.com/api/', {
                     method: 'POST',
@@ -621,10 +571,7 @@ const RankCache = {
                     })
                 });
 
-                if (!res.ok) {
-                    console.warn(`⚠️ [Cerberus Rank] HTTP ${res.status}. Parando extração.`);
-                    break;
-                }
+                if (!res.ok) break;
 
                 const data = await res.json();
                 const players = data?.results?.results || [];
@@ -666,8 +613,6 @@ const RankCache = {
                 });
 
             } catch (e) {
-                if (e.name === 'AbortError') { console.log('🛑 [Cerberus Rank] Sync aborted.'); break; }
-                console.error('❌ [Cerberus Rank] API error:', e.message);
                 break;
             }
         }
@@ -680,7 +625,6 @@ const RankCache = {
             };
             this._evictOldEntries();
             this.save();
-            console.log(`✅ [Cerberus Rank] Done. ${Object.keys(newCache).length} players saved for ${initialGameId}.`);
         }
 
         this.isSyncing = false;
@@ -743,51 +687,6 @@ function invalidateCountryFilterCache() {
 
 let dataSaveTimeout = null;
 
-// Garantir save síncrono ao fechar o app + cleanup de recursos
-window.addEventListener('beforeunload', () => {
-    clearTimeout(dataSaveTimeout);
-    clearTimeout(configSaveTimeout);
-
-    // Cancel ongoing sync
-    if (RankCache._abortController) RankCache._abortController.abort();
-
-    // Clean up intervals
-    if (mainLoopInterval) clearInterval(mainLoopInterval);
-    if (replyQueueInterval) clearInterval(replyQueueInterval);
-    if (window.CerberusState.promoBotInterval) clearInterval(window.CerberusState.promoBotInterval);
-    if (window.CerberusState.menuCleanupInterval) clearInterval(window.CerberusState.menuCleanupInterval);
-
-    // Clean up observer
-    if (chatObserver) { chatObserver.disconnect(); chatObserver = null; }
-
-    // Clean up AudioContext
-    if (_popAudioCtx) { try { _popAudioCtx.close(); } catch(e) {} }
-
-    // Sync save data (last resort)
-    try {
-        const dataObj = {
-            allowedCountries: CerberusData.allowedCountries,
-            positive: [...CerberusData.positive],
-            negative: [...CerberusData.negative],
-            selectedTheme: CerberusData.selectedTheme,
-            lastUpdateCheck: CerberusData.lastUpdateCheck,
-            latestVersion: CerberusData.latestVersion,
-            liveQueue: CerberusData.liveQueue,
-            queueTimestamp: CerberusData.queueTimestamp,
-            lastUpdated: new Date().toISOString()
-        };
-        try { fs.copyFileSync(dataPath, dataPath + '.bak'); } catch(e) {}
-        fs.writeFileSync(dataPath, JSON.stringify(dataObj, null, 2), 'utf8');
-    } catch(e) { console.debug('[Cerberus] beforeunload data save error:', e); }
-    try {
-        if (runtimeConfig) {
-            if (!fullConfigCache) fullConfigCache = {};
-            fullConfigCache.cerberus = runtimeConfig;
-            try { fs.copyFileSync(configPath, configPath + '.bak'); } catch(e) {}
-            fs.writeFileSync(configPath, JSON.stringify(fullConfigCache, null, 2), 'utf8');
-        }
-    } catch(e) { console.debug('[Cerberus] beforeunload config save error:', e); }
-});
 const CerberusData = {
     allowedCountries: Object.keys(AVAILABLE_COUNTRIES), 
     positive: new Set(),
@@ -830,7 +729,7 @@ const CerberusData = {
                 liveQueue: this.liveQueue,
                 queueTimestamp: this.queueTimestamp,
                 lastUpdated: new Date().toISOString()
-            }).catch(e => console.debug('[Cerberus] Data save error:', e));
+            }).catch(() => {});
         }, 100);
     },
 
@@ -935,8 +834,7 @@ const ConfigManager = {
         configSaveTimeout = setTimeout(() => {
             if (!fullConfigCache) fullConfigCache = {};
             fullConfigCache.cerberus = runtimeConfig;
-            atomicWriteJSON(configPath, fullConfigCache)
-                .catch(e => console.error('❌ [Cerberus] Config save failed:', e));
+            atomicWriteJSON(configPath, fullConfigCache).catch(() => {});
         }, 100);
     },
     updateSetting(pathStr, value) {
@@ -953,6 +851,7 @@ const ConfigManager = {
             document.querySelectorAll('.message').forEach(msg => {
                 msg.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
                 msg.removeAttribute('data-cerberus-processed');
+                msg.removeAttribute('data-cerberus-sig');
             });
         }
         
@@ -1002,7 +901,7 @@ async function checkForUpdates() {
                     CerberusData.save();
                 }
             }
-        } catch (e) { console.debug('[Cerberus] Update check error:', e); }
+        } catch (e) {}
     }
 }
 
@@ -1061,18 +960,22 @@ function extractMinPing(title) {
 function getMinPing(userFound) { return extractMinPing(userFound?.pingTitle); }
 
 function unfilterAllMessages() {
-    document.querySelectorAll('[data-cerberus-hidden]').forEach(msg => {
-        const wrapper = msg.closest('.messageWrapper');
-        if (wrapper) wrapper.style.display = '';
-        msg.style.display = '';
-        msg.removeAttribute('data-cerberus-hidden');
+    document.querySelectorAll('.message').forEach(msg => {
+        if (msg.dataset.cerberusHidden) {
+            const wrapper = msg.closest('.messageWrapper');
+            if (wrapper) wrapper.style.display = '';
+            msg.style.display = '';
+            msg.removeAttribute('data-cerberus-hidden');
+        }
     });
 }
 
 function unfilterAllUsers() {
-    document.querySelectorAll('[data-country-blocked]').forEach(el => {
-        el.style.display = '';
-        el.removeAttribute('data-country-blocked');
+    document.querySelectorAll('.userItem, .matchesList .matchItem').forEach(el => {
+        if (el.dataset.countryBlocked) {
+            el.style.display = '';
+            el.removeAttribute('data-country-blocked');
+        }
     });
 }
 
@@ -1085,7 +988,6 @@ function executeChatCommand(command) {
     inputEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }));
 }
 
-// MACRO EXECUTOR
 function executeChatMacro(lines) {
     const inputEl = document.querySelector('.chatInput input.input');
     if (!inputEl || !lines || lines.length === 0) return;
@@ -1116,7 +1018,7 @@ const connectToChannelWhenAvailable = (FCADE, autoJoinConfig) => {
     let attempts = 0;
     const checkInterval = setInterval(() => {
         attempts++;
-        if (attempts > 120) { clearInterval(checkInterval); return; } // timeout 60s
+        if (attempts > 120) { clearInterval(checkInterval); return; } 
         if (FCADE.initializingApp === false) {
             clearInterval(checkInterval);
             if (autoJoinConfig?.channelId) {
@@ -1166,15 +1068,13 @@ const runPlugin = (FCADE) => {
             maintainChatObserver(FCADE, runtimeConfig.chatUserInfo);
             updateSidebar(FCADE, runtimeConfig);
             updateChat(FCADE, runtimeConfig);
-            domHealthCheck();
 
             if (runtimeConfig.chatUserInfo?.unlockColorThemes !== false) {
                 unlockColorThemes();
             }
-        } catch (err) { console.debug('[Cerberus] Main loop error:', err); }
+        } catch (err) {}
     }, 1000);
     
-    // BOT AGREGADOR DE FILA (!join)
     if (replyQueueInterval) clearInterval(replyQueueInterval);
     replyQueueInterval = setInterval(() => {
         if (window.CerberusState.liveMasterOn && window.CerberusState.replyQueue.length > 0 && ConfigManager.getSetting('liveQueue.autoReply')) {
@@ -1197,7 +1097,6 @@ const runPlugin = (FCADE) => {
 
     setTimeout(() => applyTheme(CerberusData.selectedTheme), 2500);
 
-    // Safety cleanup: menu flutuante que fica preso visível
     window.CerberusState.menuCleanupInterval = setInterval(() => {
         const menu = document.getElementById('cerbGlobalMenu');
         if (menu && menu.classList.contains('visible') && !window.CerberusState.menuIsHovered) {
@@ -1206,7 +1105,7 @@ const runPlugin = (FCADE) => {
     }, 3000);
 };
 
-// ==================== BOT PROMOCIONAL (10 MIN) ====================
+// ==================== BOT PROMOCIONAL ====================
 function triggerPromoBot() {
     if (!window.CerberusState.liveMasterOn) return; 
     if (!ConfigManager.getSetting('liveQueue.promoEnabled')) return; 
@@ -1218,7 +1117,7 @@ function triggerPromoBot() {
     executeChatMacro(lines);
 }
 
-// ==================== HEADER BUTTONS & SYNC ====================
+// ==================== HEADER BUTTONS ====================
 function injectHeaderButtons(FCADE) {
     const headerTitle = document.querySelector('.usersOnlineTitle');
     if (!headerTitle) return;
@@ -1504,13 +1403,13 @@ function maintainChatObserver(FCADE, cfg) {
                 if (hasValidNewNodes) break;
             }
             if (hasValidNewNodes) {
-                try { updateChat(FCADE, cfg); } catch (err) { console.debug('[Cerberus] Chat observer error:', err); }
+                try { updateChat(FCADE, cfg); } catch (err) {}
             }
         });
         
         chatObserver.observe(chatContent, { childList: true, subtree: true });
         
-        try { updateChat(FCADE, cfg); } catch (e) { console.debug('[Cerberus] Initial chat update error:', e); }
+        try { updateChat(FCADE, cfg); } catch (e) {}
     }
 }
 
@@ -1550,8 +1449,7 @@ function injectGlobalMenu() {
         if (!userKey || userKey === '<offline>' || userKey.startsWith('<')) return;
         fn(userKey);
         if (menu.dataset.type === 'match') {
-            const playerNames = document.querySelectorAll('.playerName');
-            playerNames.forEach(el => {
+            document.querySelectorAll('.playerName').forEach(el => {
                 if (normalizeUsername(el.textContent) === userKey) {
                     applyReputationStyleMatch(el, userKey);
                 }
@@ -1624,32 +1522,47 @@ const updateChat = (FCADE, configFull) => {
     }
 
     const activeGameId = getActiveGameId(FCADE);
+    
+    // --- VUE DOM RECYCLING FIX (Assinatura de Nós) ---
+    document.querySelectorAll('.message').forEach(msg => {
+        const isChat = msg.classList.contains('chat');
+        const authorEl = msg.querySelector('span.author');
+        const authorName = authorEl ? normalizeUsername(authorEl.textContent) : 'sys';
+        const signature = isChat ? `chat-${authorName}` : `sys-${msg.className}`;
+
+        if (msg.dataset.cerbSig !== signature) {
+            if (authorEl && authorEl.parentElement) {
+                authorEl.parentElement.querySelectorAll('.cerberus-injected-status').forEach(el => el.remove());
+            }
+            msg.querySelectorAll('.cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
+            
+            const wrapper = msg.closest('.messageWrapper');
+            if (wrapper) wrapper.style.display = '';
+            msg.style.display = '';
+            
+            msg.removeAttribute('data-cerberus-hidden');
+            msg.removeAttribute('data-cerberus-processed');
+            msg.dataset.cerbSig = signature;
+        }
+    });
+
     const newMessages = document.querySelectorAll('.message:not([data-cerberus-processed])');
 
     newMessages.forEach(msg => {
         try {
-            const isChat = msg.classList.contains('chat');
+            msg.dataset.cerberusProcessed = "true";
             
+            const isChat = msg.classList.contains('chat');
             if (!isChat) {
-                msg.dataset.cerberusProcessed = "true";
+                msg.dataset.cerberusHidden = "false";
                 return;
             }
 
             const author = msg.querySelector('span.author');
-            if (!author) {
-                msg.dataset.cerberusProcessed = "true";
-                return;
-            }
+            if (!author) return;
             
             let userKey = normalizeUsername(author.textContent);
-            if (!userKey) {
-                msg.dataset.cerberusProcessed = "true";
-                return;
-            } 
-
-            // Limpeza Estrita
-            author.parentElement.querySelectorAll('.cerberus-injected-status').forEach(el => el.remove());
-            author.querySelectorAll('.cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
+            if (!userKey) return; 
 
             if (queueCfg && queueCfg.enabled && queueCfg.keyword && window.CerberusState.liveMasterOn) {
                 let msgText = '';
@@ -1683,7 +1596,6 @@ const updateChat = (FCADE, configFull) => {
             if (user && user.away === false) statusState = 'online';
             else if (user && user.away === true) statusState = 'away';
 
-            // RANK NUMÉRICO INJEÇÃO
             if (cfg.showNumericRanks && activeGameId) {
                 const numericRank = RankCache.getRank(activeGameId, userKey);
                 if (numericRank !== null) {
@@ -1721,14 +1633,10 @@ const updateChat = (FCADE, configFull) => {
 
             if (cfg.blurMode === 'individual') msg.classList.add('blur-individual');
             
-            msg.dataset.cerberusProcessed = "true";
             if (userKey) msg.dataset.cerberusUser = userKey;
             if (userCountry) msg.dataset.cerberusCountry = userCountry; 
 
-        } catch (e) {
-            console.debug('[Cerberus] Chat message error:', e);
-            msg.dataset.cerberusProcessed = "true"; 
-        }
+        } catch (e) {}
     });
 
     const countryFilterEnabled = filterCfg?.enabled === true;
@@ -1804,7 +1712,6 @@ const updateSidebar = (FCADE, configFull) => {
             
             item.dataset.currentUser = userKey;
 
-            // INJEÇÃO SIDEBAR: Rank Numérico
             if (cfg.showNumericRanks && activeGameId) {
                 const numericRank = RankCache.getRank(activeGameId, userKey);
                 let badge = item.querySelector('.cerb-rank-badge');
@@ -1893,7 +1800,7 @@ const updateSidebar = (FCADE, configFull) => {
                     }
                 }
             }
-        } catch(e) { console.debug('[Cerberus] Sidebar item error:', e); }
+        } catch(e) { }
     });
 
     document.querySelectorAll('.matchesList .matchItem').forEach(match => {
@@ -1941,7 +1848,7 @@ const updateSidebar = (FCADE, configFull) => {
                     match.dataset.countryBlocked = "false";
                 }
             }
-        } catch(e) { console.debug('[Cerberus] Match item error:', e); }
+        } catch(e) { }
     });
     
     if (!countryFilterEnabled) {
@@ -2343,7 +2250,7 @@ function injectStyles() {
         .cerb-clear-chat-fab:hover { background: rgba(50, 50, 60, 0.95); color: #fff; transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.3); }
 
         .cerb-queue-fab {
-            position: absolute; right: 15px; bottom: 100px;
+            position: absolute; right: 15px; bottom: 105px;
             background: rgba(30, 30, 35, 0.9); border: 1px solid rgba(102, 126, 234, 0.4); 
             border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase;
             color: #a3bffa; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease;
@@ -2454,7 +2361,7 @@ function injectStyles() {
         .q-controls button:hover:not(:disabled) { background: rgba(255,255,255,0.1); transform: scale(1.1); }
         .q-controls button:disabled { opacity: 0.3; cursor: not-allowed; }
         .q-controls button.danger:hover { background: rgba(255,68,68,0.2); border-color: #ff4444; }
-        .q-footer { padding: 10px; background: rgba(0,0,0,0.3); text-align: right; border-top: 1px solid rgba(255,255,255,0.05); }
+        .q-footer { padding: 10px; background: rgba(0,0,0,0.3); text-align: right; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
         .q-clear-btn { background: transparent; border: 1px solid rgba(255,68,68,0.4); color: #ff4444; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
         .q-clear-btn:hover { background: rgba(255,68,68,0.2); }
 
@@ -2727,11 +2634,9 @@ function createSettingsTab() {
         let val = ConfigManager.getSetting(key); 
         if (val === undefined || val === null) val = '';
         
-        // Prevenção Crítica: Escapar aspas duplas no valor para não destruir a string HTML do atributo 'value'
         const safeVal = val.toString().replace(/"/g, '&quot;');
         
         if (type === 'textarea') {
-            // Decodificar \\n para quebras de linha reais no textarea
             const displayVal = safeVal.replace(/\\n/g, '\n');
             return `
                 <div class="modern-toggle" style="flex-wrap: wrap;">
@@ -2845,7 +2750,6 @@ function createSettingsTab() {
 
         input.addEventListener('change', handleSettingChange);
 
-        // Para campos de texto/número: salvar ao digitar (com debounce)
         if (input.type === 'text' || input.type === 'number') {
             let inputDebounce = null;
             input.addEventListener('input', (e) => {

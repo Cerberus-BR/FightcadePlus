@@ -50,7 +50,7 @@ const Locales = {
             queuePromo: "Live Promo Msg"
         },
         about: {
-            title: "Fightcade Plus 1.9.2",
+            title: "Fightcade Plus 1.9.9",
             subtitle: "By Cerberus",
             catBot: "🤖 Streamer Tools",
             feat1: "Live Player Queue via chat command (!join)",
@@ -63,6 +63,7 @@ const Locales = {
             feat6: "Country flags, rank letters, and ping info on chat",
             feat7: "Online/Away/Offline status indicators",
             feat8: "Ping displayed as text or bars (configurable)",
+            feat8b: "Real-time player search bar in sidebar",
             catRep: "🛡️ Reputation & Privacy",
             feat9: "Player reputation system (Favorite / Downvote)",
             feat10: "Hide messages from downvoted users",
@@ -72,7 +73,7 @@ const Locales = {
             feat13: "Premium color themes unlock",
             feat14: "Auto-join channel on startup",
             feat15: "Multi-language support (EN/PT/ES)",
-            note: "Vue.js DOM Recycling & Challenge visibility fixed.",
+            note: "Default-Deny CSS Shield (Zero-Blink) implemented.",
             updateBtn: "🔄 Check for Updates",
             updateAvailable: "⚠️ Update Available: "
         },
@@ -106,6 +107,9 @@ const Locales = {
             remove: "Remove Player",
             up: "Move Up",
             down: "Move Down"
+        },
+        sidebar: {
+            search: "🔍 Search player..."
         }
     },
     pt: {
@@ -155,7 +159,7 @@ const Locales = {
             queuePromo: "Mensagem do Bot (a cada 10min)"
         },
         about: {
-            title: "Fightcade Plus 1.9.2",
+            title: "Fightcade Plus 1.9.9",
             subtitle: "By Cerberus",
             catBot: "🤖 Ferramentas para Streamers",
             feat1: "Fila de jogadores via comando no chat (!join)",
@@ -168,16 +172,17 @@ const Locales = {
             feat6: "Bandeiras, letras de rank e ping no chat",
             feat7: "Indicadores de status (Online/Ausente/Offline)",
             feat8: "Ping exibido como texto ou barras (configurável)",
+            feat8b: "Barra de pesquisa de jogadores em tempo real",
             catRep: "🛡️ Reputação e Privacidade",
             feat9: "Sistema de reputação (Destacar / Negativar)",
             feat10: "Ocultar mensagens de usuários negativados",
             feat11: "Modo blur para privacidade em streams",
             catFilter: "🌍 Filtros e Personalização",
             feat12: "Filtro de jogadores por país (tempo real)",
-            feat13: "Desbloqueio de temas de cores premium",
+            feat13: "Desbloqueo de temas de cores premium",
             feat14: "Auto-entrar no canal ao iniciar",
             feat15: "Suporte multi-idioma (EN/PT/ES)",
-            note: "Bug de reciclagem de memória (Convites Ocultos) resolvido.",
+            note: "Escudo CSS Default-Deny. Bug do piscar de ecrã resolvido.",
             updateBtn: "🔄 Verificar Atualizações",
             updateAvailable: "⚠️ Atualização Disponível: "
         },
@@ -185,8 +190,8 @@ const Locales = {
             like: "Destacar (Ignora Filtros)",
             dislike: "Negativar",
             clear: "Limpar Reputação",
-            block: "Bloquear (Fightcade)",
-            unblock: "Desbloquear (Fightcade)"
+            block: "Bloquear",
+            unblock: "Desbloquear"
         },
         motd: {
             clearChat: "LIMPAR CHAT",
@@ -211,6 +216,9 @@ const Locales = {
             remove: "Remover Jogador",
             up: "Subir na Fila",
             down: "Descer na Fila"
+        },
+        sidebar: {
+            search: "🔍 Buscar jogador..."
         }
     },
     es: {
@@ -260,7 +268,7 @@ const Locales = {
             queuePromo: "Msg Promo"
         },
         about: {
-            title: "Fightcade Plus 1.9.2",
+            title: "Fightcade Plus 1.9.9",
             subtitle: "By Cerberus",
             catBot: "🤖 Herramientas para Streamers",
             feat1: "Cola de jugadores vía comando en el chat (!join)",
@@ -273,6 +281,7 @@ const Locales = {
             feat6: "Banderas, letras de rango y ping en el chat",
             feat7: "Indicadores de estado (Online/Ausente/Offline)",
             feat8: "Ping mostrado como texto o barras (configurable)",
+            feat8b: "Barra de búsqueda de jugadores en tiempo real",
             catRep: "🛡️ Reputación y Privacidad",
             feat9: "Sistema de reputación (Destacar / Negativar)",
             feat10: "Ocultar mensajes de usuarios negativos",
@@ -282,7 +291,7 @@ const Locales = {
             feat13: "Desbloqueo de temas de colores premium",
             feat14: "Auto-entrar al canal al iniciar",
             feat15: "Soporte multi-idioma (EN/PT/ES)",
-            note: "Bug de reciclaje del DOM de Vue resuelto.",
+            note: "Escudo CSS Default-Deny implementado.",
             updateBtn: "🔄 Buscar Actualizaciones",
             updateAvailable: "⚠️ Actualización Disponible: "
         },
@@ -316,6 +325,9 @@ const Locales = {
             remove: "Eliminar Jugador",
             up: "Subir",
             down: "Bajar"
+        },
+        sidebar: {
+            search: "🔍 Buscar jugador..."
         }
     }
 };
@@ -371,7 +383,7 @@ const dataPath = path.join(__dirname, 'cerberus_data.json');
 const configPath = path.join(__dirname, 'cerberus_config.json');
 const rankingsPath = path.join(__dirname, 'cerberus_rankings.json');
 
-const CURRENT_VERSION = "1.9.2";
+const CURRENT_VERSION = "1.9.9";
 let runtimeConfig = null;
 let fullConfigCache = null;
 
@@ -383,14 +395,28 @@ window.CerberusState = {
     menuIsHovered: false,
     menuHideTimeout: null,
     menuShowTimeout: null,
-    menuCleanupInterval: null
+    menuCleanupInterval: null,
+    sidebarSearchTerm: '' 
 };
 
 module.exports = (FCADE) => {
     try { runPlugin(FCADE); } catch (e) { console.error("Cerberus Fatal Error:", e); }
 };
 
-// ==================== PERSISTÊNCIA SEGURA ====================
+// ==================== ESCUDO CSS (DEFAULT-DENY) ====================
+function updateFilterShield() {
+    const isCountryActive = ConfigManager.getSetting('countryFilter.enabled') === true;
+    const isHideNegActive = ConfigManager.getSetting('chatUserInfo.hideNegativeMessages') === true;
+    const isSearchActive = (window.CerberusState.sidebarSearchTerm || '') !== '';
+
+    if (isCountryActive || isHideNegActive || isSearchActive) {
+        document.body.classList.add('cerb-filters-active');
+    } else {
+        document.body.classList.remove('cerb-filters-active');
+    }
+}
+
+// ==================== PERSISTÊNCIA SEGURA (Atomic Write) ====================
 function atomicWriteJSON(filePath, data) {
     return new Promise((resolve, reject) => {
         const tmpPath = filePath + '.tmp';
@@ -646,30 +672,7 @@ const RankCache = {
         }
 
         if (window.CerberusFCADE && runtimeConfig && !signal.aborted) {
-            const activeGame = getActiveGameId(window.CerberusFCADE);
-            const cfg = runtimeConfig.chatUserInfo;
-            if (cfg && cfg.showNumericRanks && activeGame) {
-                document.querySelectorAll('.message[data-cerberus-processed]').forEach(msg => {
-                    const author = msg.querySelector('span.author');
-                    if (!author) return;
-                    author.querySelectorAll('.cerb-rank-badge').forEach(el => el.remove());
-                    const userKey = normalizeUsername(author.textContent);
-                    if (!userKey) return;
-                    const numericRank = RankCache.getRank(activeGame, userKey);
-                    if (numericRank !== null) {
-                        const badge = document.createElement('span');
-                        badge.className = 'cerb-rank-badge';
-                        Object.assign(badge.style, {
-                            fontSize: '12px', fontWeight: 'normal', color: '#ffd700',
-                            backgroundColor: 'transparent', border: 'none',
-                            padding: '0', marginRight: '5px',
-                            verticalAlign: 'middle', display: 'inline-block'
-                        });
-                        badge.textContent = `🏅${numericRank}`;
-                        author.appendChild(badge);
-                    }
-                });
-            }
+            fullChatScan(window.CerberusFCADE, runtimeConfig);
             updateSidebar(window.CerberusFCADE, runtimeConfig);
         }
     }
@@ -677,10 +680,8 @@ const RankCache = {
 
 // ==================== GESTÃO DE ESTADO (CerberusData) ====================
 function invalidateCountryFilterCache() {
-    unfilterAllMessages();
-    unfilterAllUsers();
     if (window.CerberusFCADE && runtimeConfig) {
-        updateChat(window.CerberusFCADE, runtimeConfig);
+        fullChatScan(window.CerberusFCADE, runtimeConfig);
         updateSidebar(window.CerberusFCADE, runtimeConfig);
     }
 }
@@ -828,6 +829,7 @@ const ConfigManager = {
             fullConfigCache = { cerberus: runtimeConfig };
             this.saveConfig(); 
         }
+        updateFilterShield();
     },
     saveConfig() {
         clearTimeout(configSaveTimeout);
@@ -848,14 +850,16 @@ const ConfigManager = {
         this.saveConfig();
 
         if (pathStr.startsWith('chatUserInfo.') && pathStr !== 'chatUserInfo.replacePingBarWithText') {
-            document.querySelectorAll('.message').forEach(msg => {
-                msg.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
-                msg.removeAttribute('data-cerberus-processed');
-                msg.removeAttribute('data-cerberus-sig');
+            document.querySelectorAll('.messageWrapper').forEach(wrapper => {
+                wrapper.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
+                wrapper.removeAttribute('data-cerberus-processed');
+                wrapper.removeAttribute('data-cerb-identity'); 
             });
+            if (window.CerberusFCADE) fullChatScan(window.CerberusFCADE, runtimeConfig);
         }
         
         if (pathStr === 'countryFilter.enabled' || pathStr === 'chatUserInfo.hideNegativeMessages') {
+            updateFilterShield();
             invalidateCountryFilterCache();
         }
         
@@ -947,6 +951,11 @@ window.changeCerberusLanguage = function(lang) {
             createQueuePanel();
         }
     }
+
+    const searchInput = document.getElementById('cerbPlayerSearchInput');
+    if (searchInput) {
+        searchInput.placeholder = t('sidebar.search');
+    }
 };
 
 function normalizeUsername(username) { return !username ? '' : username.replace(/\s+/g, ' ').trim(); }
@@ -960,22 +969,19 @@ function extractMinPing(title) {
 function getMinPing(userFound) { return extractMinPing(userFound?.pingTitle); }
 
 function unfilterAllMessages() {
-    document.querySelectorAll('.message').forEach(msg => {
-        if (msg.dataset.cerberusHidden) {
-            const wrapper = msg.closest('.messageWrapper');
-            if (wrapper) wrapper.style.display = '';
-            msg.style.display = '';
-            msg.removeAttribute('data-cerberus-hidden');
-        }
+    document.querySelectorAll('.messageWrapper').forEach(wrapper => {
+        wrapper.style.display = '';
+        wrapper.removeAttribute('data-cerberus-hidden');
+        const msg = wrapper.querySelector('.message');
+        if(msg) msg.style.display = '';
     });
 }
 
 function unfilterAllUsers() {
     document.querySelectorAll('.userItem, .matchesList .matchItem').forEach(el => {
-        if (el.dataset.countryBlocked) {
-            el.style.display = '';
-            el.removeAttribute('data-country-blocked');
-        }
+        el.style.display = '';
+        el.removeAttribute('data-country-blocked');
+        el.removeAttribute('data-cerb-search-hidden');
     });
 }
 
@@ -1045,6 +1051,9 @@ const runPlugin = (FCADE) => {
     ConfigManager.loadConfig();
     RankCache.load();
     window.CerberusState.replyQueue = [];
+    window.CerberusState.sidebarSearchTerm = '';
+    
+    updateFilterShield();
 
     checkForUpdates();
 
@@ -1064,10 +1073,11 @@ const runPlugin = (FCADE) => {
     mainLoopInterval = setInterval(() => {
         try {
             injectHeaderButtons(FCADE);
+            injectSidebarSearch(); 
             injectUIEnhancements(); 
-            maintainChatObserver(FCADE, runtimeConfig.chatUserInfo);
-            updateSidebar(FCADE, runtimeConfig);
-            updateChat(FCADE, runtimeConfig);
+            
+            maintainChatObserver(FCADE, runtimeConfig);
+            maintainSidebarObserver(FCADE, runtimeConfig);
 
             if (runtimeConfig.chatUserInfo?.unlockColorThemes !== false) {
                 unlockColorThemes();
@@ -1117,7 +1127,7 @@ function triggerPromoBot() {
     executeChatMacro(lines);
 }
 
-// ==================== HEADER BUTTONS ====================
+// ==================== UI INJECTIONS (RESTORED) ====================
 function injectHeaderButtons(FCADE) {
     const headerTitle = document.querySelector('.usersOnlineTitle');
     if (!headerTitle) return;
@@ -1194,7 +1204,63 @@ function injectHeaderButtons(FCADE) {
     }
 }
 
-// ==================== UI / FAB INJECTION ====================
+function injectSidebarSearch() {
+    const headerTitle = document.querySelector('.usersOnlineTitle');
+    if (!headerTitle) return;
+
+    if (!document.getElementById('cerbPlayerSearchContainer')) {
+        const container = document.createElement('div');
+        container.id = 'cerbPlayerSearchContainer';
+        
+        Object.assign(container.style, {
+            padding: '6px 12px',
+            background: 'rgba(0,0,0,0.15)',
+            borderBottom: '1px solid rgba(255,255,255,0.05)',
+            flexShrink: '0',
+            width: '100%',
+            boxSizing: 'border-box',
+            display: 'flex',
+            alignItems: 'center'
+        });
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = 'cerbPlayerSearchInput';
+        input.placeholder = t('sidebar.search'); 
+        
+        Object.assign(input.style, {
+            width: '100%',
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '4px',
+            color: '#fff',
+            padding: '5px 8px',
+            fontSize: '12px',
+            outline: 'none',
+            boxSizing: 'border-box',
+            transition: 'border-color 0.2s'
+        });
+
+        input.addEventListener('focus', () => input.style.borderColor = '#667eea');
+        input.addEventListener('blur', () => input.style.borderColor = 'rgba(255,255,255,0.1)');
+
+        let searchDebounce;
+        input.addEventListener('input', (e) => {
+            clearTimeout(searchDebounce);
+            searchDebounce = setTimeout(() => {
+                window.CerberusState.sidebarSearchTerm = e.target.value.toLowerCase().trim();
+                updateFilterShield();
+                if(window.CerberusFCADE && runtimeConfig) {
+                    updateSidebar(window.CerberusFCADE, runtimeConfig);
+                }
+            }, 300);
+        });
+
+        container.appendChild(input);
+        headerTitle.parentNode.insertBefore(container, headerTitle.nextSibling);
+    }
+}
+
 function injectUIEnhancements() {
     const chatWrapper = document.querySelector('.chatWrapper');
     if (!chatWrapper) return;
@@ -1245,7 +1311,6 @@ function injectUIEnhancements() {
     }
 }
 
-// ==================== LIVE QUEUE PANEL ====================
 function createQueuePanel() {
     if (document.getElementById('cerberusQueueWindow')) return;
 
@@ -1380,40 +1445,6 @@ function renderQueueList() {
     });
 }
 
-// ==================== MUTATION OBSERVER DO CHAT ====================
-let currentChatContent = null;
-let chatObserver = null;
-
-function maintainChatObserver(FCADE, cfg) {
-    const chatContent = document.querySelector('.chatContent');
-    if (chatContent && chatContent !== currentChatContent) {
-        if (chatObserver) chatObserver.disconnect();
-        
-        currentChatContent = chatContent;
-        chatObserver = new MutationObserver((mutations) => {
-            let hasValidNewNodes = false;
-            for (let mut of mutations) {
-                if (mut.addedNodes.length > 0) {
-                    for (let node of mut.addedNodes) {
-                        if (node.nodeType === 1 && node.classList && node.classList.contains('cerberus-injected-flag')) continue;
-                        hasValidNewNodes = true;
-                        break;
-                    }
-                }
-                if (hasValidNewNodes) break;
-            }
-            if (hasValidNewNodes) {
-                try { updateChat(FCADE, cfg); } catch (err) {}
-            }
-        });
-        
-        chatObserver.observe(chatContent, { childList: true, subtree: true });
-        
-        try { updateChat(FCADE, cfg); } catch (e) {}
-    }
-}
-
-// ==================== UI INJECTION ====================
 function injectGlobalMenu() {
     if (document.getElementById('cerbGlobalMenu')) return;
     
@@ -1503,181 +1534,273 @@ function injectGlobalMenu() {
     };
 }
 
-// ==================== CORE PROCESSING (CHAT & SIDEBAR) ====================
+// ==================== MOTORES O(1) & MICRO-DEBOUNCE ====================
+let currentChatContent = null;
+let chatObserver = null;
+let chatUpdatePending = false;
+const wrappersToProcess = new Set();
 
-const updateChat = (FCADE, configFull) => {
-    document.querySelectorAll('.messageWrapper:not(.motd) .cerb-motd-update-notice').forEach(el => el.remove());
-    document.querySelectorAll('.messageWrapper .cerb-clear-chat-btn').forEach(el => el.remove());
-
+function processCollectedWrappers(FCADE, configFull) {
+    if (wrappersToProcess.size === 0) return;
+    const activeGameId = getActiveGameId(FCADE);
+    const globalUsers = FCADE.globalUsers;
     const cfg = configFull.chatUserInfo;
     const filterCfg = configFull.countryFilter;
     const queueCfg = configFull.liveQueue;
-    const globalUsers = FCADE.globalUsers;
-    if (!globalUsers || !cfg) return;
 
+    wrappersToProcess.forEach(wrapper => {
+        checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, globalUsers, activeGameId);
+    });
+    wrappersToProcess.clear();
+}
+
+function maintainChatObserver(FCADE, configFull) {
     const chatContent = document.querySelector('.chatContent');
-    if (chatContent) {
-        if (cfg.blurMode === 'all') chatContent.classList.add('blur-all');
+    if (chatContent && chatContent !== currentChatContent) {
+        if (chatObserver) chatObserver.disconnect();
+        currentChatContent = chatContent;
+        
+        chatObserver = new MutationObserver((mutations) => {
+            mutations.forEach(mut => {
+                if (mut.type === 'childList') {
+                    mut.addedNodes.forEach(node => {
+                        if (node.nodeType === 1) {
+                            if (node.classList && node.classList.contains('messageWrapper')) {
+                                wrappersToProcess.add(node);
+                            } else {
+                                const w = node.closest('.messageWrapper');
+                                if (w) wrappersToProcess.add(w);
+                            }
+                        }
+                    });
+                } else if (mut.type === 'attributes') {
+                    const w = mut.target.closest('.messageWrapper');
+                    if (w) wrappersToProcess.add(w);
+                }
+            });
+
+            if (wrappersToProcess.size > 0 && !chatUpdatePending) {
+                chatUpdatePending = true;
+                Promise.resolve().then(() => {
+                    try { processCollectedWrappers(FCADE, configFull); } catch(e){}
+                    chatUpdatePending = false;
+                });
+            }
+        });
+        
+        chatObserver.observe(chatContent, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+        fullChatScan(FCADE, configFull);
+    }
+    
+    if (chatContent && configFull.chatUserInfo) {
+        if (configFull.chatUserInfo.blurMode === 'all') chatContent.classList.add('blur-all');
         else chatContent.classList.remove('blur-all');
     }
+}
 
-    const activeGameId = getActiveGameId(FCADE);
-    
-    // --- VUE DOM RECYCLING FIX (Assinatura de Nós) ---
-    document.querySelectorAll('.message').forEach(msg => {
-        const isChat = msg.classList.contains('chat');
-        const authorEl = msg.querySelector('span.author');
-        const authorName = authorEl ? normalizeUsername(authorEl.textContent) : 'sys';
-        const signature = isChat ? `chat-${authorName}` : `sys-${msg.className}`;
+let sidebarObserver = null;
+let currentSidebarContent = null;
+let sidebarUpdatePending = false;
 
-        if (msg.dataset.cerbSig !== signature) {
-            if (authorEl && authorEl.parentElement) {
-                authorEl.parentElement.querySelectorAll('.cerberus-injected-status').forEach(el => el.remove());
-            }
-            msg.querySelectorAll('.cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
-            
-            const wrapper = msg.closest('.messageWrapper');
-            if (wrapper) wrapper.style.display = '';
-            msg.style.display = '';
-            
-            msg.removeAttribute('data-cerberus-hidden');
-            msg.removeAttribute('data-cerberus-processed');
-            msg.dataset.cerbSig = signature;
-        }
-    });
+function maintainSidebarObserver(FCADE, configFull) {
+    const sidebarContent = document.querySelector('.usersListWrapper');
+    if (sidebarContent && sidebarContent !== currentSidebarContent) {
+        if (sidebarObserver) sidebarObserver.disconnect();
+        currentSidebarContent = sidebarContent;
+        
+        sidebarObserver = new MutationObserver(() => {
+            if (sidebarUpdatePending) return;
+            sidebarUpdatePending = true;
+            setTimeout(() => {
+                try { updateSidebar(FCADE, configFull); } catch(e) {}
+                sidebarUpdatePending = false;
+            }, 50);
+        });
+        
+        sidebarObserver.observe(sidebarContent, { childList: true, subtree: true });
+        try { updateSidebar(FCADE, configFull); } catch(e) {}
+    }
+}
 
-    const newMessages = document.querySelectorAll('.message:not([data-cerberus-processed])');
+// ==================== PROCESSAMENTO ISOLADO (O(1)) ====================
+function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, globalUsers, activeGameId) {
+    let identity = wrapper.className;
+    const authorEl = wrapper.querySelector('span.author');
+    if (authorEl) {
+        identity += '-' + authorEl.textContent.trim();
+    } else {
+        const chalName = wrapper.querySelector('.challengeContent .name');
+        if (chalName) identity += '-chal-' + chalName.textContent.trim();
+        else identity += '-' + (wrapper.textContent.substring(0, 20).trim()); 
+    }
 
-    newMessages.forEach(msg => {
-        try {
-            msg.dataset.cerberusProcessed = "true";
-            
-            const isChat = msg.classList.contains('chat');
-            if (!isChat) {
-                msg.dataset.cerberusHidden = "false";
-                return;
-            }
+    if (wrapper.dataset.cerbIdentity !== identity) {
+        wrapper.removeAttribute('data-cerberus-processed');
+        wrapper.removeAttribute('data-cerberus-hidden');
+        wrapper.style.display = '';
+        wrapper.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
+        wrapper.dataset.cerbIdentity = identity;
+    }
 
-            const author = msg.querySelector('span.author');
-            if (!author) return;
-            
-            let userKey = normalizeUsername(author.textContent);
-            if (!userKey) return; 
+    if (!wrapper.dataset.cerberusProcessed) {
+        
+        const isImmuneSystem = wrapper.querySelector('.endgameMessageWrapper') !== null || 
+                               wrapper.classList.contains('endgame') ||
+                               wrapper.classList.contains('challengeRequested') || 
+                               wrapper.classList.contains('requestChallenge');
 
-            if (queueCfg && queueCfg.enabled && queueCfg.keyword && window.CerberusState.liveMasterOn) {
-                let msgText = '';
-                msg.querySelectorAll('.blocksContainer .blocks .regular').forEach(span => {
-                    msgText += span.textContent;
-                });
-                msgText = msgText.trim().toLowerCase();
-                
-                const streamerNick = queueCfg.streamerNick || '';
-                
-                if (msgText === queueCfg.keyword.toLowerCase() && userKey.toLowerCase() !== streamerNick.toLowerCase()) {
-                    const wasAdded = CerberusData.addQueue(userKey);
-                    if (wasAdded) {
-                        playPopSound();
-                        if (!window.CerberusState.replyQueue) window.CerberusState.replyQueue = [];
-                        window.CerberusState.replyQueue.push(userKey);
+        if (isImmuneSystem) {
+            wrapper.dataset.cerberusHidden = "false";
+            wrapper.style.display = ''; 
+        } else {
+            const msg = wrapper.querySelector('.message.chat');
+            if (msg) {
+                const author = msg.querySelector('span.author');
+                if (author) {
+                    let userKey = normalizeUsername(author.textContent);
+                    if (userKey) {
+                        
+                        if (queueCfg && queueCfg.enabled && queueCfg.keyword && window.CerberusState.liveMasterOn) {
+                            let msgText = '';
+                            msg.querySelectorAll('.blocksContainer .blocks .regular').forEach(span => { msgText += span.textContent; });
+                            msgText = msgText.trim().toLowerCase();
+                            const streamerNick = queueCfg.streamerNick || '';
+                            if (msgText === queueCfg.keyword.toLowerCase() && userKey.toLowerCase() !== streamerNick.toLowerCase()) {
+                                const wasAdded = CerberusData.addQueue(userKey);
+                                if (wasAdded) {
+                                    playPopSound();
+                                    if (!window.CerberusState.replyQueue) window.CerberusState.replyQueue = [];
+                                    window.CerberusState.replyQueue.push(userKey);
+                                }
+                            }
+                        }
+
+                        const user = globalUsers[userKey];
+                        let userCountry = user ? user.country?.iso_code?.toUpperCase() : null;
+                        const activeChannelId = FCADE.activeChannelId;
+                        const usersList = FCADE.$refs[activeChannelId]?.[0]?.$refs?.usersList;
+                        const userFound = usersList?.$children?.find(ch => ch?.user?.id === userKey);
+                        const minPingVal = getMinPing(userFound);
+
+                        let statusState = 'offline';
+                        if (user && user.away === false) statusState = 'online';
+                        else if (user && user.away === true) statusState = 'away';
+
+                        if (cfg.showNumericRanks && activeGameId) {
+                            const numericRank = RankCache.getRank(activeGameId, userKey);
+                            if (numericRank !== null) {
+                                const badge = document.createElement('span');
+                                badge.className = 'cerb-rank-badge';
+                                Object.assign(badge.style, { fontSize: '12px', fontWeight: 'normal', color: '#ffd700', backgroundColor: 'transparent', border: 'none', padding: '0', marginRight: '5px', verticalAlign: 'middle', display: 'inline-block' });
+                                badge.textContent = `🏅${numericRank}`;
+                                author.appendChild(badge);
+                            }
+                        }
+
+                        const elements = {
+                            status: cfg.enableStatus ? createStatusElement(statusState) : null,
+                            flag: (cfg.enableFlag && user?.country) ? createFlagElement(user.country) : null,
+                            rank: (cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle) : null,
+                            pingBar: (cfg.enablePingBars && userFound?.pingSrc) ? createPingElement(userFound.pingSrc, userFound.pingTitle) : null,
+                            pingText: (cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal) : null
+                        };
+
+                        if (cfg.enableReputation && userKey !== '<offline>' && !userKey.startsWith('<')) {
+                            applyReputationStyleChat(author, wrapper, userKey, false);
+                            addReputationControlsToElement(author, wrapper, userKey, 'chat', cfg.hideNegativeMessages);
+                        }
+
+                        if (elements.status) author.parentElement.insertBefore(elements.status, author);
+                        if (elements.flag) author.appendChild(elements.flag);
+                        if (elements.rank) author.appendChild(elements.rank);
+                        if (elements.pingBar) author.appendChild(elements.pingBar);
+                        if (elements.pingText) author.appendChild(elements.pingText);
+
+                        if (cfg.blurMode === 'individual') msg.classList.add('blur-individual');
+                        
+                        wrapper.dataset.cerberusUser = userKey;
+                        if (userCountry) wrapper.dataset.cerberusCountry = userCountry;
                     }
                 }
+            } else {
+                wrapper.dataset.cerberusHidden = "false";
+                wrapper.style.display = '';
             }
-
-            const user = globalUsers[userKey];
-            let userCountry = null;
-            if (user) userCountry = user.country?.iso_code?.toUpperCase();
-            
-            const activeChannelId = FCADE.activeChannelId;
-            const usersList = FCADE.$refs[activeChannelId]?.[0]?.$refs?.usersList;
-            const userFound = usersList?.$children?.find(ch => ch?.user?.id === userKey);
-            const minPingVal = getMinPing(userFound);
-
-            let statusState = 'offline';
-            if (user && user.away === false) statusState = 'online';
-            else if (user && user.away === true) statusState = 'away';
-
-            if (cfg.showNumericRanks && activeGameId) {
-                const numericRank = RankCache.getRank(activeGameId, userKey);
-                if (numericRank !== null) {
-                    const badge = document.createElement('span');
-                    badge.className = 'cerb-rank-badge';
-                    Object.assign(badge.style, {
-                        fontSize: '12px', fontWeight: 'normal', color: '#ffd700',
-                        backgroundColor: 'transparent', border: 'none',
-                        padding: '0', marginRight: '5px',
-                        verticalAlign: 'middle', display: 'inline-block'
-                    });
-                    badge.textContent = `🏅${numericRank}`;
-                    author.appendChild(badge);
-                }
-            }
-
-            const elements = {
-                status: cfg.enableStatus ? createStatusElement(statusState) : null,
-                flag: (cfg.enableFlag && user?.country) ? createFlagElement(user.country) : null,
-                rank: (cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle) : null,
-                pingBar: (cfg.enablePingBars && userFound?.pingSrc) ? createPingElement(userFound.pingSrc, userFound.pingTitle) : null,
-                pingText: (cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal) : null
-            };
-
-            if (cfg.enableReputation && userKey !== '<offline>' && !userKey.startsWith('<')) {
-                applyReputationStyleChat(author, msg, userKey, false);
-                addReputationControlsToElement(author, msg, userKey, 'chat', cfg.hideNegativeMessages);
-            }
-
-            if (elements.status) author.parentElement.insertBefore(elements.status, author);
-            if (elements.flag) author.appendChild(elements.flag);
-            if (elements.rank) author.appendChild(elements.rank);
-            if (elements.pingBar) author.appendChild(elements.pingBar);
-            if (elements.pingText) author.appendChild(elements.pingText);
-
-            if (cfg.blurMode === 'individual') msg.classList.add('blur-individual');
-            
-            if (userKey) msg.dataset.cerberusUser = userKey;
-            if (userCountry) msg.dataset.cerberusCountry = userCountry; 
-
-        } catch (e) {}
-    });
+        }
+        
+        wrapper.dataset.cerberusProcessed = "true";
+    }
 
     const countryFilterEnabled = filterCfg?.enabled === true;
     const hideNeg = cfg?.hideNegativeMessages;
 
-    if (!countryFilterEnabled && !hideNeg) {
-        unfilterAllMessages();
-        return; 
+    const isImmuneSystem = wrapper.querySelector('.endgameMessageWrapper') !== null || 
+                           wrapper.classList.contains('endgame') ||
+                           wrapper.classList.contains('challengeRequested') || 
+                           wrapper.classList.contains('requestChallenge');
+
+    if (isImmuneSystem || (!countryFilterEnabled && !hideNeg)) {
+         if (wrapper.dataset.cerberusHidden === "true") {
+             wrapper.style.display = '';
+             wrapper.dataset.cerberusHidden = "false";
+         }
+         return;
     }
 
-    const messagesToFilter = document.querySelectorAll('.message:not([data-cerberus-hidden="true"]):not([data-cerberus-hidden="false"])');
-    messagesToFilter.forEach(msg => {
-        const userKey = msg.dataset.cerberusUser;
-        const userCountry = msg.dataset.cerberusCountry;
-        
-        if (!userKey || userKey === '<offline>' || userKey.startsWith('<')) {
-            msg.dataset.cerberusHidden = "false";
-            return;
+    const msgNode = wrapper.querySelector('.message.chat');
+    if (!msgNode) {
+        if (wrapper.dataset.cerberusHidden === "true") {
+            wrapper.style.display = '';
+            wrapper.dataset.cerberusHidden = "false";
         }
+        return;
+    }
 
-        let shouldHide = false;
-        if (hideNeg && CerberusData.isNegative(userKey)) {
+    const userKey = wrapper.dataset.cerberusUser;
+    const userCountry = wrapper.dataset.cerberusCountry;
+    
+    if (!userKey || userKey === '<offline>' || userKey.startsWith('<')) {
+        if (wrapper.dataset.cerberusHidden === "true") {
+            wrapper.style.display = '';
+            wrapper.dataset.cerberusHidden = "false";
+        }
+        return;
+    }
+
+    let shouldHide = false;
+    if (hideNeg && CerberusData.isNegative(userKey)) {
+        shouldHide = true;
+    } else if (countryFilterEnabled && userCountry) {
+        if (!CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(userKey)) {
             shouldHide = true;
-        } else if (countryFilterEnabled && userCountry) {
-            if (!CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(userKey)) {
-                shouldHide = true;
-            }
         }
+    }
 
-        const wrapper = msg.closest('.messageWrapper');
-        if (shouldHide) {
-            if (wrapper) wrapper.style.display = 'none';
-            msg.style.display = 'none';
-            msg.dataset.cerberusHidden = "true";
-        } else {
-            if (wrapper) wrapper.style.display = '';
-            msg.style.display = '';
-            msg.dataset.cerberusHidden = "false";
+    if (shouldHide) {
+        if (wrapper.dataset.cerberusHidden !== "true") {
+            wrapper.style.display = 'none';
+            wrapper.dataset.cerberusHidden = "true";
         }
+    } else {
+        if (wrapper.dataset.cerberusHidden !== "false") {
+            wrapper.style.display = '';
+            wrapper.dataset.cerberusHidden = "false";
+        }
+    }
+}
+
+function fullChatScan(FCADE, configFull) {
+    const activeGameId = getActiveGameId(FCADE);
+    const globalUsers = FCADE.globalUsers;
+    if(!globalUsers) return;
+    const cfg = configFull.chatUserInfo;
+    const filterCfg = configFull.countryFilter;
+    const queueCfg = configFull.liveQueue;
+
+    document.querySelectorAll('.messageWrapper').forEach(wrapper => {
+        checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, globalUsers, activeGameId);
     });
-};
+}
 
 const updateSidebar = (FCADE, configFull) => {
     const globalUsers = FCADE.globalUsers;
@@ -1686,6 +1809,7 @@ const updateSidebar = (FCADE, configFull) => {
     const cfg = configFull.chatUserInfo;
     const countryFilterEnabled = configFull.countryFilter?.enabled === true;
     const activeGameId = getActiveGameId(FCADE);
+    const searchTerm = window.CerberusState.sidebarSearchTerm || '';
 
     if (cfg?.replacePingBarWithText) {
         document.body.classList.add('cerb-hide-sidebar-ping');
@@ -1709,8 +1833,23 @@ const updateSidebar = (FCADE, configFull) => {
 
             const userKey = normalizeUsername(playerNameEl.textContent);
             if (!userKey) return; 
+
+            // IDENTITY TRACKER SIDEBAR
+            if (item.dataset.cerbIdentity !== userKey) {
+                item.removeAttribute('data-cerberus-processed');
+                item.removeAttribute('data-cerb-search-hidden');
+                item.removeAttribute('data-country-blocked');
+                item.style.display = '';
+                item.querySelectorAll('.cerberus-ping-text, .cerb-rank-badge').forEach(el => el.remove());
+                item.dataset.cerbIdentity = userKey;
+            }
             
             item.dataset.currentUser = userKey;
+
+            let matchesSearch = true;
+            if (searchTerm !== '') {
+                matchesSearch = userKey.toLowerCase().includes(searchTerm);
+            }
 
             if (cfg.showNumericRanks && activeGameId) {
                 const numericRank = RankCache.getRank(activeGameId, userKey);
@@ -1779,33 +1918,35 @@ const updateSidebar = (FCADE, configFull) => {
                  }
             }
 
-            if (countryFilterEnabled && userKey !== '<offline>' && !userKey.startsWith('<')) {
-                let userCountry = globalUsers[userKey]?.country?.iso_code?.toUpperCase();
-                if (!userCountry) {
-                    const flagEl = item.querySelector('.flagWrapper');
-                    if (flagEl && flagEl.title) {
-                        userCountry = COUNTRY_NAME_TO_CODE[flagEl.title];
-                    }
-                }
-
-                if (userCountry && !CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(userKey)) {
-                    if (item.dataset.countryBlocked !== "true") {
-                        item.style.display = 'none';
-                        item.dataset.countryBlocked = "true";
-                    }
-                } else {
-                    if (item.dataset.countryBlocked !== "false") {
-                        item.style.display = '';
-                        item.dataset.countryBlocked = "false";
-                    }
+            let userCountry = globalUsers[userKey]?.country?.iso_code?.toUpperCase();
+            if (!userCountry) {
+                const flagEl = item.querySelector('.flagWrapper');
+                if (flagEl && flagEl.title) {
+                    userCountry = COUNTRY_NAME_TO_CODE[flagEl.title];
                 }
             }
+
+            let isBlockedByCountry = countryFilterEnabled && userCountry && !CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(userKey);
+
+            if (!matchesSearch || isBlockedByCountry) {
+                item.style.display = 'none';
+                item.dataset.cerbSearchHidden = !matchesSearch ? "true" : "false";
+                item.dataset.countryBlocked = isBlockedByCountry ? "true" : "false";
+            } else {
+                item.style.display = '';
+                item.dataset.cerbSearchHidden = "false";
+                item.dataset.countryBlocked = "false";
+            }
+
+            item.dataset.cerberusProcessed = "true";
         } catch(e) { }
     });
 
     document.querySelectorAll('.matchesList .matchItem').forEach(match => {
         try {
             let shouldHideMatch = countryFilterEnabled; 
+            let matchesSearch = false;
+            let identity = '';
 
             const players = match.querySelectorAll('.playerInfo');
             players.forEach(playerInfo => {
@@ -1815,7 +1956,12 @@ const updateSidebar = (FCADE, configFull) => {
                 const userKey = normalizeUsername(playerNameEl.textContent);
                 if (!userKey) return;
                 
+                identity += userKey + '-';
                 playerInfo.dataset.currentUser = userKey;
+
+                if (searchTerm === '' || userKey.toLowerCase().includes(searchTerm)) {
+                    matchesSearch = true;
+                }
                 
                 if (cfg?.enableReputation) {
                     applyReputationStyleMatch(playerNameEl, userKey);
@@ -1837,31 +1983,35 @@ const updateSidebar = (FCADE, configFull) => {
                 }
             });
 
-            if (countryFilterEnabled && shouldHideMatch && players.length > 0) {
-                if (match.dataset.countryBlocked !== "true") {
-                    match.style.display = 'none';
-                    match.dataset.countryBlocked = "true";
-                }
-            } else {
-                if (match.dataset.countryBlocked !== "false") {
-                    match.style.display = '';
-                    match.dataset.countryBlocked = "false";
-                }
+            if (match.dataset.cerbIdentity !== identity) {
+                match.removeAttribute('data-cerberus-processed');
+                match.removeAttribute('data-country-blocked');
+                match.style.display = '';
+                match.dataset.cerbIdentity = identity;
             }
+
+            if ((searchTerm !== '' && !matchesSearch) || (countryFilterEnabled && shouldHideMatch && players.length > 0)) {
+                match.style.display = 'none';
+                match.dataset.countryBlocked = "true";
+            } else {
+                match.style.display = '';
+                match.dataset.countryBlocked = "false";
+            }
+
+            match.dataset.cerberusProcessed = "true";
         } catch(e) { }
     });
-    
-    if (!countryFilterEnabled) {
-        unfilterAllUsers();
-    }
 };
 
-// ==================== UI HELPERS ====================
-function applyReputationStyleChat(author, msg, userKey, hideNegative) {
+// ==================== UI HELPERS (RESTORED) ====================
+function applyReputationStyleChat(author, wrapper, userKey, hideNegative) {
     author.style.color = '';
     author.style.fontWeight = '';
     author.style.textShadow = '';
     author.style.textDecoration = '';
+    
+    const msg = wrapper.querySelector('.message.chat') || wrapper;
+
     msg.style.backgroundColor = '';
     msg.style.borderLeft = '';
     msg.style.paddingLeft = '';
@@ -2007,16 +2157,16 @@ function reprocessUserMessages(userKey, hideNegative) {
     const menu = document.getElementById('cerbGlobalMenu');
     if (menu) menu.classList.remove('visible');
 
-    document.querySelectorAll('.message').forEach(msg => {
-        if (msg.dataset.cerberusUser === userKey) {
-            if (msg.classList.contains('chat')) {
+    document.querySelectorAll('.messageWrapper').forEach(wrapper => {
+        if (wrapper.dataset.cerberusUser === userKey) {
+            const msg = wrapper.querySelector('.message.chat');
+            if (msg) {
                 const author = msg.querySelector('span.author');
-                if (author) applyReputationStyleChat(author, msg, userKey, hideNegative);
+                if (author) applyReputationStyleChat(author, wrapper, userKey, hideNegative);
             }
-            const wrapper = msg.closest('.messageWrapper');
-            if (wrapper) wrapper.style.display = '';
-            msg.style.display = '';
-            msg.removeAttribute('data-cerberus-hidden');
+            wrapper.style.display = '';
+            wrapper.removeAttribute('data-cerberus-hidden');
+            wrapper.removeAttribute('data-cerberus-processed'); // Força reavaliação do CSS Shield
         }
     });
 
@@ -2026,6 +2176,7 @@ function reprocessUserMessages(userKey, hideNegative) {
             applyReputationStyleList(name, item, userKey);
             item.style.display = '';
             item.removeAttribute('data-country-blocked');
+            item.removeAttribute('data-cerberus-processed'); // Força reavaliação do CSS Shield
         }
     });
 
@@ -2040,11 +2191,12 @@ function reprocessUserMessages(userKey, hideNegative) {
         if (hasUser) {
             match.style.display = '';
             match.removeAttribute('data-country-blocked');
+            match.removeAttribute('data-cerberus-processed'); // Força reavaliação do CSS Shield
         }
     });
 
     if (runtimeConfig && window.CerberusFCADE) {
-        updateChat(window.CerberusFCADE, runtimeConfig);
+        fullChatScan(window.CerberusFCADE, runtimeConfig);
         updateSidebar(window.CerberusFCADE, runtimeConfig);
     }
 }
@@ -2198,6 +2350,13 @@ function injectStyles() {
     const style = document.createElement('style');
     style.id = 'cerberusStyles';
     style.textContent = `
+        /* Default-Deny CSS Shield (Zero-Blink) */
+        body.cerb-filters-active .userItem:not([data-cerberus-processed="true"]),
+        body.cerb-filters-active .matchItem:not([data-cerberus-processed="true"]),
+        body.cerb-filters-active .messageWrapper:not([data-cerberus-processed="true"]) {
+            display: none !important;
+        }
+
         /* Settings Panel Inputs */
         #settingsTab textarea::selection, #settingsTab input::selection { background: rgba(100, 149, 237, 0.5); color: #fff; }
         #settingsTab textarea::-moz-selection, #settingsTab input::-moz-selection { background: rgba(100, 149, 237, 0.5); color: #fff; }
@@ -2250,7 +2409,7 @@ function injectStyles() {
         .cerb-clear-chat-fab:hover { background: rgba(50, 50, 60, 0.95); color: #fff; transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.3); }
 
         .cerb-queue-fab {
-            position: absolute; right: 15px; bottom: 105px;
+            position: absolute; right: 15px; bottom: 100px;
             background: rgba(30, 30, 35, 0.9); border: 1px solid rgba(102, 126, 234, 0.4); 
             border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase;
             color: #a3bffa; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease;
@@ -2386,7 +2545,7 @@ function createControlPanel() {
                 <span>🐺</span>
                 <span>${t('panelTitle')}</span>
             </div>
-            <button class="closeBtn" id="cerbPanelCloseBtn">×</button>
+            <button class="closeBtn" onclick="document.getElementById('cerberusPanel').style.display='none'">×</button>
         </div>
         <div class="tabs">
             <button class="tab" data-tab="countries" id="countriesTabBtn">${t('tabs.countries')}</button>
@@ -2402,10 +2561,6 @@ function createControlPanel() {
 
     document.body.appendChild(panel);
     makeDraggable(panel, 'cerberusHeader');
-
-    document.getElementById('cerbPanelCloseBtn').addEventListener('click', () => {
-        document.getElementById('cerberusPanel').style.display = 'none';
-    });
 
     panel.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -2530,15 +2685,8 @@ function createCountriesTab() {
         <div id="countriesContainer"></div>
     `;
 
-    document.getElementById('allowAllBtn').addEventListener('click', () => { 
-        CerberusData.allowAllCountries(); 
-        updateCountryList(); 
-    });
-    
-    document.getElementById('clearAllBtn').addEventListener('click', () => { 
-        CerberusData.clearAllCountries(); 
-        updateCountryList(); 
-    });
+    document.getElementById('allowAllBtn').onclick = () => { CerberusData.allowAllCountries(); updateCountryList(); };
+    document.getElementById('clearAllBtn').onclick = () => { CerberusData.clearAllCountries(); updateCountryList(); };
     
     document.getElementById('countrySearch').addEventListener('input', (e) => {
         updateCountryList(e.target.value);
@@ -2599,7 +2747,7 @@ function createModernToggle(checked, onChange) {
     const input = document.createElement('input');
     input.type = 'checkbox';
     input.checked = checked;
-    input.addEventListener('change', onChange);
+    input.onchange = onChange;
     const span = document.createElement('span');
     span.className = 'slider';
     label.appendChild(input);
@@ -2619,6 +2767,7 @@ function createSettingsTab() {
 
     const settingToggle = (key, label) => {
         const val = ConfigManager.getSetting(key) === true; 
+        
         return `
             <div class="modern-toggle">
                 <span style="font-size: 14px; color: #e0e0e0;">${label}</span>
@@ -2630,10 +2779,9 @@ function createSettingsTab() {
         `;
     };
 
-    const settingInput = (key, label, type="text", max="") => {
+    const settingInput = (key, label, type="text") => {
         let val = ConfigManager.getSetting(key); 
         if (val === undefined || val === null) val = '';
-        
         const safeVal = val.toString().replace(/"/g, '&quot;');
         
         if (type === 'textarea') {
@@ -2654,7 +2802,7 @@ function createSettingsTab() {
         return `
             <div class="modern-toggle" style="flex-wrap: wrap;">
                 <span style="font-size: 14px; color: #e0e0e0; flex: 1; min-width: 150px;">${label}</span>
-                <input type="${type}" ${max ? `maxlength="${max}"` : ''} data-setting="${key}" value="${safeVal}" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none; width: ${key === 'liveQueue.promoMessage' ? '100%' : '100px'}; text-align: ${key === 'liveQueue.promoMessage' ? 'left' : 'center'}; text-transform: ${max==='2' ? 'uppercase' : 'none'}; margin-top: ${key === 'liveQueue.promoMessage' ? '8px' : '0'};">
+                <input type="${type}" data-setting="${key}" value="${safeVal}" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none; width: ${key === 'liveQueue.promoMessage' ? '100%' : '100px'}; text-align: ${key === 'liveQueue.promoMessage' ? 'left' : 'center'}; margin-top: ${key === 'liveQueue.promoMessage' ? '8px' : '0'};">
             </div>
         `;
     };
@@ -2701,7 +2849,7 @@ function createSettingsTab() {
                 {value: 400, text: "400"}, {value: 500, text: "500"},
 				{value: 800, text: "800"}, {value: 999, text: "999"}
             ]) +
-            settingInput('rankings.country', t('settings.rankCountry'), 'text', '2')
+            settingInput('rankings.country', t('settings.rankCountry'))
         ) +
         createSection(t('settings.filters'), 
             settingToggle('countryFilter.enabled', t('settings.enableFilter'))
@@ -2807,6 +2955,7 @@ function createAboutTab() {
                         <li>${t('about.feat6')}</li>
                         <li>${t('about.feat7')}</li>
                         <li>${t('about.feat8')}</li>
+                        <li>${t('about.feat8b')}</li>
                     </ul>
                 </div>
                 <div style="margin-bottom: 12px;">

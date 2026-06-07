@@ -8,7 +8,7 @@ const Locales = {
         tabs: { countries: "🌍 Countries", settings: "⚙️ Settings", about: "ℹ️ About" },
         countries: { alert: "⚠️ Filter is applied in real-time.<br>Sidebar adjusts automatically.", search: "🔍 Search country...", allowAll: "✓ Allow All", clearAll: "✗ Block All" },
         settings: { global: "Global", autoJoin: "Auto Join Channel", language: "Language", filters: "Filters", enableFilter: "Enable Country Filter", chatVisual: "Chat Visuals", showStatus: "Show Status (Online/Away/Offline)", showFlags: "Show Flags", showRanks: "Show Rank Letters", showNumericRanks: "Show Ranking Position Badge", showPingBars: "Show Ping Bars", showPingText: "Show Ping as Text", replacePingBar: "Show Ping as Text in Sidebar", reputation: "Reputation", enableRep: "Reputation System (👍/👎)", hideNeg: "Hide Messages from Negative Users", privacy: "Privacy", blurMode: "Blur Mode (Stream)", rankingsApi: "Rankings (Online Sync)", rankLimit: "Top Limit (⚠️ >500 is slower)", rankCountry: "Country Filter (ISO 2-letters)", extras: "Extras", unlockThemes: "Unlock Color Themes", liveQueue: "Live Queue (Streamers)", queueEnable: "Enable Live Queue Module", queueKeyword: "Keyword (e.g. !join)", queueLimit: "Queue Limit", queueStreamer: "Streamer Nick (to Exclude)", queueReply: "Auto-reply in Chat (every 15s)", queuePromoEnable: "Enable 10-Min Promo Bot", queuePromo: "Live Promo Msg" },
-        about: { title: "Fightcade Plus 1.11.1", subtitle: "By Cerberus", catBot: "🤖 Streamer Tools", feat1: "Live Player Queue via chat command (!join)", feat2: "Automated welcome message for new players in queue", feat3: "Promotional bot with custom messages", catRank: "🏆 Rankings", feat4: "Ranking position badge next to player names", feat5: "Sync rankings per game with country filter", catChat: "💬 Chat & Sidebar", feat6: "Country flags, rank letters, and ping info on chat", feat7: "Online/Away/Offline status indicators", feat8: "Ping displayed as text or bars", feat8b: "Real-time player search bar", catRep: "🛡️ Reputation & Privacy", feat9: "Player reputation system (Favorite / Downvote)", feat10: "Hide messages from downvoted users", feat11: "Blur mode for stream privacy", catFilter: "🌍 Filters & Customization", feat12: "Country-based player filter", feat13: "Premium color themes unlock", feat14: "Auto-join channel on startup", feat15: "Multi-language support", note: "Ultimate Monolith: O(1) Arrays, Batching, Early Returns & CSP.", updateBtn: "🔄 Check for Updates", updateAvailable: "⚠️ Update Available: " },
+        about: { title: "Fightcade Plus 1.11.4", subtitle: "By Cerberus", catBot: "🤖 Streamer Tools", feat1: "Live Player Queue via chat command (!join)", feat2: "Automated welcome message for new players in queue", feat3: "Promotional bot with custom messages", catRank: "🏆 Rankings", feat4: "Ranking position badge next to player names", feat5: "Sync rankings per game with country filter", catChat: "💬 Chat & Sidebar", feat6: "Country flags, rank letters, and ping info on chat", feat7: "Online/Away/Offline status indicators", feat8: "Ping displayed as text or bars", feat8b: "Real-time player search bar", catRep: "🛡️ Reputation & Privacy", feat9: "Player reputation system (Favorite / Downvote)", feat10: "Hide messages from downvoted users", feat11: "Blur mode for stream privacy", catFilter: "🌍 Filters & Customization", feat12: "Country-based player filter", feat13: "Premium color themes unlock", feat14: "Auto-join channel on startup", feat15: "Multi-language support", note: "Ultimate Monolith: O(1) Arrays, Batching, Early Returns & CSP.", updateBtn: "🔄 Check for Updates", updateAvailable: "⚠️ Update Available: " },
         rep: { like: "Favorite (Ignores Filters)", dislike: "Downvote", clear: "Clear Reputation", block: "Block (Fightcade)", unblock: "Unblock (Fightcade)" },
         motd: { clearChat: "CLEAR CHAT", muteChat: "PAUSE CHAT", queueTitle: "PLAYERS QUEUE", updateAvail: "Update Available:" },
         sync: { rankingsBtn: "Sync Rankings", wait30: "Wait 30 minutes", clickCancel: "Click to cancel", autoSyncDone: "Rankings auto-synced for today", liveOn: "🟢 LIVE ON", liveOff: "🔴 LIVE OFF", confirmClear: "Are you sure you want to clear the entire queue?" },
@@ -20,7 +20,7 @@ const Locales = {
         tabs: { countries: "🌍 Países", settings: "⚙️ Ajustes", about: "ℹ️ Sobre" },
         countries: { alert: "⚠️ O filtro é aplicado em tempo real.<br>A lista lateral ajusta-se sem precisar reiniciar.", search: "🔍 Buscar país...", allowAll: "✓ Permitir Todos", clearAll: "✗ Bloquear Todos" },
         settings: { global: "Global", autoJoin: "Entrar Automaticamente no Canal", language: "Idioma", filters: "Filtros", enableFilter: "Ativar Filtro de Países", chatVisual: "Chat Visual", showStatus: "Mostrar Status (Online/Ausente/Offline)", showFlags: "Mostrar Bandeiras", showRanks: "Mostrar Letra de Rank", showNumericRanks: "Mostrar Posição no Ranking", showPingBars: "Mostrar Barras de Ping", showPingText: "Mostrar Ping em Texto", replacePingBar: "Mostrar Ping como Texto na Lista Lateral", reputation: "Reputação", enableRep: "Sistema de Reputação (👍/👎)", hideNeg: "Ocultar mensagens de usuários negativados", privacy: "Privacidade", blurMode: "Modo Blur (Stream)", rankingsApi: "Rankings (Sincronização Online)", rankLimit: "Top Ranking (⚠️ >500 demora)", rankCountry: "Filtrar por País (Ex: BR, vazio=Todos)", extras: "Extras", unlockThemes: "Desbloquear Temas de Cor", liveQueue: "Fila de Live (Streamers)", queueEnable: "Ativar Módulo para Streamers", queueKeyword: "Palavra-chave (ex: !join)", queueLimit: "Limite de Jogadores", queueStreamer: "Seu Nick do Fightcade (Exceção)", queueReply: "Resposta Automática da Fila", queuePromoEnable: "Ativar Bot Divulgação (a cada 10min)", queuePromo: "Mensagem do Bot (a cada 10min)" },
-        about: { title: "Fightcade Plus 1.11.1", subtitle: "By Cerberus", catBot: "🤖 Ferramentas para Streamers", feat1: "Fila de jogadores via comando no chat (!join)", feat2: "Mensagem automática de boas-vindas na fila", feat3: "Bot promocional com mensagem personalizada", catRank: "🏆 Rankings", feat4: "Exibir posição no ranking ao lado do nome", feat5: "Sincronização de rankings por jogo com filtro", catChat: "💬 Chat e Lista Lateral", feat6: "Bandeiras, letras de rank e ping no chat", feat7: "Indicadores de status (Online/Ausente/Offline)", feat8: "Ping exibido como texto ou barras", feat8b: "Barra de pesquisa em tempo real", catRep: "🛡️ Reputação e Privacidade", feat9: "Sistema de reputação (Destacar / Negativar)", feat10: "Ocultar mensagens de usuários negativados", feat11: "Modo blur para privacidade em streams", catFilter: "🌍 Filtros e Personalização", feat12: "Filtro de jogadores por país (tempo real)", feat13: "Desbloqueo de temas de cores premium", feat14: "Auto-entrar no canal ao iniciar", feat15: "Suporte multi-idioma (EN/PT)", note: "Ultimate Monolith: O(1) Arrays, Batching, Early Returns & CSP.", updateBtn: "🔄 Verificar Atualizações", updateAvailable: "⚠️ Atualização Disponível: " },
+        about: { title: "Fightcade Plus 1.11.4", subtitle: "By Cerberus", catBot: "🤖 Ferramentas para Streamers", feat1: "Fila de jogadores via comando no chat (!join)", feat2: "Mensagem automática de boas-vindas na fila", feat3: "Bot promocional com mensagem personalizada", catRank: "🏆 Rankings", feat4: "Exibir posição no ranking ao lado do nome", feat5: "Sincronização de rankings por jogo com filtro", catChat: "💬 Chat e Lista Lateral", feat6: "Bandeiras, letras de rank e ping no chat", feat7: "Indicadores de status (Online/Ausente/Offline)", feat8: "Ping exibido como texto ou barras", feat8b: "Barra de pesquisa em tempo real", catRep: "🛡️ Reputação e Privacidade", feat9: "Sistema de reputação (Destacar / Negativar)", feat10: "Ocultar mensagens de usuários negativados", feat11: "Modo blur para privacidade em streams", catFilter: "🌍 Filtros e Personalização", feat12: "Filtro de jogadores por país (tempo real)", feat13: "Desbloqueo de temas de cores premium", feat14: "Auto-entrar no canal ao iniciar", feat15: "Suporte multi-idioma (EN/PT)", note: "Ultimate Monolith: O(1) Arrays, Batching, Early Returns & CSP.", updateBtn: "🔄 Verificar Atualizações", updateAvailable: "⚠️ Atualização Disponível: " },
         rep: { like: "Destacar (Ignora Filtros)", dislike: "Negativar", clear: "Limpar Reputação", block: "Bloquear", unblock: "Desbloquear" },
         motd: { clearChat: "LIMPAR CHAT", muteChat: "PAUSAR CHAT", queueTitle: "FILA DE JOGADORES", updateAvail: "Atualização Disponível:" },
         sync: { rankingsBtn: "Sincronizar Rankings", wait30: "Aguarde 30 minutos", clickCancel: "Clique para cancelar", autoSyncDone: "Rankings sincronizados automaticamente hoje", liveOn: "🟢 LIVE ON", liveOff: "🔴 LIVE OFF", confirmClear: "Tem certeza que deseja limpar toda a fila?" },
@@ -33,8 +33,8 @@ const AVAILABLE_COUNTRIES = { 'BR': 'Brazil', 'AR': 'Argentina', 'BO': 'Bolivia'
 const COUNTRY_NAME_TO_CODE = Object.fromEntries(Object.entries(AVAILABLE_COUNTRIES).map(([code, name]) => [name, code]));
 
 const defaultConfig = {
-    language: 'en', autoJoin: { enabled: true, channelId: '' }, countryFilter: { enabled: false }, rankings: { limit: 500, country: '' },
-    chatUserInfo: { enableStatus: true, enableFlag: true, enableRank: true, showNumericRanks: true, enablePingText: true, enablePingBars: false, replacePingBarWithText: false, enableReputation: true, hideNegativeMessages: true, unlockColorThemes: true, blurMode: 'none' },
+    language: 'en', autoJoin: { enabled: true, channelId: '' }, countryFilter: { enabled: false }, rankings: { masterEnabled: true, limit: 500, country: '' },
+    chatUserInfo: { masterEnabled: true, enableStatus: true, enableFlag: true, enableRank: true, showNumericRanks: true, enablePingText: true, enablePingBars: false, replacePingBarWithText: false, enableReputation: true, hideNegativeMessages: true, unlockColorThemes: true, blurMode: 'none' },
     liveQueue: { enabled: false, keyword: '!join', limit: 10, streamerNick: '', autoReply: false, promoEnabled: false, promoMessage: '`[AO VIVO]` *Venham jogar e participar da live!*\nDigite a `palavra-chave` no chat para entrar na fila.\nAssista em: https://www.youtube.com/@Cerberus-BR' }
 };
 
@@ -42,7 +42,7 @@ const dataPath = path.join(__dirname, 'cerberus_data.json');
 const configPath = path.join(__dirname, 'cerberus_config.json');
 const rankingsPath = path.join(__dirname, 'cerberus_rankings.json');
 
-const CURRENT_VERSION = "1.11.1";
+const CURRENT_VERSION = "1.11.4";
 let runtimeConfig = null;
 let fullConfigCache = null;
 
@@ -225,6 +225,7 @@ const CerberusData = {
         }, 100);
     },
     addQueue(playerName) {
+        if (ConfigManager.getSetting('liveQueue.enabled') !== true) return false;
         if (!playerName || playerName.trim() === '') return false; const name = playerName.trim(); const limit = ConfigManager.getSetting('liveQueue.limit') || 20;
         if (this.liveQueue.length >= limit || this.liveQueue.some(q => q.name.toLowerCase() === name.toLowerCase()) || this.isNegative(name)) return false;
         this.liveQueue.push({ name: name, played: false }); this.queueTimestamp = Date.now(); this.save(); renderQueueList(); return true;
@@ -245,7 +246,6 @@ const CerberusData = {
     blockCountry(code) { if (!code) return; this.blockedCountriesSet.add(code.toUpperCase()); this.save(); invalidateCountryFilterCache(); },
     unblockCountry(code) { if (!code) return; this.blockedCountriesSet.delete(code.toUpperCase()); this.save(); invalidateCountryFilterCache(); },
 
-    // O(1) Catch-All Logic
     isCountryAllowed(code) {
         let evalCode = code ? code.toUpperCase() : 'XX';
         if (!AVAILABLE_COUNTRIES[evalCode]) evalCode = 'XX';
@@ -286,7 +286,7 @@ const ConfigManager = {
         for (let i = 0; i < keys.length - 1; i++) { if (!current[keys[i]]) current[keys[i]] = {}; current = current[keys[i]]; }
         current[keys[keys.length - 1]] = value; this.saveConfig();
 
-        if (pathStr.startsWith('chatUserInfo.') && pathStr !== 'chatUserInfo.replacePingBarWithText') {
+        if ((pathStr.startsWith('chatUserInfo.') && pathStr !== 'chatUserInfo.replacePingBarWithText') || pathStr === 'rankings.masterEnabled') {
             document.querySelectorAll('.messageWrapper').forEach(wrapper => {
                 wrapper.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
                 wrapper.removeAttribute('data-cerberus-processed'); wrapper.removeAttribute('data-cerb-identity');
@@ -432,14 +432,14 @@ const runPlugin = (FCADE) => {
         try {
             const qEnabled = ConfigManager.getSetting('liveQueue.enabled') === true;
             const countryEnabled = ConfigManager.getSetting('countryFilter.enabled') === true;
-            const currentSignature = `${FCADE?.activeChannelId || ''}|${qEnabled}|${countryEnabled}`;
+            const rankingsEnabled = ConfigManager.getSetting('rankings.masterEnabled') !== false;
+            const currentSignature = `${FCADE?.activeChannelId || ''}|${qEnabled}|${countryEnabled}|${rankingsEnabled}`;
 
             if (window.CerberusState.lastUIRenderSignature !== currentSignature) {
                 const cw = getActiveChannelWrapper();
                 if (cw) {
                     injectHeaderButtons(FCADE); injectSidebarSearch(); injectUIEnhancements();
                     window.CerberusState.lastUIRenderSignature = currentSignature;
-                    // Trigger initial Scans on New Room
                     fullChatScanScoped(cw, FCADE, runtimeConfig);
                     const sidebar = cw.querySelector('.usersListWrapper');
                     if (sidebar) updateSidebarScope(sidebar, FCADE, runtimeConfig);
@@ -453,7 +453,8 @@ const runPlugin = (FCADE) => {
 
     if (replyQueueInterval) clearInterval(replyQueueInterval);
     replyQueueInterval = setInterval(() => {
-        if (window.CerberusState.liveMasterOn && window.CerberusState.replyQueue.length > 0 && ConfigManager.getSetting('liveQueue.autoReply')) {
+        const qEnabled = ConfigManager.getSetting('liveQueue.enabled') === true;
+        if (qEnabled && window.CerberusState.liveMasterOn && window.CerberusState.replyQueue.length > 0 && ConfigManager.getSetting('liveQueue.autoReply')) {
             const names = window.CerberusState.replyQueue.join(', '); window.CerberusState.replyQueue = [];
             const msg1 = `\`[Fila] Bem-vindo(s): ${names}\``; let queueStr = CerberusData.liveQueue.filter(p => !p.played).map((p, i) => `${i + 1}. ${p.name}`).join(', ');
             executeChatMacro(queueStr ? [msg1, `*Fila atual:* ${queueStr}`] : [msg1]);
@@ -469,7 +470,7 @@ const runPlugin = (FCADE) => {
     scheduleAutoSync(FCADE);
 };
 
-// ==================== MULTI-ROOM OBSERVERS & BATCHING (MACROTASKS) ====================
+// ==================== MULTI-ROOM OBSERVERS & BATCHING ====================
 function attachMultiObservers(FCADE, configFull) {
     document.querySelectorAll('.chatContent:not([data-cerb-observed])').forEach(chatContent => {
         chatContent.dataset.cerbObserved = "true";
@@ -523,7 +524,6 @@ function attachMultiObservers(FCADE, configFull) {
 function processCollectedWrappers(wrappersArray, FCADE, configFull) {
     if (!wrappersArray || wrappersArray.length === 0) return;
 
-    // [CERBERUS 1.11.0] Early Return (Renderização Preguiçosa para Salas Ocultas)
     const cw = wrappersArray[0].closest('.channelWrapper');
     if (cw && cw.style.display === 'none') return;
 
@@ -533,7 +533,6 @@ function processCollectedWrappers(wrappersArray, FCADE, configFull) {
     const activeChannelId = FCADE.activeChannelId;
     const usersList = FCADE.$refs[activeChannelId]?.[0]?.$refs?.usersList?.$children;
 
-    // [CERBERUS 1.11.0] Mapa O(1) para resolver pesquisa em O(N) e salvar a Main Thread
     const activeUsersMap = new Map();
     if (usersList && usersList.length > 0) {
         for (let i = 0; i < usersList.length; i++) {
@@ -586,20 +585,33 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                         const minPingVal = getMinPing(userFound);
 
                         let statusState = 'offline'; if (user && user.away === false) statusState = 'online'; else if (user && user.away === true) statusState = 'away';
-                        if (cfg.showNumericRanks && activeGameId) { const numericRank = RankCache.getRank(activeGameId, userKey); if (numericRank !== null) author.appendChild(createRankBadge(numericRank)); }
+                        
+                        const masterVisuals = cfg.masterEnabled !== false;
+                        const rankingsEnabled = ConfigManager.getSetting('rankings.masterEnabled') !== false;
+
+                        // [CERBERUS 1.11.4] Desacoplado: Rankings depende apenas do seu próprio Master Toggle.
+                        if (rankingsEnabled && cfg.showNumericRanks && activeGameId) { const numericRank = RankCache.getRank(activeGameId, userKey); if (numericRank !== null) author.appendChild(createRankBadge(numericRank)); }
 
                         const elements = {
-                            status: cfg.enableStatus ? createStatusElement(statusState) : null,
-                            flag: (cfg.enableFlag && user?.country) ? createFlagElement(user.country) : null,
-                            rank: (cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle) : null,
-                            pingBar: (cfg.enablePingBars && userFound?.pingSrc) ? createPingElement(userFound.pingSrc, userFound.pingTitle) : null,
-                            pingText: (cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal) : null
+                            status: (masterVisuals && cfg.enableStatus) ? createStatusElement(statusState) : null,
+                            flag: (masterVisuals && cfg.enableFlag && user?.country) ? createFlagElement(user.country) : null,
+                            rank: (masterVisuals && cfg.enableRank && userFound?.rankSrc) ? createRankElement(userFound.rankSrc, userFound.rankTitle) : null,
+                            pingBar: (masterVisuals && cfg.enablePingBars && userFound?.pingSrc) ? createPingElement(userFound.pingSrc, userFound.pingTitle) : null,
+                            pingText: (masterVisuals && cfg.enablePingText && minPingVal !== null) ? createPingTextElement(minPingVal) : null
                         };
 
-                        if (cfg.enableReputation && !isSystemUser(userKey)) { applyReputationStyle(author, wrapper.querySelector('.message.chat') || wrapper, userKey, 'chat', false); addReputationControlsToElement(author, wrapper, userKey, 'chat', cfg.hideNegativeMessages); }
+                        if (cfg.enableReputation && !isSystemUser(userKey)) { 
+                            applyReputationStyle(author, wrapper.querySelector('.message.chat') || wrapper, userKey, 'chat', false); 
+                            wrapper.dataset.currentUser = userKey;
+                            addReputationControlsToElement(wrapper, 'chat'); 
+                        }
+                        
                         if (elements.status) author.parentElement.insertBefore(elements.status, author);
-                        if (elements.flag) author.appendChild(elements.flag); if (elements.rank) author.appendChild(elements.rank); if (elements.pingBar) author.appendChild(elements.pingBar); if (elements.pingText) author.appendChild(elements.pingText);
-                        // blur-individual removed in v1.11.1 — only 'all' mode is supported
+                        if (elements.flag) author.appendChild(elements.flag); 
+                        if (elements.rank) author.appendChild(elements.rank); 
+                        if (elements.pingBar) author.appendChild(elements.pingBar); 
+                        if (elements.pingText) author.appendChild(elements.pingText);
+                        
                         wrapper.dataset.cerberusUser = userKey; if (userCountry) wrapper.dataset.cerberusCountry = userCountry;
                     }
                 }
@@ -624,7 +636,6 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
 const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
     if (!sidebarElement) return;
 
-    // [CERBERUS 1.11.1] Early Return (Renderização Preguiçosa)
     const cw = sidebarElement.closest('.channelWrapper');
     if (cw && cw.style.display === 'none') return;
 
@@ -634,7 +645,10 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
     const activeGameId = getActiveGameId(FCADE, cw);
     const searchTerm = window.CerberusState.sidebarSearchTerm || '';
 
-    if (cfg?.replacePingBarWithText) document.body.classList.add('cerb-hide-sidebar-ping'); else document.body.classList.remove('cerb-hide-sidebar-ping');
+    const masterVisuals = cfg.masterEnabled !== false;
+    const rankingsEnabled = ConfigManager.getSetting('rankings.masterEnabled') !== false;
+
+    if (masterVisuals && cfg?.replacePingBarWithText) document.body.classList.add('cerb-hide-sidebar-ping'); else document.body.classList.remove('cerb-hide-sidebar-ping');
 
     sidebarElement.querySelectorAll('.usersIgnoredTitle').forEach(titleEl => titleEl.childNodes.forEach(node => { if (node.nodeType === Node.TEXT_NODE && node.nodeValue.includes('Ignored')) node.nodeValue = node.nodeValue.replace('Ignored', 'Blocked'); }));
 
@@ -650,7 +664,8 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
             item.dataset.currentUser = userKey;
             let matchesSearch = searchTerm === '' || userKey.toLowerCase().includes(searchTerm);
 
-            if (cfg.showNumericRanks && activeGameId) {
+            // [CERBERUS 1.11.4] Desacoplado na Sidebar também.
+            if (rankingsEnabled && cfg.showNumericRanks && activeGameId) {
                 const numericRank = RankCache.getRank(activeGameId, userKey); let badge = item.querySelector('.cerb-rank-badge');
                 if (numericRank !== null) {
                     if (!badge) {
@@ -661,9 +676,13 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                 } else if (badge) badge.remove();
             } else { const badge = item.querySelector('.cerb-rank-badge'); if (badge) badge.remove(); }
 
-            if (cfg?.enableReputation) { applyReputationStyle(playerNameEl, item, userKey, 'list'); addReputationControlsToElement(playerNameEl, item, userKey, 'list'); }
+            if (cfg?.enableReputation) { 
+                applyReputationStyle(playerNameEl, item, userKey, 'list'); 
+                item.dataset.currentUser = userKey;
+                addReputationControlsToElement(item, 'list'); 
+            }
 
-            if (cfg?.replacePingBarWithText) {
+            if (masterVisuals && cfg?.replacePingBarWithText) {
                 const pingWrapper = item.querySelector('.pingWrapper');
                 if (pingWrapper) {
                     const img = pingWrapper.querySelector('img.ping'); const minPing = extractMinPing(img ? img.title : pingWrapper.title);
@@ -674,7 +693,10 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                         txt.style.color = color; txt.innerText = `${minPing}ms`;
                     }
                 }
-            } else { const pingWrapper = item.querySelector('.pingWrapper'); if (pingWrapper) { const txt = pingWrapper.querySelector('.cerberus-ping-text'); if (txt) txt.remove(); } }
+            } else { 
+                const pingWrapper = item.querySelector('.pingWrapper'); 
+                if (pingWrapper) { const txt = pingWrapper.querySelector('.cerberus-ping-text'); if (txt) txt.remove(); } 
+            }
 
             let userCountry = globalUsers[userKey]?.country?.iso_code?.toUpperCase();
             if (!userCountry) { const flagEl = item.querySelector('.flagWrapper'); if (flagEl && flagEl.title) userCountry = COUNTRY_NAME_TO_CODE[flagEl.title]; }
@@ -695,7 +717,11 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                 const userKey = normalizeUsername(playerNameEl.textContent); if (!userKey) return;
                 identity += userKey + '-'; playerInfo.dataset.currentUser = userKey;
                 if (searchTerm === '' || userKey.toLowerCase().includes(searchTerm)) matchesSearch = true;
-                if (cfg?.enableReputation) { applyReputationStyle(playerNameEl, null, userKey, 'match'); addReputationControlsToElement(playerNameEl, playerInfo, userKey, 'match'); }
+                if (cfg?.enableReputation) { 
+                    applyReputationStyle(playerNameEl, null, userKey, 'match'); 
+                    playerInfo.dataset.currentUser = userKey;
+                    addReputationControlsToElement(playerInfo, 'match'); 
+                }
                 if (countryFilterEnabled && shouldHideMatch && !isSystemUser(userKey)) {
                     let userCountry = globalUsers[userKey]?.country?.iso_code?.toUpperCase();
                     if (!userCountry) { const flagEl = playerInfo.querySelector('.playerFlag'); if (flagEl && flagEl.title) userCountry = COUNTRY_NAME_TO_CODE[flagEl.title]; }
@@ -712,7 +738,8 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
 };
 
 function scheduleAutoSync(FCADE) {
-    if (ConfigManager.getSetting('chatUserInfo.showNumericRanks') !== true) return;
+    const rankingsEnabled = ConfigManager.getSetting('rankings.masterEnabled') !== false;
+    if (!rankingsEnabled || ConfigManager.getSetting('chatUserInfo.showNumericRanks') !== true) return;
     const todayStr = new Date().toISOString().slice(0, 10);
     if (RankCache._autoSyncDate === todayStr) return;
 
@@ -733,7 +760,8 @@ function scheduleAutoSync(FCADE) {
 }
 
 function triggerPromoBot() {
-    if (!window.CerberusState.liveMasterOn || !ConfigManager.getSetting('liveQueue.promoEnabled')) return;
+    // [CERBERUS 1.11.4] Early Return isolado caso o Master Toggle esteja desligado
+    if (ConfigManager.getSetting('liveQueue.enabled') !== true || !window.CerberusState.liveMasterOn || !ConfigManager.getSetting('liveQueue.promoEnabled')) return;
     const msg = ConfigManager.getSetting('liveQueue.promoMessage');
     if (!msg || msg.trim() === '') return;
     executeChatMacro(msg.split(/\\n|\n/));
@@ -755,7 +783,8 @@ function injectHeaderButtons(FCADE) {
         headerTitle.appendChild(btn);
     }
 
-    const showRankBtn = ConfigManager.getSetting('chatUserInfo.showNumericRanks') === true;
+    const rankingsEnabled = ConfigManager.getSetting('rankings.masterEnabled') !== false;
+    const showRankBtn = rankingsEnabled && ConfigManager.getSetting('chatUserInfo.showNumericRanks') === true;
     const existingSyncBtn = headerTitle.querySelector('#cerberusSyncBtn');
     const gameId = getActiveGameId(FCADE); const isLocked = (Date.now() - (RankCache.data[gameId]?.lastUpdate || 0) < 1800000);
 
@@ -837,7 +866,6 @@ function createQueuePanel() {
     panel.innerHTML = `<div class="q-header" id="cerberusQueueHeader"><span class="q-title">📝 ${t('queue.title')} <small id="cerbQueueCount">(0)</small></span><button class="q-close" id="cerbQueueCloseBtn">×</button></div><div class="q-add-box"><input type="text" id="cerbQueueInput" placeholder="${t('queue.inputPh')}"><button id="cerbQueueAddBtn">${t('queue.addBtn')}</button></div><div class="q-list" id="cerbQueueList"></div><div class="q-footer" style="display:flex; justify-content:space-between;"><button id="cerbLiveMasterBtn" class="q-live-btn off">${t('sync.liveOff')}</button><button id="cerbQueueClearBtn" class="q-clear-btn">🧹 ${t('queue.clearBtn')}</button></div>`;
     document.body.appendChild(panel); makeDraggable(panel, 'cerberusQueueHeader');
 
-    // Binding CSP Compliant
     document.getElementById('cerbQueueCloseBtn').addEventListener('click', () => panel.style.display = 'none');
 
     const masterBtn = document.getElementById('cerbLiveMasterBtn');
@@ -923,9 +951,9 @@ function applyReputationStyle(nameEl, itemEl, userKey, type, hideNegative = fals
     }
 }
 
-function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, type, hideNegative = false) {
-    hoverContainer.dataset.currentUser = userKey; if (hoverContainer.dataset.cerbHoverAdded === "true") return; hoverContainer.dataset.cerbHoverAdded = "true";
-    const timeEl = type === 'chat' ? hoverContainer.querySelector('.time') : null; const anchorEl = timeEl || playerNameEl;
+function addReputationControlsToElement(hoverContainer, type) {
+    if (hoverContainer.dataset.cerbHoverAdded === "true") return; 
+    hoverContainer.dataset.cerbHoverAdded = "true";
 
     hoverContainer.addEventListener('mouseenter', () => {
         if (window.CerberusState.menuIsHovered) return;
@@ -933,7 +961,14 @@ function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, t
         window.CerberusState.menuShowTimeout = setTimeout(() => {
             if (window.CerberusState.menuIsHovered) return;
             const menu = document.getElementById('cerbGlobalMenu'); if (!menu) return;
-            const activeUserKey = hoverContainer.dataset.currentUser; if (isSystemUser(activeUserKey)) return;
+            
+            // [CERBERUS 1.11.4] Fetches node and user dynamically to survive Vue.js DOM recycling
+            const activeUserKey = hoverContainer.dataset.currentUser; 
+            if (!activeUserKey || isSystemUser(activeUserKey)) return;
+
+            let anchorEl = hoverContainer;
+            if (type === 'chat') anchorEl = hoverContainer.querySelector('.time') || hoverContainer.querySelector('span.author') || hoverContainer;
+            else anchorEl = hoverContainer.querySelector('.playerName') || hoverContainer;
 
             const isNativeBlocked = Array.from(document.querySelectorAll('.usersIgnoredList .userItem')).some(el => el.dataset.currentUser === activeUserKey);
             const isPos = CerberusData.isPositive(activeUserKey); const isNeg = CerberusData.isNegative(activeUserKey);
@@ -946,7 +981,9 @@ function addReputationControlsToElement(playerNameEl, hoverContainer, userKey, t
             if (btnClear) btnClear.style.display = (isPos || isNeg) ? 'inline-block' : 'none';
             if (btnBlock) btnBlock.style.display = isNativeBlocked ? 'none' : 'inline-block'; if (btnUnblock) btnUnblock.style.display = isNativeBlocked ? 'inline-block' : 'none';
 
-            menu.dataset.user = activeUserKey; menu.dataset.type = type; menu.dataset.hideNegative = hideNegative;
+            menu.dataset.user = activeUserKey; menu.dataset.type = type; 
+            menu.dataset.hideNegative = ConfigManager.getSetting('chatUserInfo.hideNegativeMessages') === true;
+            
             const range = document.createRange(); range.selectNodeContents(anchorEl); const rect = range.getBoundingClientRect();
             const menuWidth = menu.offsetWidth || 150; let leftPos = rect.right + 12; if (leftPos + menuWidth > window.innerWidth - 10) leftPos = window.innerWidth - menuWidth - 10;
             menu.style.left = leftPos + 'px'; menu.style.top = (rect.top + rect.height / 2) + 'px'; menu.classList.add('visible');
@@ -965,7 +1002,7 @@ function reprocessUserMessages(userKey, hideNegative) {
         if (wrapper.dataset.cerberusUser === userKey) {
             const msg = wrapper.querySelector('.message.chat'); if (msg) { const author = msg.querySelector('span.author'); if (author) applyReputationStyle(author, msg, userKey, 'chat', hideNegative); }
             wrapper.style.display = ''; wrapper.removeAttribute('data-cerberus-hidden'); wrapper.removeAttribute('data-cerberus-processed');
-            wrapper.removeAttribute('data-cerb-identity'); // Reseta a identidade para evitar badges duplicados
+            wrapper.removeAttribute('data-cerb-identity'); 
         }
     });
     document.querySelectorAll('.userItem').forEach(item => {
@@ -1034,7 +1071,7 @@ function injectStyles() {
         /* Master toggle: filhos bloqueados visualmente quando categoria-mãe está desativada */
         .cerb-section-children.cerb-disabled { opacity: 0.35; pointer-events: none; user-select: none; }
 
-        /* [CERBERUS 1.11.1] Escudo CSS Anti-Piscos Universal (Fail-Safe 350ms) */
+        /* Escudo CSS Anti-Piscos Universal (Fail-Safe 350ms) */
         @keyframes cerbAntiFlash {
             0%, 99% { opacity: 0; max-height: 0px; padding: 0px; margin: 0px; overflow: hidden; }
             100% { opacity: 1; max-height: 500px; }
@@ -1077,8 +1114,8 @@ function injectStyles() {
         .q-live-btn.off:hover { background: rgba(170, 0, 0, 0.5); }
         .cerb-motd-update-notice { background: rgba(255, 165, 0, 0.15); border-left: 4px solid #ffaa00; padding: 10px 15px; margin-top: 15px; border-radius: 4px; color: #ffdca5; font-size: 13px; display: inline-block; width: calc(100% - 10px); box-sizing: border-box; line-height: 1.4; }
         body.cerb-hide-sidebar-ping .usersListToolbar .userItem .pingWrapper img.ping { display: none !important; }
-        .message.blur-individual .line .blocksContainer, .chatContent.blur-all .message .line .blocksContainer { filter: blur(5px); transition: filter 0.2s ease; user-select: none; }
-        .message.blur-individual:hover .line .blocksContainer, .chatContent.blur-all:hover .message .line .blocksContainer { filter: blur(0); user-select: text; }
+        .chatContent.blur-all .message .line .blocksContainer { filter: blur(5px); transition: filter 0.2s ease; user-select: none; }
+        .chatContent.blur-all:hover .message .line .blocksContainer { filter: blur(0); user-select: text; }
         #cerbGlobalMenu { position: fixed; background: rgba(20, 20, 25, 0.95); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 8px; padding: 4px 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); display: flex; align-items: center; gap: 8px; z-index: 100000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; transform: translateY(-50%) translateX(15px) scale(0.95); user-select: none; white-space: nowrap; }
         #cerbGlobalMenu.visible { opacity: 1; pointer-events: auto; transform: translateY(-50%) translateX(0) scale(1); }
         #cerbGlobalMenu span { cursor: pointer; font-size: 14px; transition: transform 0.1s; display: inline-block; }
@@ -1141,7 +1178,6 @@ function createControlPanel() {
     panel.innerHTML = `<div class="header" id="cerberusHeader"><div class="title"><span>🐺</span><span>${t('panelTitle')}</span></div><button class="closeBtn">×</button></div><div class="tabs"><button class="tab" data-tab="countries" id="countriesTabBtn">${t('tabs.countries')}</button><button class="tab active" data-tab="settings">${t('tabs.settings')}</button><button class="tab" data-tab="about">${t('tabs.about')}</button></div><div class="content"><div id="countriesTab" class="tab-content" style="display:none;"></div><div id="settingsTab" class="tab-content" style="display:block;"></div><div id="aboutTab" class="tab-content" style="display:none;"></div></div>`;
     document.body.appendChild(panel); makeDraggable(panel, 'cerberusHeader');
 
-    // Binding CSP Compliant
     panel.querySelector('.closeBtn').addEventListener('click', () => panel.style.display = 'none');
 
     panel.querySelectorAll('.tab').forEach(tab => {
@@ -1214,7 +1250,6 @@ function createSettingsTab() {
     const sectionHeader = (title) => `<h4 style="margin: 0 0 12px 0; font-size: 13px; text-transform: uppercase; color: #667eea; letter-spacing: 1px; font-weight: 700;">${title}</h4>`;
     const createSection = (title, items) => `<div style="margin-bottom: 24px;">${sectionHeader(title)}${items}</div>`;
 
-    // Seção com master toggle no cabeçalho (filhos bloqueados via CSS quando master=off)
     const createMasterSection = (masterKey, title, childrenId, items) => {
         const enabled = ConfigManager.getSetting(masterKey) === true;
         const headerToggle = `<label class="switch" style="transform:scale(0.8);"><input type="checkbox" data-setting="${masterKey}" data-master-for="${childrenId}" ${enabled ? 'checked' : ''}><span class="slider"></span></label>`;
@@ -1236,7 +1271,6 @@ function createSettingsTab() {
         const optsHtml = options.map(opt => `<option value="${opt.value}" ${currentVal == opt.value ? 'selected' : ''}>${opt.text}</option>`).join('');
         return `<div class="modern-toggle"><span style="font-size: 14px; color: #e0e0e0;">${label}</span><select data-setting="${key}" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none;">${optsHtml}</select></div>`;
     };
-    // Blur toggle: mapeia checked→'all', unchecked→'none' (via data-blur-toggle no handler)
     const blurToggle = () => {
         const isAll = ConfigManager.getSetting('chatUserInfo.blurMode') === 'all';
         return `<div class="modern-toggle"><span style="font-size: 14px; color: #e0e0e0;">${t('settings.blurMode')}</span><label class="switch"><input type="checkbox" data-setting="chatUserInfo.blurMode" data-blur-toggle="true" ${isAll ? 'checked' : ''}><span class="slider"></span></label></div>`;
@@ -1253,12 +1287,12 @@ function createSettingsTab() {
             settingToggle('liveQueue.autoReply', t('settings.queueReply')) +
             settingToggle('liveQueue.promoEnabled', t('settings.queuePromoEnable')) +
             settingInput('liveQueue.promoMessage', t('settings.queuePromo'), 'textarea')) +
-        createSection(t('settings.rankingsApi'),
+        createMasterSection('rankings.masterEnabled', t('settings.rankingsApi'), 'cerbRankingsChildren',
             settingSelect('rankings.limit', t('settings.rankLimit'), [{ value: 100, text: "100" }, { value: 200, text: "200" }, { value: 400, text: "400" }, { value: 500, text: "500" }, { value: 800, text: "800" }, { value: 999, text: "999" }]) +
             settingInput('rankings.country', t('settings.rankCountry')) +
             settingToggle('chatUserInfo.showNumericRanks', t('settings.showNumericRanks'))) +
         createSection(t('settings.filters'), settingToggle('countryFilter.enabled', t('settings.enableFilter'))) +
-        createSection(t('settings.chatVisual'),
+        createMasterSection('chatUserInfo.masterEnabled', t('settings.chatVisual'), 'cerbChatVisualChildren',
             settingToggle('chatUserInfo.enableStatus', t('settings.showStatus')) +
             settingToggle('chatUserInfo.enableFlag', t('settings.showFlags')) +
             settingToggle('chatUserInfo.enableRank', t('settings.showRanks')) +
@@ -1269,18 +1303,16 @@ function createSettingsTab() {
             settingToggle('chatUserInfo.hideNegativeMessages', t('settings.hideNeg'))) +
         createSection(t('settings.privacy'), blurToggle() + settingToggle('chatUserInfo.unlockColorThemes', t('settings.unlockThemes')));
 
-    // Attach Delegation listeners (CSP Safe)
     tab.querySelectorAll('input[data-setting], select[data-setting], textarea[data-setting]').forEach(input => {
         const handleSettingChange = (e) => {
             const key = e.target.getAttribute('data-setting'); let val = e.target.value;
-            if (e.target.dataset.blurToggle) val = e.target.checked ? 'all' : 'none'; // blur: checkbox→'all'/'none'
+            if (e.target.dataset.blurToggle) val = e.target.checked ? 'all' : 'none';
             else if (e.target.type === 'checkbox') val = e.target.checked;
             else if (e.target.type === 'number' || key === 'rankings.limit') val = parseInt(e.target.value);
             else if (key === 'rankings.country') val = e.target.value.toUpperCase().trim();
             else if (e.target.tagName === 'TEXTAREA') val = e.target.value.split(String.fromCharCode(10)).join(String.fromCharCode(92) + 'n');
             ConfigManager.updateSetting(key, val);
             if (key === 'countryFilter.enabled') updateCountryTabVisibility(val);
-            // Master toggle: ativa/desativa visualmente os filhos
             const masterFor = e.target.dataset.masterFor;
             if (masterFor) { const children = document.getElementById(masterFor); if (children) children.classList.toggle('cerb-disabled', !e.target.checked); }
         };

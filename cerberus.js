@@ -1,5 +1,5 @@
 /**
- * ARQUITETURA MODULAR NATIVA (CommonJS)
+ * ARQUITETURA MODULAR (CommonJS)
  * Orquestrador central que delega a execução para a pasta /cerberus/
  */
 const cerberusMain = require('./cerberus/index.js');

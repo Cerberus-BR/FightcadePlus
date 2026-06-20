@@ -1,6 +1,6 @@
 # FightcadePlus
 
-![Fightcade Plus by Cerberus](https://img.shields.io/badge/Plugin-Fightcade_+-red) ![Version](https://img.shields.io/badge/Version-1.12.2-blue)
+![Fightcade Plus by Cerberus](https://img.shields.io/badge/Plugin-Fightcade_Plus-red) ![Version](https://img.shields.io/badge/Version-1.12.2-blue)
 
 [English](#-english) | [Português](#-português) | [Español](#-español)
 

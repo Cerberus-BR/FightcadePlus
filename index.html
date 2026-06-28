@@ -1,1 +1,1784 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fightcade Plus - O Mod Avançado para o Fightcade</title>
+    <meta name="description" content="Extensão moderna para o Fightcade com filtros avançados de país/ping, sistema de reputação integrado, fila automática para streamers e personalização de temas.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --fc-bg-dark: #0f070e;
+            --fc-bg-base: #150a14;
+            --fc-bg-panel: #20111f;
+            --fc-bg-panel-alt: rgba(38, 20, 37, 0.6);
+            --fc-border: rgba(255, 0, 122, 0.12);
+            --fc-border-active: rgba(51, 241, 229, 0.3);
+            --fc-text: #f8f6f8;
+            --fc-text-mute: #b8acb7;
+            --fc-teal: #33f1e5;
+            --fc-teal-glow: rgba(51, 241, 229, 0.4);
+            --fc-pink: #ff007a;
+            --fc-pink-glow: rgba(255, 0, 122, 0.4);
+            --fc-purple: #9d2cb3;
+            --fc-yellow: #f5b50e;
+            --fc-yellow-glow: rgba(245, 181, 14, 0.3);
+            --fc-green: #59b240;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            
+            --paypal: #00457c;
+            --paypal-hover: #003060;
+            --livepix: #00ff87;
+            --livepix-hover: #00cc6a;
+            --livepix-text: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--fc-bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(157, 44, 179, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 70%, rgba(51, 241, 229, 0.08) 0%, transparent 40%);
+            color: var(--fc-text);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Subtle Retro Arcade Mesh Background Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.004) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.004) 1px, transparent 1px);
+            background-size: 24px 24px, 24px 24px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Scanline simulation effect */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Navigation */
+        header {
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(15, 7, 14, 0.85);
+            border-bottom: 1px solid var(--fc-border);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--fc-pink);
+            text-shadow: 0 0 10px var(--fc-pink-glow);
+        }
+
+        .logo span.plus {
+            color: var(--fc-teal);
+            text-shadow: 0 0 10px var(--fc-teal-glow);
+            margin-left: 2px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        nav a {
+            color: var(--fc-text-mute);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--fc-teal);
+            text-shadow: 0 0 8px var(--fc-teal-glow);
+        }
+
+        .btn-header {
+            background: linear-gradient(135deg, var(--fc-pink) 0%, #d00062 100%);
+            color: white !important;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-family: var(--font-display);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(255, 0, 122, 0.3);
+        }
+
+        .btn-header:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(255, 0, 122, 0.5);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0 100px 0;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .hero-tag {
+            align-self: flex-start;
+            background: rgba(255, 0, 122, 0.08);
+            border: 1px solid rgba(255, 0, 122, 0.25);
+            color: var(--fc-pink);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(255, 0, 122, 0.1);
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #ffffff 30%, #e2cce1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--fc-text-mute);
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .hero-actions-row-top {
+            width: 100%;
+        }
+
+        .hero-actions-row-top .btn-download {
+            width: 100%;
+            text-align: center;
+        }
+
+        .hero-actions-row-bottom {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .hero-actions-row-bottom .btn {
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--fc-teal) 0%, #1bc4b9 100%);
+            color: #0b0c10;
+            box-shadow: 0 6px 20px rgba(51, 241, 229, 0.25);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(51, 241, 229, 0.45);
+        }
+
+        .btn-paypal {
+            background: var(--paypal);
+            color: white;
+        }
+
+        .btn-paypal:hover {
+            background: var(--paypal-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 69, 124, 0.3);
+        }
+
+        .btn-livepix {
+            background: var(--livepix);
+            color: var(--livepix-text);
+        }
+
+        .btn-livepix:hover {
+            background: var(--livepix-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 255, 135, 0.3);
+        }
+
+        /* Client Simulator Widget */
+        .hero-visual {
+            position: relative;
+            background: var(--fc-bg-panel);
+            border: 1px solid var(--fc-border);
+            border-radius: 12px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .hero-visual:hover {
+            border-color: var(--fc-pink);
+            box-shadow: 0 30px 60px rgba(255, 0, 122, 0.15);
+        }
+
+        .widget-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--fc-border);
+        }
+
+        .widget-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--fc-text-mute);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .dot.pink { background: var(--fc-pink); }
+        .dot.teal { background: var(--fc-teal); }
+        
+        .widget-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .widget-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--fc-bg-panel-alt);
+            padding: 14px 18px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.2s ease;
+        }
+
+        .widget-row:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+            background: rgba(38, 20, 37, 0.8);
+        }
+
+        .row-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .row-info p {
+            font-size: 12px;
+            color: var(--fc-text-mute);
+        }
+
+        /* Toggle Switch UI */
+        .widget-switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .widget-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .widget-slider {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .25s ease;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .widget-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #fff;
+            transition: .25s ease;
+            border-radius: 50%;
+        }
+
+        input:checked + .widget-slider {
+            background-color: var(--fc-pink);
+        }
+
+        input:checked + .widget-slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Demo Video Section */
+        .demo-video-section {
+            padding: 100px 0;
+            border-top: 1px solid var(--fc-border);
+        }
+
+        .section-header {
+            max-width: 700px;
+            margin: 0 auto 56px auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-display);
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 0%, #ebd3eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-header p {
+            color: var(--fc-text-mute);
+            font-size: 16px;
+        }
+
+        .video-container {
+            max-width: 960px;
+            margin: 0 auto;
+            aspect-ratio: 16/9;
+            background: var(--fc-bg-panel);
+            border: 1px solid var(--fc-border);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.3s ease;
+        }
+
+        .video-container:hover {
+            border-color: var(--fc-teal);
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(21, 10, 20, 0.45), rgba(21, 10, 20, 0.45)), 
+                        url('https://dummyimage.com/1280x720/120911/33f1e5&text=Video+Demonstração') center center no-repeat;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .play-btn {
+            width: 88px;
+            height: 88px;
+            background: rgba(255, 0, 122, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(255, 0, 122, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .play-btn svg {
+            fill: white;
+            width: 36px;
+            height: 36px;
+            margin-left: 6px;
+        }
+
+        .video-placeholder:hover .play-btn {
+            transform: scale(1.1);
+            background: var(--fc-pink);
+            box-shadow: 0 0 40px rgba(255, 0, 122, 0.7);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: rgba(32, 17, 31, 0.2);
+            border-top: 1px solid var(--fc-border);
+            border-bottom: 1px solid var(--fc-border);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--fc-bg-panel);
+            border: 1px solid var(--fc-border);
+            border-radius: 12px;
+            padding: 36px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--fc-teal);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--fc-teal-glow);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            background: rgba(51, 241, 229, 0.06);
+            border: 1px solid rgba(51, 241, 229, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon-wrapper {
+            background: rgba(51, 241, 229, 0.12);
+            border-color: var(--fc-teal);
+            transform: scale(1.05);
+        }
+
+        .feature-card h3 {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .feature-card p {
+            color: var(--fc-text-mute);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* Interactive Simulator Panel */
+        .simulator-section {
+            padding: 100px 0;
+        }
+
+        .sim-container {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .sim-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sim-btn {
+            background: var(--fc-bg-panel-alt);
+            border: 1px solid var(--fc-border);
+            padding: 20px 24px;
+            border-radius: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .sim-btn.active {
+            background: rgba(255, 0, 122, 0.05);
+            border-color: var(--fc-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 122, 0.1);
+        }
+
+        .sim-btn h4 {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sim-btn p {
+            font-size: 13px;
+            color: var(--fc-text-mute);
+        }
+
+        .sim-btn.active h4 {
+            color: var(--fc-pink);
+        }
+
+        /* Mockup Client UI */
+        .sim-preview-box {
+            background: #140d13;
+            border: 1px solid var(--fc-border);
+            border-radius: 14px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            aspect-ratio: 16/11;
+        }
+
+        .client-topbar {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .client-nav {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .client-tab-mock {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--fc-text-mute);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .client-tab-mock.active {
+            color: var(--fc-teal);
+        }
+
+        .client-body {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            overflow: hidden;
+            background: #2a1b29;
+        }
+
+        .client-chat-area {
+            display: flex;
+            flex-direction: column;
+            padding: 16px 24px;
+            justify-content: flex-end;
+            gap: 12px;
+            background: rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .client-chat-area::before {
+            content: "PRESS START";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 48px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.02);
+            pointer-events: none;
+        }
+
+        .client-sidebar {
+            background: #231422;
+            border-left: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 14px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #d1b4cd;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-search input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            padding: 8px 12px;
+            color: var(--fc-text);
+            font-size: 12px;
+            font-family: var(--font-body);
+        }
+
+        .sidebar-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow-y: auto;
+        }
+
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 4px;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .sidebar-user:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-user-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .avatar-mock {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #444;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            overflow: hidden;
+        }
+
+        .user-name {
+            color: #d1b4cd;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 90px;
+        }
+
+        .sidebar-user-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .rank-num {
+            color: var(--fc-yellow);
+        }
+
+        .rank-tier {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid currentColor;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .tier-a { color: #a450a4; }
+        .tier-b { color: #37a1d6; }
+        .tier-c { color: #d6bc37; }
+        .tier-d { color: #a0a0a0; }
+
+        .ping-ms {
+            font-weight: 700;
+            min-width: 28px;
+            text-align: right;
+        }
+
+        .ping-bars {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        .chat-msg {
+            display: flex;
+            gap: 12px;
+            font-size: 13px;
+            border-radius: 6px;
+            padding: 4px 8px;
+            border-left: 3px solid transparent;
+        }
+
+        .msg-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .msg-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            width: 100%;
+        }
+
+        .msg-header-mock {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .status-dot-mock {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--fc-green);
+        }
+
+        .msg-author {
+            font-weight: 700;
+            color: #d1b4cd;
+        }
+
+        .msg-meta {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .msg-text {
+            color: #e5e7eb;
+            line-height: 1.4;
+        }
+
+        .msg-rep-btns {
+            display: inline-flex;
+            gap: 4px;
+            background: rgba(0,0,0,0.4);
+            padding: 2px 6px;
+            border-radius: 12px;
+            margin-left: 8px;
+            align-items: center;
+        }
+        
+        .rep-btn {
+            font-size: 11px;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+        .rep-btn:hover {
+            opacity: 1;
+        }
+
+        /* Gallery Carousel Styles */
+        .gallery-carousel-container {
+            position: relative;
+            max-width: 800px;
+            margin: 40px auto 0 auto;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid var(--fc-border);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            background: var(--fc-bg-panel);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-carousel-container:hover {
+            border-color: rgba(255, 0, 122, 0.25);
+            box-shadow: 0 25px 50px rgba(255, 0, 122, 0.1);
+        }
+
+        .gallery-carousel-slides {
+            display: flex;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .gallery-carousel-slide {
+            min-width: 100%;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gallery-image-wrapper {
+            width: 100%;
+            height: 500px; /* Fixed height to match 16/10 ratio on 800px max-width */
+            background: #10080f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gallery-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.95;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-info {
+            padding: 28px 36px;
+            border-top: 1px solid var(--fc-border);
+            background: rgba(21, 10, 20, 0.95);
+            text-align: center;
+            min-height: 140px; /* Consistent height to prevent layout jumps */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gallery-info h4 {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--fc-teal);
+            text-shadow: 0 0 10px rgba(51, 241, 229, 0.2);
+            margin: 0;
+        }
+
+        .gallery-info p {
+            color: var(--fc-text-mute);
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 680px;
+            margin: 0;
+        }
+
+        .carousel-nav-btn {
+            position: absolute;
+            top: 250px; /* Centered exactly on the 500px tall image area */
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(21, 10, 20, 0.85);
+            border: 1px solid var(--fc-border);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 22px;
+            user-select: none;
+        }
+
+        .carousel-nav-btn:hover {
+            background: var(--fc-pink);
+            border-color: var(--fc-pink);
+            box-shadow: 0 0 15px var(--fc-pink-glow);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .carousel-nav-btn.prev {
+            left: 20px;
+        }
+
+        .carousel-nav-btn.next {
+            right: 20px;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .carousel-dot.active {
+            background: var(--fc-pink);
+            box-shadow: 0 0 8px var(--fc-pink-glow);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Changelog Section */
+        .changelog {
+            padding: 100px 0;
+            border-top: 1px solid var(--fc-border);
+            background: rgba(32, 17, 31, 0.1);
+        }
+
+        .changelog-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .changelog-item {
+            background: var(--fc-bg-panel);
+            border: 1px solid var(--fc-border);
+            border-radius: 12px;
+            padding: 36px;
+            position: relative;
+        }
+
+        .changelog-version {
+            display: inline-block;
+            background: rgba(51, 241, 229, 0.08);
+            border: 1px solid rgba(51, 241, 229, 0.25);
+            color: var(--fc-teal);
+            padding: 4px 14px;
+            border-radius: 99px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: var(--font-display);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(51, 241, 229, 0.15);
+        }
+
+        .changelog-date {
+            float: right;
+            color: var(--fc-text-mute);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .changelog-changes {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .changelog-changes li {
+            display: flex;
+            gap: 12px;
+            font-size: 15px;
+            color: var(--fc-text);
+        }
+
+        .changelog-changes li::before {
+            content: "✦";
+            color: var(--fc-pink);
+            font-weight: bold;
+        }
+
+        /* Support Section */
+        .support-cta {
+            background: linear-gradient(135deg, rgba(255, 0, 122, 0.08) 0%, rgba(51, 241, 229, 0.04) 100%);
+            border: 1px solid var(--fc-border);
+            border-radius: 20px;
+            padding: 60px 48px;
+            text-align: center;
+            margin: 60px 0 100px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .support-cta h3 {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #ebd3eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .support-cta p {
+            max-width: 650px;
+            color: var(--fc-text-mute);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            padding: 56px 0;
+            border-top: 1px solid var(--fc-border);
+            text-align: center;
+            color: var(--fc-text-mute);
+            font-size: 14px;
+            background: var(--fc-bg-dark);
+        }
+
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .footer-logo span {
+            color: var(--fc-pink);
+        }
+
+        .footer-logo span.plus {
+            color: var(--fc-teal);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            margin: 24px 0;
+        }
+
+        .footer-links a {
+            color: var(--fc-text-mute);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--fc-teal);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 968px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 40px 0;
+                gap: 40px;
+            }
+
+            .hero-content {
+                align-items: center;
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .sim-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Retro CRT simulation layout overlays -->
+    <div class="scanlines"></div>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="container nav-wrapper">
+            <a href="#" class="logo">
+                <img src="assets/logo.svg" alt="Fightcade Plus Logo" style="height: 32px; width: 32px; margin-right: 8px;">
+                Fightcade<span>Plus</span>
+            </a>
+            <nav>
+                <a href="#features">Funcionalidades</a>
+                <a href="#simulator">Simulador</a>
+                <a href="#gallery">Galeria</a>
+                <a href="#changelog">Changelog</a>
+                <a href="#support">Apoiar</a>
+                <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">GitHub</a>
+                <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.14.0/Setup-FightcadePlus-1.14.0.exe" class="btn-header">Download v1.14.0</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="container hero">
+        <div class="hero-content">
+            <span class="hero-tag">v1.14.0 — Novo Update</span>
+            <h1>Melhore sua experiência no Fightcade</h1>
+            <p>
+                O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, 
+                filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.
+            </p>
+            <div class="hero-actions">
+                <div class="hero-actions-row-top">
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.14.0/Setup-FightcadePlus-1.14.0.exe" class="btn btn-download">Download Setup v1.14.0 (.exe)</a>
+                </div>
+                <div class="hero-actions-row-bottom">
+                    <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal">Donate via PayPal</a>
+                    <a href="https://livepix.gg/cerberusbr" target="_blank" class="btn btn-livepix">Apoiar via LivePix</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hero Visual Mockup -->
+        <div class="hero-visual-mockup">
+            <img src="assets/images/preview-settings.svg" alt="Fightcade Plus Panel" style="width: 100%; border-radius: 12px; box-shadow: 0 30px 60px rgba(0,0,0,0.7); border: 1px solid var(--fc-border); transition: transform 0.3s ease, border-color 0.3s ease;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--fc-teal)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--fc-border)';">
+        </div>
+    </section>
+
+    <!-- Demo Video Section -->
+    <section class="container demo-video-section">
+        <div class="section-header">
+            <h2>Veja o Mod em Ação</h2>
+            <p>Um preview rápido de como os componentes injetados aparecem direto na interface original do Fightcade.</p>
+        </div>
+        <div class="video-container">
+            <div class="video-placeholder">
+                <div class="play-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Funcionalidades Principais</h2>
+                <p>Módulos de alto rendimento criados para otimizar partidas e economizar tempo nos lobbies.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🌍</div>
+                    <h3>Filtro por Países</h3>
+                    <p>Filtre e elimine oponentes indesejados em tempo real na lista lateral e chat. Reduza o lag focando em conexões locais.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🏆</div>
+                    <h3>Badges de Ranking</h3>
+                    <p>Injeta badges de classificação e pontuação ELO ao lado dos nicks para você identificar a habilidade do oponente imediatamente.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">💬</div>
+                    <h3>Bandeiras & Ping</h3>
+                    <p>Substitui as barras nativas de ping por ping exato em milissegundos e inclui a bandeira real do país do jogador no chat.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🛡️</div>
+                    <h3>Reputação de Usuários</h3>
+                    <p>Favorite jogadores amigáveis ou classifique trolls e usuários nocivos com dislikes para silenciá-los automaticamente.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🤖</div>
+                    <h3>Fila Automática (Streamer)</h3>
+                    <p>Gerencie filas em live sem esforço com comandos rápidos (`!join`). O bot envia atualizações periódicas no chat.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🎨</div>
+                    <h3>Estilos Desbloqueados</h3>
+                    <p>Acesse novos temas e gradientes de cores da interface sem a necessidade de licenças premium ou custos extras.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Simulator Area -->
+    <section id="simulator" class="container simulator-section">
+        <div class="section-header">
+            <h2>Simulador do Lobby</h2>
+            <p>Selecione os módulos abaixo para ver a simulação de como o lobby lateral do Fightcade muda com as opções do Plus.</p>
+        </div>
+        <div class="sim-container">
+            <div class="sim-controls">
+                <!-- Interactive Toggles Widget (Moved from Hero) -->
+                <div class="hero-visual" style="box-shadow: none;">
+                    <div class="widget-header">
+                        <div class="widget-title">
+                            <span class="dot pink"></span>
+                            <span class="dot teal"></span>
+                            🐺 Painel Fightcade Plus
+                        </div>
+                        <div class="dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="widget-content">
+                        <div class="widget-row">
+                            <div class="row-info">
+                                <h4>Filtro de Países</h4>
+                                <p>Remover oponentes com rotas instáveis e distantes</p>
+                            </div>
+                            <label class="widget-switch">
+                                <input type="checkbox" id="toggle-country-filter" checked>
+                                <span class="widget-slider"></span>
+                            </label>
+                        </div>
+                        <div class="widget-row">
+                            <div class="row-info">
+                                <h4>Badges ELO / Rank</h4>
+                                <p>Mostrar classificação numérica na lista lateral</p>
+                            </div>
+                            <label class="widget-switch">
+                                <input type="checkbox" id="toggle-rank-badge" checked>
+                                <span class="widget-slider"></span>
+                            </label>
+                        </div>
+                        <div class="widget-row">
+                            <div class="row-info">
+                                <h4>Sistema de Reputação</h4>
+                                <p>Destacar jogadores amigáveis e silenciar trolls</p>
+                            </div>
+                            <label class="widget-switch">
+                                <input type="checkbox" id="toggle-reputation" checked>
+                                <span class="widget-slider"></span>
+                            </label>
+                        </div>
+                        <div class="widget-row">
+                            <div class="row-info">
+                                <h4>Modo de Privacidade</h4>
+                                <p>Ocultar identidades e chats indesejados</p>
+                            </div>
+                            <label class="widget-switch">
+                                <input type="checkbox" id="toggle-privacy-mode">
+                                <span class="widget-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dynamic Interactive Preview Panel -->
+            <div class="sim-preview-box">
+                <div class="client-topbar">
+                    <div class="client-nav">
+                        <span class="client-tab-mock active">Lobby Geral</span>
+                        <span class="client-tab-mock">Desafios</span>
+                    </div>
+                    <div class="dots">
+                        <span class="dot pink"></span>
+                        <span class="dot teal"></span>
+                    </div>
+                </div>
+                <div class="client-body">
+                    <div class="client-chat-area" id="sim-chat-area">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                    <div class="client-sidebar">
+                        <div class="sidebar-header">
+                            <span class="sidebar-section-title">LOOKING TO PLAY 105</span>
+                            <div class="sidebar-actions" style="font-size: 10px; color: #d1b4cd; display: flex; gap: 8px;">
+                                <span style="background: rgba(0,161,214,0.3); padding: 4px; border-radius: 4px; cursor: pointer;">🔄</span>
+                                <span style="background: rgba(255,255,255,0.1); padding: 4px; border-radius: 4px; cursor: pointer;">⚙️</span>
+                            </div>
+                        </div>
+                        <div class="sidebar-search" style="margin-top: 8px;">
+                            <input type="text" placeholder="Buscar jogador...">
+                        </div>
+                        <div class="sidebar-list" id="sim-user-list" style="margin-top: 8px;">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="container gallery-section">
+        <div class="section-header">
+            <h2>Interface & Capturas</h2>
+            <p>Veja imagens demonstrativas da extensão rodando diretamente integrada ao cliente desktop do Fightcade.</p>
+        </div>
+        <div class="gallery-carousel-container">
+            <button class="carousel-nav-btn prev" aria-label="Slide anterior">&lt;</button>
+            <button class="carousel-nav-btn next" aria-label="Próximo slide">&gt;</button>
+            
+            <div class="gallery-carousel-slides">
+                <!-- Slide 1 -->
+                <div class="gallery-carousel-slide">
+                    <div class="gallery-image-wrapper">
+                        <img src="assets/images/preview-settings.svg" alt="Painel Principal do Plus" width="800" height="500">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Painel de Configurações Nativo</h4>
+                        <p>Integração de UI impecável, preservando o layout clássico com novas chaves para o controle modular de todos os recursos instalados.</p>
+                    </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="gallery-carousel-slide">
+                    <div class="gallery-image-wrapper">
+                        <img src="assets/images/preview-countries.svg" alt="Melhorias Visuais no Lobby" width="800" height="500">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Lista de Jogadores Avançada</h4>
+                        <p>Identificação instantânea de ping exato e localização regional em formato de lista compacta para garantir partidas estáveis.</p>
+                    </div>
+                </div>
+                <!-- Slide 3 -->
+                <div class="gallery-carousel-slide">
+                    <div class="gallery-image-wrapper">
+                        <img src="assets/images/preview-queue.svg" alt="Controle de fila de jogadores" width="800" height="500">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Gerenciamento da Fila de Transmissão</h4>
+                        <p>Controle visual da fila de jogadores, integrando comandos automatizados do chat e controle de partidas jogadas.</p>
+                    </div>
+                </div>
+                <!-- Slide 4 -->
+                <div class="gallery-carousel-slide">
+                    <div class="gallery-image-wrapper">
+                        <img src="assets/images/preview-reputation.svg" alt="Destaque de reputação de jogadores" width="800" height="500">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Sistema de Reputação Nativa</h4>
+                        <p>Ações rápidas para marcar jogadores de comportamento positivo (verde brilhante) ou ignorar e mutar trolls facilmente.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="carousel-dots">
+            <span class="carousel-dot active" data-slide="0"></span>
+            <span class="carousel-dot" data-slide="1"></span>
+            <span class="carousel-dot" data-slide="2"></span>
+            <span class="carousel-dot" data-slide="3"></span>
+        </div>
+    </section>
+
+    <!-- Changelog Section -->
+    <section id="changelog" class="changelog">
+        <div class="container">
+            <div class="section-header">
+                <h2>Changelog do Projeto</h2>
+                <p>Acompanhe a evolução, correções de bugs e novos recursos integrados.</p>
+            </div>
+            <div class="changelog-timeline">
+                <div class="changelog-item">
+                    <span class="changelog-version">v1.14.0</span>
+                    <span class="changelog-date">28 de Junho de 2026</span>
+                    <ul class="changelog-changes">
+                        <li><strong>Verificação inteligente de atualizações</strong> através do GitHub Pages oficial.</li>
+                        <li><strong>Otimização de tráfego de rede</strong>: Sincronização automática de ranking agora ocorre a cada 12 horas.</li>
+                        <li><strong>Proteção antispam</strong>: O botão de sincronizar rankings manualmente agora fica bloqueado por 30 minutos após o uso para evitar rate limits.</li>
+                        <li>Correção de links quebrados na aba "Sobre" direcionando diretamente para a landing page.</li>
+                    </ul>
+                </div>
+                <div class="changelog-item">
+                    <span class="changelog-version">v1.13.3</span>
+                    <span class="changelog-date">15 de Maio de 2026</span>
+                    <ul class="changelog-changes">
+                        <li>Injeção nativa de painel de controle e menu global ao inicializar o app.</li>
+                        <li>Suporte completo para controle de fila de live com aviso de promo bot a cada 10 minutos.</li>
+                        <li>Sistema de interceptação de som de desafio com suporte para arquivos customizados de áudio WAV.</li>
+                        <li>Barra de pesquisa em tempo real na lista lateral de jogadores conectada via MutationObserver.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section id="support" class="container">
+        <div class="support-cta">
+            <h3>Apoie o Desenvolvimento ☕</h3>
+            <p>
+                Este projeto é desenvolvido e mantido de forma gratuita. Se o mod melhorou suas jogatinas ou simplificou suas streams, considere deixar uma contribuição financeira para manter os servidores ativos!
+            </p>
+            <div class="hero-actions">
+                <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal">Apoiar com PayPal</a>
+                <a href="https://livepix.gg/cerberusbr" target="_blank" class="btn btn-livepix">Apoiar com LivePix</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <a href="#" class="footer-logo">
+                <img src="assets/logo.svg" alt="Fightcade Plus Logo" style="height: 28px; width: 28px; margin-right: 8px; vertical-align: middle;">
+                Fightcade<span>Plus</span>
+            </a>
+            <p>O Fightcade Plus é uma modificação estética e funcional independente. Todos os direitos reservados.</p>
+            <div class="footer-links">
+                <a href="#features">Funcionalidades</a>
+                <a href="#simulator">Simulador</a>
+                <a href="#gallery">Galeria</a>
+                <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">Repositório GitHub</a>
+            </div>
+            <p style="margin-top: 16px; opacity: 0.3; font-size: 12px;">&copy; 2026 Fightcade Plus. Licenciado sob termos Open Source.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Simulator Scripts -->
+    <script>
+        const simPlayers = [
+            { name: "V.O VALDERIO.", country: "BR", flag: "🇧🇷", ping: "35ms", ms: 35, rankNum: "92", rankTier: "A", state: "online", reputation: "none", avatarColor: "#e62e2d" },
+            { name: "916", country: "BR", flag: "🇧🇷", ping: "80ms", ms: 80, rankNum: "409", rankTier: "B", state: "online", reputation: "none", avatarColor: "#2da37c" },
+            { name: "Leok4z", country: "BR", flag: "🇧🇷", ping: "79ms", ms: 79, rankNum: "235", rankTier: "B", state: "online", reputation: "none", avatarColor: "#17b629" },
+            { name: "TREINAMENTO", country: "BR", flag: "🇧🇷", ping: "80ms", ms: 80, rankNum: "413", rankTier: "B", state: "online", reputation: "none", avatarColor: "#00a1d6" },
+            { name: "VULGO PAI DE TODOS", country: "BR", flag: "🇧🇷", ping: "80ms", ms: 80, rankNum: "", rankTier: "C", state: "online", reputation: "none", avatarColor: "#613c7a" },
+            { name: "felipeunit", country: "BR", flag: "🇧🇷", ping: "82ms", ms: 82, rankNum: "", rankTier: "C", state: "online", reputation: "none", avatarColor: "#5b5ec1" },
+            { name: "[cla] ferreira", country: "BR", flag: "🇧🇷", ping: "83ms", ms: 83, rankNum: "", rankTier: "C", state: "online", reputation: "none", avatarColor: "#e72f65" },
+            { name: "top 3 pb", country: "BR", flag: "🇧🇷", ping: "15ms", ms: 15, rankNum: "", rankTier: "C", state: "online", reputation: "none", avatarColor: "#939023" },
+            { name: "LaggyChallenger", country: "US", flag: "🇺🇸", ping: "165ms", ms: 165, rankNum: "124", rankTier: "B", state: "online", reputation: "none", avatarColor: "#444" }
+        ];
+
+        const simChats = [
+            { author: "&lt;Robson&gt;", avatarColor: "#939023", country: "BR", flag: "🇧🇷", ms: 80, rankTier: "D", text: "d", time: "17:36", reputation: "none" },
+            { author: "0915", avatarColor: "#00a1d6", country: "BR", flag: "🇧🇷", ms: 80, rankTier: "D", text: "medio baixo", time: "17:36", reputation: "none" },
+            { author: "Baiano Sem Rede", avatarColor: "#5b5ec1", country: "BR", flag: "🇧🇷", ms: 86, rankTier: "D", text: "alguém<br>br<br>chama", time: "17:36", reputation: "negative" },
+            { author: "FUGA E RETRANCA rs", avatarColor: "#613c7a", country: "BR", flag: "🇧🇷", ms: 11, rankTier: "C", text: "alguem", time: "17:36", reputation: "none" },
+            { author: "TH KOF", avatarColor: "#e72f65", country: "BR", flag: "🇧🇷", ms: 80, rankTier: "D", text: "@dudukok nao estou te achando", time: "17:36", reputation: "positive", showRepBtns: true },
+            { author: "MACETE--SP", avatarColor: "#17b629", country: "BR", flag: "🇧🇷", ms: 80, rankTier: "D", text: "@Khostela", time: "17:36", reputation: "none" },
+            { author: "amigo do terry", avatarColor: "#2da37c", country: "BR", flag: "🇧🇷", ms: 11, rankTier: "D", text: "algm d ou c ft3", time: "17:37", reputation: "none" }
+        ];
+
+        let stateFilterCountry = true;
+        let stateFilterRank = true;
+        let statePrivacyMode = false;
+        let stateReputation = true;
+
+        const countryToggle = document.getElementById('toggle-country-filter');
+        const rankToggle = document.getElementById('toggle-rank-badge');
+        const privacyToggle = document.getElementById('toggle-privacy-mode');
+        const reputationToggle = document.getElementById('toggle-reputation');
+
+        function renderSimulator() {
+            // User List Rendering
+            const userListEl = document.getElementById('sim-user-list');
+            userListEl.innerHTML = '';
+
+            let filteredPlayers = [...simPlayers];
+            
+            // Apply Country Filter Simulation
+            if (stateFilterCountry) {
+                filteredPlayers = filteredPlayers.filter(p => p.country === "BR" && p.ms < 100);
+            }
+
+            filteredPlayers.forEach(p => {
+                const row = document.createElement('div');
+                row.className = 'sidebar-user';
+                
+                // Reputação styles
+                if (stateReputation) {
+                    if (p.reputation === "positive") {
+                        row.style.background = 'rgba(0, 255, 0, 0.08)';
+                    } else if (p.reputation === "negative") {
+                        row.style.opacity = '0.35';
+                        row.style.textDecoration = 'line-through';
+                    }
+                }
+
+                const displayName = statePrivacyMode ? "●●●●●●●●" : p.name;
+                const pingColor = p.ms < 50 ? 'var(--fc-green)' : 'var(--fc-text-mute)';
+                
+                let rankHtml = '';
+                if (stateFilterRank) {
+                    if (p.rankNum) rankHtml += `<span class="rank-num">🏅${p.rankNum}</span>`;
+                    rankHtml += `<span class="rank-tier tier-${p.rankTier.toLowerCase()}">${p.rankTier}</span>`;
+                }
+
+                let pingHtml = stateFilterRank ? 
+                    `<span class="ping-bars" style="color: ${pingColor}">📶</span><span class="ping-ms" style="color: ${pingColor}">${p.ping}</span>` : 
+                    `<span class="ping-bars" style="color: ${pingColor}">📶</span>`;
+
+                row.innerHTML = `
+                    <div class="sidebar-user-left">
+                        <span class="flag-mock">${p.flag}</span>
+                        <div class="avatar-mock" style="background: ${p.avatarColor}"></div>
+                        <span class="user-name" title="${displayName}">${displayName}</span>
+                    </div>
+                    <div class="sidebar-user-right">
+                        ${rankHtml}
+                        ${pingHtml}
+                    </div>
+                `;
+
+                userListEl.appendChild(row);
+            });
+
+            // Chat Rendering
+            const chatEl = document.getElementById('sim-chat-area');
+            chatEl.innerHTML = '';
+
+            simChats.forEach(c => {
+                if (statePrivacyMode && c.reputation === "negative") {
+                    return;
+                }
+
+                const msg = document.createElement('div');
+                msg.className = 'chat-msg';
+
+                const authorName = statePrivacyMode ? "Jogador" : c.author;
+                const pingColor = c.ms < 50 ? 'var(--fc-green)' : 'var(--fc-text-mute)';
+                
+                let rankHtml = '';
+                if (stateFilterRank) {
+                    rankHtml = `<span class="rank-tier tier-${c.rankTier.toLowerCase()}" style="margin: 0 4px;">${c.rankTier}</span>`;
+                }
+                
+                let pingHtml = stateFilterRank ? 
+                    `<span class="ping-bars" style="color: ${pingColor}">📶</span><span class="ping-ms" style="color: ${pingColor}">(${c.ms}ms)</span>` : 
+                    `<span class="ping-bars" style="color: ${pingColor}">📶</span>`;
+
+                let repBtns = '';
+                if (stateReputation && c.showRepBtns) {
+                    repBtns = `<span class="msg-rep-btns"><span class="rep-btn">👍</span><span class="rep-btn">👎</span><span class="rep-btn">🚫</span></span>`;
+                }
+
+                msg.innerHTML = `
+                    <div class="msg-avatar" style="background: ${c.avatarColor}"></div>
+                    <div class="msg-content">
+                        <div class="msg-header-mock">
+                            <span class="status-dot-mock"></span>
+                            <span class="msg-author">${authorName}</span>
+                            <span class="flag-mock">${c.flag}</span>
+                            ${rankHtml}
+                            ${pingHtml}
+                            <span class="msg-meta">at ${c.time}</span>
+                            ${repBtns}
+                        </div>
+                        <div class="msg-text">${c.text}</div>
+                    </div>
+                `;
+
+                if (stateReputation) {
+                    if (c.reputation === "positive") {
+                        msg.style.borderLeft = '3px solid var(--fc-green)';
+                        msg.style.background = 'rgba(0, 255, 0, 0.05)';
+                        msg.querySelector('.msg-author').style.color = 'var(--fc-green)';
+                    } else if (c.reputation === "negative") {
+                        msg.style.opacity = '0.4';
+                    }
+                }
+
+                chatEl.appendChild(msg);
+            });
+        }
+
+        // Event Listeners for Widget Switches
+        if (countryToggle) {
+            countryToggle.addEventListener('change', (e) => {
+                stateFilterCountry = e.target.checked;
+                renderSimulator();
+            });
+        }
+
+        if (rankToggle) {
+            rankToggle.addEventListener('change', (e) => {
+                stateFilterRank = e.target.checked;
+                renderSimulator();
+            });
+        }
+
+        if (privacyToggle) {
+            privacyToggle.addEventListener('change', (e) => {
+                statePrivacyMode = e.target.checked;
+                renderSimulator();
+            });
+        }
+
+        if (reputationToggle) {
+            reputationToggle.addEventListener('change', (e) => {
+                stateReputation = e.target.checked;
+                renderSimulator();
+            });
+        }
+
+        // Gallery Carousel Logic
+        let currentSlide = 0;
+        const slidesContainer = document.querySelector('.gallery-carousel-slides');
+        const carouselDots = document.querySelectorAll('.carousel-dot');
+        const totalSlides = carouselDots.length;
+
+        function showSlide(index) {
+            if (index >= totalSlides) currentSlide = 0;
+            else if (index < 0) currentSlide = totalSlides - 1;
+            else currentSlide = index;
+
+            slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+            carouselDots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === currentSlide);
+            });
+        }
+
+        document.querySelector('.carousel-nav-btn.prev').addEventListener('click', () => showSlide(currentSlide - 1));
+        document.querySelector('.carousel-nav-btn.next').addEventListener('click', () => showSlide(currentSlide + 1));
+        carouselDots.forEach((dot, idx) => {
+            dot.addEventListener('click', () => {
+                const slideIdx = parseInt(dot.dataset.slide);
+                showSlide(slideIdx);
+            });
+        });
+
+        // Initial setup
+        renderSimulator();
+    </script>
+</body>
+</html>

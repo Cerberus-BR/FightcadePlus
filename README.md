@@ -1,8 +1,30 @@
-# FightcadePlus
+# Fightcade Plus (Plugin: Cerberus)
 
-![Fightcade Plus by Cerberus](https://img.shields.io/badge/Plugin-Fightcade_Plus-red) ![Version](https://img.shields.io/badge/Version-1.13.3-blue)
+![Plugin Version](https://img.shields.io/badge/Version-1.14.0-blue?style=for-the-badge)
+![Fightcade Inject](https://img.shields.io/badge/Plugin-Fightcade_Plus-red?style=for-the-badge)
+![Languages](https://img.shields.io/badge/Languages-EN%20%7C%20PT%20%7C%20ES-green?style=for-the-badge)
 
-[English](#-english) | [Português](#-português) | [Español](#-español)
+A powerful, high-performance plugin injected directly into your Fightcade client. Designed to elevate your gaming, streaming, and community interaction with real-time tools, customizable filter shields, automated lobbies, and customized visual tweaks.
+
+---
+
+## 🗺️ Navigation / Navegação / Navegación
+
+* 🇺🇸 **[English Documentation](#-english)**
+  * [Features](#-features)
+  * [Installation](#%EF%B8%8F-download--installation)
+  * [Advanced Configuration](#%EF%B8%8F-advanced-configuration-reference)
+  * [Support](#-support)
+* 🇧🇷 **[Documentação em Português](#-português)**
+  * [Funcionalidades](#-funcionalidades)
+  * [Instalação](#%EF%B8%8F-download-e-instalação)
+  * [Configurações Avançadas](#%EF%B8%8F-referência-de-configuração-avançada)
+  * [Apoie o Projeto](#-apoio)
+* 🇪🇸 **[Documentación en Español](#-español)**
+  * [Características](#-características)
+  * [Instalación](#%EF%B8%8F-descarga-e-instalación)
+  * [Configuración Avanzada](#%EF%B8%8F-referencia-de-configuración-avanzada)
+  * [Soporte](#-soporte)
 
 ---
 
@@ -10,46 +32,125 @@
 
 ### Welcome to Fightcade Plus (by Cerberus)
 
-**Fightcade Plus** is a powerful plugin injected directly into your Fightcade client to enhance your gaming, streaming, and chatting experience. It brings quality-of-life improvements, streamer-tailored tools, and robust privacy features.
+**Fightcade Plus** enhances your Fightcade experience by adding quality-of-life additions, robust tools for streamers, custom ranking integrations, reputation-based filtering, and real-time interface enhancements.
 
-### Features
+---
 
-#### 🤖 Streamer Tools
-- **Live Player Queue:** Let your viewers join a queue via chat command (e.g., `!join`).
-- **Automated Welcome:** Greets new players when they enter the queue.
-- **Promotional Bot:** Set custom promotional messages to be sent automatically every 10 minutes.
+### 🚀 Features
 
-#### 🏆 Rankings
-- **Ranking Badges:** Displays ranking position badges directly next to player names in the chat.
-- **Per-Game Sync:** Synchronize regional or global rankings per game, with a country filter.
+#### 🤖 Streamer Toolkit
+* **Live Queue System**: Let viewers join your challenge queue directly from the Fightcade chat using a customizable command (default: `!join`).
+* **Automated Welcome Messages**: Greet players automatically as they queue up.
+* **10-Minute Promo Bot**: Set a custom promotional message (like links to YouTube or Twitch) to be posted automatically in the chat.
+* **Streamer Safety Nick**: Set your nick to prevent accidental queue self-joins.
 
-#### 💬 Chat & Sidebar
-- **Visual Enhancements:** Displays country flags, rank letters, and detailed ping information directly in the chat.
-- **Status Indicators:** Clearly see who is Online, Away, or Offline.
-- **Ping Display:** Choose between text or bars for representing ping times.
+#### 🏆 Live Rankings Synchronization
+* **Ranking Badges**: Displays current position ranking badges directly next to player names in the chat logs.
+* **Automated Backend Sync**: Periodic background synchronization of global/regional rankings per game (runs every 12 hours).
+* **Minimal Rank Threshold**: Restrict challenge popups to players of a certain letter rank (e.g. only accept Rank C and above).
 
-#### 🛡️ Reputation & Privacy
-- **Reputation System:** Mark players you enjoy playing with (Favorite) or downvote toxic users.
-- **Message Hiding:** Automatically hide chat messages from downvoted users.
-- **Streamer Privacy (Blur Mode):** Blur sensitive UI elements to protect privacy while streaming.
+#### 💬 Interface & Chat Upgrades
+* **Visual Additions**: Shows country flags, letter ranks, and direct ping numbers in the chat stream.
+* **Online Presence Status**: Sidebar status indicators for Online, Away, and Offline players.
+* **Ping Display**: Toggle between detailed numerical text or visual bars in the sidebar.
+* **Sidebar Player Search**: Real-time search filter in the sidebar to find players instantly.
+* **Chat Controls**: Fast macros to Clear, Pause, or Resume chat rendering.
 
-#### 🌍 Filters & Customization
-- **Country Filter:** Real-time player filtering based on their country.
-- **Theme Unlocking:** Access premium color themes.
-- **Auto-Join:** Automatically enter your favorite channel on startup.
-- **Multi-language UI:** Supported in English, Portuguese, and Spanish.
+#### 🛡️ Reputation Shield & Privacy
+* **Reputation System (👍/👎)**: Upvote friendly rivals (Favorite) or downvote toxic players.
+* **Filter Override**: Favorited players bypass all country/rank block lists.
+* **Clean Chat**: Auto-hide chat messages from downvoted players.
+* **Auto-Reject Challenge Protection**: Instantly decline challenge requests from downvoted players.
+* **Blur Mode**: Blur chat histories on screen to protect user privacy during live broadcasts.
 
-### Download & Installation
+#### 🌍 Country Filters
+* **Real-time Filter**: Toggle allowed or blocked countries in real-time.
+* **Auto-Reject Mode**: Automatically decline challenges from players originating from filtered countries.
 
-The easiest way to get started is by downloading the complete, pre-configured **Fightcade Plus** package, which already includes this plugin and features **automatic ROM installation** when joining a room!
+#### 🔊 Custom Challenger Audio
+* Replace the default Fightcade challenge bell with one of **6 custom high-quality voice/sound lines**:
+  1. *Go, new challenger!*
+  2. *A challenger awaits!*
+  3. *Step up!*
+  4. *Challenged!*
+  5. *CHAAAALLENGED!*
+  6. *Fight awaits!*
+* Includes a **Silent (Mute)** option to block challenge sounds entirely.
+
+---
+
+### 📥 Download & Installation
+
+The recommended method is downloading the pre-configured **Fightcade Plus** bundle. It includes this plugin pre-installed and features **automatic ROM installation** when entering game channels!
 
 📥 **[Download Latest Release](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
 
-1. Extract the downloaded archive to your preferred location.
-2. Run the included Fightcade executable.
-3. Access the **Cerberus Settings** panel from the Fightcade UI to customize your experience!
+#### Setup Steps:
+1. Extract the downloaded archive folder to a location of your choice.
+2. Launch the included Fightcade executable.
+3. Open the **Settings "⚙️"** panel from the main Fightcade title bar to customize your preferences.
 
-*(Alternatively, you can manually extract the plugin files into your existing Fightcade `resources/app/inject/plugins` directory).*
+> [!NOTE]
+> **Manual Installation**: If you already have a Fightcade client, extract the plugin directory into `resources/app/inject/plugins` within your current Fightcade directory.
+
+---
+
+### ⚙️ Advanced Configuration Reference
+
+Settings are stored in `cerberus_config.json` inside the parent plugins directory. Advanced users can tweak parameters directly:
+
+```json
+{
+  "language": "en",                     // Interface language ("en" | "pt" | "es")
+  "autoJoin": {
+    "enabled": true,                    // Auto-enter favorite room on startup
+    "channelId": "sfiii3an"             // Target channel ID to auto-join
+  },
+  "countryFilter": {
+    "enabled": false,                   // Toggle country filter shield
+    "autoReject": false                 // Decline challenges from blocked countries
+  },
+  "rankings": {
+    "masterEnabled": true,              // Enable rankings integration
+    "limit": 500,                       // Number of players to cache (max 500 recommended)
+    "country": "",                      // Limit rankings to a country (e.g. "BR")
+    "minRankToAccept": 0                // Auto-reject below: 0=All, 1=E, 2=D, 3=C, 4=B, 5=A, 6=S
+  },
+  "chatUserInfo": {
+    "masterEnabled": true,              // Enable chat decorations
+    "enableStatus": true,               // Show Online/Away status indicators
+    "enableFlag": true,                 // Show country flags in chat
+    "enableRank": true,                 // Show ranking letters
+    "showNumericRanks": true,           // Show ranking badges next to names
+    "enablePingText": true,             // Show ping values in chat
+    "enablePingBars": false,            // Use bars instead of text
+    "replacePingBarWithText": false,    // Replace ping bars with text in sidebar
+    "enableReputation": true,           // Enable reputation (Favorite/Downvote)
+    "hideNegativeMessages": true,       // Hide messages from downvoted players
+    "autoRejectNegative": false,        // Auto-reject challenges from downvoted players
+    "unlockColorThemes": true,          // Unlock premium color UI themes
+    "blurMode": "none",                 // Chat blur mode ("none" | "all")
+    "challengeSound": "native"          // Sound file: "native", "custom1" to "custom6", or "silent"
+  },
+  "liveQueue": {
+    "enabled": false,                   // Enable streamer live queue
+    "keyword": "!join",                 // Command viewers type to enter
+    "limit": 10,                        // Maximum queue capacity
+    "streamerNick": "",                 // Streamer nick (ignores self-join)
+    "autoReply": false,                 // Chat notification for new queue entries
+    "promoEnabled": false,              // Send promotional messages
+    "promoMessage": "[LIVE] Enter queue by typing !join!" // Custom message (supports markdown)
+  }
+}
+```
+
+---
+
+### ☕ Support
+
+Developing and maintaining Fightcade Plus requires substantial time and effort. If this plugin enhances your setup, please consider buying a coffee to support continued updates!
+
+* **Ko-Fi / Support Page**: Check the **About** tab inside the Settings "⚙️" panel for active support links.
 
 ---
 
@@ -57,46 +158,125 @@ The easiest way to get started is by downloading the complete, pre-configured **
 
 ### Bem-vindo ao Fightcade Plus (por Cerberus)
 
-**Fightcade Plus** é um plugin poderoso injetado diretamente no seu cliente Fightcade para aprimorar sua experiência de jogo, transmissão (stream) e chat. Ele traz melhorias na qualidade de vida, utilitários para streamers e opções robustas de privacidade.
+O **Fightcade Plus** eleva sua experiência no Fightcade adicionando melhorias de qualidade de vida, utilitários completos para streamers, rankings atualizados em tempo real, filtros de reputação e modificações na interface.
 
-### Funcionalidades
+---
+
+### 🚀 Funcionalidades
 
 #### 🤖 Ferramentas para Streamers
-- **Fila de Jogadores (Live Queue):** Permita que seus espectadores entrem numa fila de partidas através de um comando no chat (ex: `!join`).
-- **Boas-vindas Automáticas:** Saúda novos jogadores assim que eles entram na fila.
-- **Bot Promocional:** Configure mensagens promocionais para serem enviadas ao chat automaticamente a cada 10 minutos.
+* **Fila de Jogadores (Live Queue)**: Permite que seus espectadores entrem na fila de desafios digitando um comando configurável no chat (padrão: `!join`).
+* **Boas-vindas Automáticas**: Envia mensagens de saudação no chat conforme novos jogadores entram na fila.
+* **Bot Promocional**: Divulga links ou mensagens personalizadas no chat automaticamente a cada 10 minutos.
+* **Filtro de Nick**: Evita que o próprio streamer entre acidentalmente na fila ao interagir no chat.
 
-#### 🏆 Rankings
-- **Emblemas de Posição:** Exibe a posição no ranking ao lado do nick do jogador.
-- **Sincronização por Jogo:** Sincronize rankings globais ou com limite por país para cada jogo.
+#### 🏆 Sincronização de Rankings em Tempo Real
+* **Emblemas de Posição**: Exibe medalhas numéricas com a colocação exata do ranking diretamente ao lado dos nicks no chat.
+* **Sincronização em Background**: Atualiza rankings globais e regionais automaticamente a cada 12 horas.
+* **Filtro de Desafios por Patente**: Recusa desafios automaticamente caso o desafiante esteja abaixo do Rank desejado (ex: rejeitar abaixo de Rank D).
 
-#### 💬 Chat e Lista Lateral
-- **Melhorias Visuais:** Exibe bandeiras de países, letras de rank e ping detalhado direto no chat.
-- **Status (Presença):** Indicadores claros de quem está Online, Ausente ou Offline.
-- **Exibição do Ping:** Mostre o ping como texto ou em barrinhas.
+#### 💬 Melhorias no Chat e Lista Lateral
+* **Detalhamento Visual**: Exibe bandeiras de países, letras de patentes (Ranks) e ping numérico no histórico do chat.
+* **Indicadores de Presença**: Status visual claro (Online, Ausente ou Offline) na barra lateral.
+* **Customização de Ping**: Escolha entre ping numérico detalhado ou barras gráficas tradicionais.
+* **Filtro de Busca Rápida**: Barra de pesquisa integrada na lista de usuários para localizar oponentes em tempo real.
+* **Macros de Chat**: Atalhos rápidos para Limpar, Pausar ou Retomar a rolagem do chat.
 
-#### 🛡️ Reputação e Privacidade
-- **Sistema de Reputação:** Destaque (Favorite) jogadores que você gosta ou negative usuários tóxicos.
-- **Chat Mais Limpo:** Oculte automaticamente mensagens de usuários negativados.
-- **Modo Privacidade (Blur Mode):** Borre informações sensíveis na tela durante as transmissões.
+#### 🛡️ Filtro de Reputação e Privacidade
+* **Sistema de Reputação (👍/👎)**: Destaque bons jogadores (Favorito) ou negative usuários indesejados.
+* **Ignorar Filtros**: Jogadores marcados como Favorito ignoram qualquer regra de bloqueio de país ou rank.
+* **Chat Limpo**: Oculta automaticamente mensagens enviadas por usuários negativados.
+* **Auto-Recusa Inteligente**: Bloqueia e recusa instantaneamente desafios enviados por jogadores negativados.
+* **Modo Blur (Privacidade)**: Borra o histórico do chat na tela para proteger a privacidade durante as streams.
 
-#### 🌍 Filtros e Personalização
-- **Filtro de Países:** Filtre oponentes da lista lateral baseando-se no país (tempo real).
-- **Temas Extras:** Desbloqueie temas de cores avançados da interface.
-- **Auto-Join:** Entre automaticamente no canal favorito ao abrir o Fightcade.
-- **Interface Multi-idioma:** Traduzido para Inglês, Português e Espanhol.
+#### 🌍 Filtros de Região (País)
+* **Filtro em Tempo Real**: Ative ou desative países específicos instantaneamente através de checkboxes na interface.
+* **Auto-Recusa por Região**: Declina desafios de forma automática se o oponente for de uma região bloqueada.
 
-### Download e Instalação
+#### 🔊 Sons de Desafio Customizados
+* Substitua o alerta de desafio padrão do Fightcade por **6 falas exclusivas e de alta qualidade**:
+  1. *Go, new challenger!*
+  2. *A challenger awaits!*
+  3. *Step up!*
+  4. *Challenged!*
+  5. *CHAAAALLENGED!*
+  6. *Fight awaits!*
+* Inclui a opção **Silencioso (Mute)** para desativar completamente os avisos sonoros de novos desafios.
 
-A maneira mais fácil de começar é baixando o pacote **Fightcade Plus** pré-montado e completo, que já inclui este plugin e possui **instalação automática das ROMs** ao entrar nas salas!
+---
+
+### 📥 Download e Instalação
+
+A maneira recomendada para utilizar é baixando o pacote pré-configurado do **Fightcade Plus**. Ele já vem com o plugin embutido e possui **instalador automático de ROMs** ao entrar nas salas!
 
 📥 **[Baixar a Versão Mais Recente](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
 
-1. Extraia o arquivo compactado em um local de sua preferência.
-2. Abra o executável do Fightcade incluído na pasta.
-3. Acesse o painel **Cerberus Settings** na interface principal para ajustar tudo a seu gosto!
+#### Passo a Passo:
+1. Extraia o conteúdo do arquivo baixado em uma pasta de sua escolha.
+2. Inicie o executável do Fightcade contido na pasta.
+3. Clique no botão de configurações do **Settings "⚙️"** na barra superior da interface para ajustar suas preferências!
 
-*(Alternativamente, você pode extrair manualmente apenas os arquivos do plugin na pasta `resources/app/inject/plugins` da sua instalação do Fightcade).*
+> [!NOTE]
+> **Instalação Manual**: Caso prefira instalar na sua versão do Fightcade existente, extraia a pasta deste plugin no diretório `resources/app/inject/plugins` da sua instalação.
+
+---
+
+### ⚙️ Referência de Configuração Avançada
+
+Os ajustes são salvos em `cerberus_config.json` no diretório de plugins. Usuários avançados podem editar os parâmetros diretamente:
+
+```json
+{
+  "language": "pt",                     // Idioma da interface ("en" | "pt" | "es")
+  "autoJoin": {
+    "enabled": true,                    // Entrar automaticamente na sala favorita ao iniciar
+    "channelId": "sfiii3an"             // ID do canal favorito
+  },
+  "countryFilter": {
+    "enabled": false,                   // Ativar filtro de países
+    "autoReject": false                 // Recusar desafios de países bloqueados
+  },
+  "rankings": {
+    "masterEnabled": true,              // Ativar módulo de rankings
+    "limit": 500,                       // Quantidade limite de jogadores para sincronizar
+    "country": "",                      // Limitar ranking para um país específico (ex: "BR")
+    "minRankToAccept": 0                // Recusa automática abaixo de: 0=Todos, 1=E, 2=D, 3=C, 4=B, 5=A, 6=S
+  },
+  "chatUserInfo": {
+    "masterEnabled": true,              // Ativar decorações no chat
+    "enableStatus": true,               // Mostrar status Online/Ausente/Offline
+    "enableFlag": true,                 // Exibir bandeiras dos países
+    "enableRank": true,                 // Exibir letra do Rank
+    "showNumericRanks": true,           // Mostrar medalha de posição no ranking
+    "enablePingText": true,             // Mostrar ping em texto no chat
+    "enablePingBars": false,            // Mostrar ping em barras
+    "replacePingBarWithText": false,    // Substituir barras de ping por texto na barra lateral
+    "enableReputation": true,           // Ativar sistema de Favorito/Negativado
+    "hideNegativeMessages": true,       // Ocultar mensagens de usuários negativados
+    "autoRejectNegative": false,        // Recusar desafios de usuários negativados
+    "unlockColorThemes": true,          // Desbloquear temas de cor premium
+    "blurMode": "none",                 // Modo blur ("none" | "all")
+    "challengeSound": "native"          // Som de desafio: "native", "custom1" até "custom6" ou "silent"
+  },
+  "liveQueue": {
+    "enabled": false,                   // Ativar fila de desafios para streams
+    "keyword": "!join",                 // Comando que os espectadores digitam
+    "limit": 10,                        // Capacidade máxima da fila
+    "streamerNick": "",                 // Nick do streamer para ignorar auto-entrada
+    "autoReply": false,                 // Enviar aviso no chat sobre novas entradas
+    "promoEnabled": false,              // Enviar mensagens de divulgação periódicas
+    "promoMessage": "[LIVE] Entre na fila digitando !join!" // Mensagem de divulgação (suporta markdown)
+  }
+}
+```
+
+---
+
+### ☕ Apoio
+
+Manter o projeto atualizado e adicionar novas melhorias requer tempo e dedicação. Se o Fightcade Plus aprimora as suas jogatinas ou streams, considere apoiar o desenvolvimento!
+
+* **Ko-Fi / Links de Apoio**: Veja a aba **Sobre** no painel de configurações para acessar as opções de contribuição.
 
 ---
 
@@ -104,43 +284,122 @@ A maneira mais fácil de começar é baixando o pacote **Fightcade Plus** pré-m
 
 ### Bienvenido a Fightcade Plus (por Cerberus)
 
-**Fightcade Plus** es un potente plugin inyectado directamente en tu cliente de Fightcade para mejorar tu experiencia de juego, transmisiones (streaming) y chat. Introduce mejoras de calidad de vida, herramientas para streamers y opciones robustas de privacidad.
+**Fightcade Plus** mejora significativamente tu experiencia en Fightcade integrando herramientas de calidad de vida, un completo panel para creadores de contenido (streamers), sincronización de clasificaciones en vivo, filtros avanzados de reputación y personalización de la interfaz.
 
-### Características
+---
+
+### 🚀 Características
 
 #### 🤖 Herramientas para Streamers
-- **Cola de Jugadores en Vivo:** Permite que tus espectadores se unan a una cola mediante un comando en el chat (ej: `!join`).
-- **Bienvenida Automática:** Saluda automáticamente a los nuevos jugadores al entrar a la cola.
-- **Bot Promocional:** Configura un mensaje personalizado que se enviará automáticamente al chat cada 10 minutos.
+* **Fila de Jugadores en Vivo (Live Queue)**: Permite que tus espectadores se unan a la cola de juego desde el chat usando un comando personalizable (por defecto: `!join`).
+* **Mensajes de Bienvenida Automatizados**: Saluda automáticamente a los nuevos jugadores al ingresar a la cola.
+* **Bot de Promociones**: Publica un mensaje promocional configurable (como redes sociales o enlaces) automáticamente cada 10 minutos.
+* **Nombre de Streamer Protector**: Configura tu nick para evitar unirte a tu propia cola por accidente al chatear.
 
-#### 🏆 Rankings
-- **Medallas de Ranking:** Muestra la posición de ranking directamente junto al nombre del jugador en el chat.
-- **Sincronización por Juego:** Sincroniza los rankings de forma global o aplicando un filtro de país.
+#### 🏆 Sincronización de Clasificaciones (Rankings)
+* **Medallas de Posición**: Muestra medallas visuales con la posición exacta del jugador en el chat, justo al lado de su nick.
+* **Sincronización Silenciosa**: Clasificaciones regionales y globales actualizadas automáticamente en segundo plano cada 12 horas.
+* **Auto-Rechazo por Rango**: Configura el plugin para rechazar desafíos de oponentes que no alcancen una determinada letra de rango (ej: solo aceptar rango C o superior).
 
-#### 💬 Chat y Lista Lateral
-- **Mejoras Visuales:** Banderas de países, letras de rango y el ping se muestran directamente en el historial del chat.
-- **Indicadores de Estado:** Revisa rápidamente quién está Online, Ausente u Offline.
-- **Visualización de Ping:** Escoge entre texto y barras para ver las estadísticas del ping.
+#### 💬 Mejoras de Chat y Lista Lateral
+* **Información Visual Ampliada**: Muestra la bandera de procedencia, el rango de letra y el ping numérico en el chat en vivo.
+* **Estados de Presencia**: Indicadores claros de estado (Online, Ausente, Offline) en la barra de usuarios lateral.
+* **Personalización de Ping**: Intercambia la barra de ping estándar de Fightcade por el valor de ping exacto en milisegundos.
+* **Buscador en la Barra Lateral**: Filtra oponentes en tiempo real usando el motor de búsqueda directa integrado.
+* **Macros de Limpieza**: Botones rápidos en el chat para Limpiar, Pausar o Reanudar el historial de mensajes.
 
-#### 🛡️ Reputación y Privacidad
-- **Sistema de Reputación:** Destaca (Favorito) a quienes te gusta jugar, o vota negativo a usuarios tóxicos.
-- **Ocultar Mensajes:** Oculta los mensajes en el chat de aquellos usuarios que has marcado negativos.
-- **Privacidad para Streamers (Modo Blur):** Desenfoca información sensible en la pantalla secundaria de Fightcade durante tus directos.
+#### 🛡️ Escudo de Reputación y Privacidad
+* **Reputación Dinámica (👍/👎)**: Califica positivamente (Favorito) a buenos contrincantes o reporta (Downvote) a usuarios tóxicos.
+* **Bypass de Filtros**: Los usuarios marcados como Favorito ignorarán las restricciones de rango o país.
+* **Chat Limpio**: Oculta de forma automática los mensajes enviados por usuarios con reputación negativa.
+* **Auto-Rechazo por Reputación**: Ignora y declina retos de combate de usuarios con reputación negativa.
+* **Modo Blur (Privacidad)**: Desenfoca los chats en pantalla para proteger datos privados durante directos.
 
-#### 🌍 Filtros y Personalización
-- **Filtro de País:** Filtra adversarios de la lista lateral según su país originario al instante.
-- **Desbloqueo de Temas:** Accede a esquemas de colores premium para la aplicación.
-- **Auto-Join:** Entra automáticamente a tu canal favorito al iniciar la plataforma.
-- **Interfaz Multilingüe:** Disponible en Inglés, Portugués y Español.
+#### 🌍 Filtro de Países
+* **Filtros Interactivos**: Selecciona qué países bloquear o permitir en tiempo real mediante un menú de casillas interactivo.
+* **Auto-Rechazo Regional**: Declina de manera automática los desafíos procedentes de países filtrados.
 
-### Descarga e Instalación
+#### 🔊 Sonidos de Desafío Personalizados
+* Remplaza el sonido nativo de Fightcade con **6 voces exclusivas de alta calidad**:
+  1. *Go, new challenger!*
+  2. *A challenger awaits!*
+  3. *Step up!*
+  4. *Challenged!*
+  5. *CHAAAALLENGED!*
+  6. *Fight awaits!*
+* Incluye un modo **Silencioso (Mute)** para desactivar las alertas auditivas por completo.
 
-La manera más sencilla de empezar es descargando el paquete completo y preconfigurado de **Fightcade Plus**, el cual ya incluye este plugin y ¡ofrece **descarga automática de ROMs** al entrar a una sala!
+---
+
+### 📥 Descarga e Instalación
+
+El método recomendado es descargar el paquete integrado de **Fightcade Plus**. ¡Este instalador ya incluye el plugin preconfigurado y además provee **descarga e instalación automática de ROMs** al entrar a salas de juego!
 
 📥 **[Descargar la Última Versión](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
 
-1. Extrae el archivo comprimido en la ubicación que prefieras.
-2. Ejecuta el Fightcade incluido en la carpeta.
-3. Ingresa al panel de configuración **Cerberus Settings** en la interfaz para personalizar tus opciones.
+#### Pasos para la configuración:
+1. Extrae el archivo comprimido descargado en una ubicación de tu preferencia.
+2. Abre el ejecutable de Fightcade dentro de la carpeta extraída.
+3. Haz clic en el botón de **Settings "⚙️"** ubicado en la barra de herramientas superior para configurar tus opciones.
 
-*(De forma alternativa, también puedes extraer manualmente los archivos del plugin en la ruta `resources/app/inject/plugins` de tu instalación actual).*
+> [!NOTE]
+> **Instalación Manual**: Si prefieres usar tu propia instalación de Fightcade, copia la carpeta de este plugin en el directorio `resources/app/inject/plugins`.
+
+---
+
+### ⚙️ Referencia de Configuración Avanzada
+
+Los ajustes se almacenan en `cerberus_config.json` en el directorio de plugins. Los usuarios avanzados pueden modificarlos manualmente:
+
+```json
+{
+  "language": "es",                     // Idioma de interfaz ("en" | "pt" | "es")
+  "autoJoin": {
+    "enabled": true,                    // Autounirse a un canal preferido al iniciar
+    "channelId": "sfiii3an"             // ID del canal predeterminado
+  },
+  "countryFilter": {
+    "enabled": false,                   // Habilitar filtros de país
+    "autoReject": false                 // Auto-rechazar retos de países bloqueados
+  },
+  "rankings": {
+    "masterEnabled": true,              // Activar clasificaciones
+    "limit": 500,                       // Máximo de registros a almacenar
+    "country": "",                      // Filtro regional de clasificación (ej: "BR")
+    "minRankToAccept": 0                // Auto-rechazo si es menor a: 0=Todos, 1=E, 2=D, 3=C, 4=B, 5=A, 6=S
+  },
+  "chatUserInfo": {
+    "masterEnabled": true,              // Decorar chat
+    "enableStatus": true,               // Mostrar estado Online/Ausente/Offline
+    "enableFlag": true,                 // Mostrar banderas
+    "enableRank": true,                 // Mostrar rangos de letras
+    "showNumericRanks": true,           // Mostrar posición numérica en el chat
+    "enablePingText": true,             // Mostrar ping en texto
+    "enablePingBars": false,            // Mostrar ping en barras
+    "replacePingBarWithText": false,    // Reemplazar barra de ping lateral por texto
+    "enableReputation": true,           // Habilitar reputación (Favorito/Downvote)
+    "hideNegativeMessages": true,       // Ocultar mensajes de usuarios reportados
+    "autoRejectNegative": false,        // Auto-rechazar retos de usuarios reportados
+    "unlockColorThemes": true,          // Desbloquear temas de color premium
+    "blurMode": "none",                 // Modo desenfoque ("none" | "all")
+    "challengeSound": "native"          // Sonido de reto: "native", "custom1" a "custom6" o "silent"
+  },
+  "liveQueue": {
+    "enabled": false,                   // Activar cola de retos en vivo
+    "keyword": "!join",                 // Comando del chat para entrar
+    "limit": 10,                        // Límite de participantes
+    "streamerNick": "",                 // Nickname del streamer para ignorarse a sí mismo
+    "autoReply": false,                 // Anunciar nuevos integrantes en el chat
+    "promoEnabled": false,              // Activar bot promocional
+    "promoMessage": "[LIVE] ¡Entra a la cola escribiendo !join!" // Mensaje promocional (admite markdown)
+  }
+}
+```
+
+---
+
+### ☕ Soporte
+
+Mantener este mod actualizado requiere tiempo, servidores y café. Si Fightcade Plus mejora tus combates o directos de streaming, ¡considera donar y apoyar su desarrollo!
+
+* **Ko-Fi / Soporte**: Visita la pestaña **Acerca de** (About) en el panel de control de Cerberus para acceder a las opciones de contribución activas.

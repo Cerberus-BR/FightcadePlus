@@ -1,4 +1,5 @@
-// \cerberus\constants.js
+// cerberus/constants.js
+
 const AVAILABLE_COUNTRIES = {
     'BR': 'Brazil', 'AR': 'Argentina', 'BO': 'Bolivia', 'UY': 'Uruguay',
     'CL': 'Chile', 'PE': 'Peru', 'CO': 'Colombia', 'MX': 'Mexico',
@@ -35,7 +36,7 @@ const defaultConfig = {
 };
 
 module.exports = {
-    CURRENT_VERSION: "1.13.3",
+    CURRENT_VERSION: "1.14.0",
     AVAILABLE_COUNTRIES,
     COUNTRY_NAME_TO_CODE,
     defaultConfig

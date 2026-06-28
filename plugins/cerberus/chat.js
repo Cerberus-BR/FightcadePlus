@@ -1,3 +1,5 @@
+// cerberus/chat.js
+
 function updateFilterShield() {
     const { ConfigManager } = require('./config.js');
     const isCountryActive = ConfigManager.getSetting('countryFilter.enabled') === true;

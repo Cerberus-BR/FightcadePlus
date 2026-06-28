@@ -1,3 +1,5 @@
+// cerberus/utils.js
+
 const { Locales } = require('./locales.js');
 
 function t(keyPath) {
@@ -124,16 +126,14 @@ async function checkForUpdates() {
     const { CerberusData } = require('./state.js');
     const now = Date.now();
     if (!CerberusData.lastUpdateCheck || (now - CerberusData.lastUpdateCheck > 86400000)) {
-        // [CERBERUS] Registo Preventivo: Evita sobrecarga de rede caso o fetch falhe repetidamente
-        CerberusData.lastUpdateCheck = now;
-        CerberusData.save();
-
         try {
-            const response = await fetch('https://api.github.com/repos/Cerberus-BR/FightcadePlus/releases/latest');
+            const response = await fetch('https://cerberus-br.github.io/FightcadePlus/version.json');
             if (response.ok) {
                 const data = await response.json();
-                if (data && data.tag_name && data.tag_name !== CerberusData.latestVersion) { 
-                    CerberusData.latestVersion = data.tag_name; 
+                if (data && data.latestVersion) { 
+                    CerberusData.latestVersion = data.latestVersion; 
+                    CerberusData.downloadUrl = data.downloadUrl || null;
+                    CerberusData.lastUpdateCheck = now; 
                     CerberusData.save(); 
                 }
             }

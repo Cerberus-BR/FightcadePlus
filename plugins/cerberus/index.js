@@ -1,10 +1,12 @@
+// cerberus/index.js
+
 function init(FCADE) {
     window.CerberusFCADE = FCADE;
     const { CerberusData } = require('./state.js');
     const { ConfigManager } = require('./config.js');
     const { RankCache } = require('./api.js');
     const { injectStyles, createControlPanel, createQueuePanel, applyTheme, injectGlobalMenu } = require('./ui.js');
-    const { connectToChannelWhenAvailable, setupAudioSilencer } = require('./utils.js');
+    const { connectToChannelWhenAvailable, setupAudioSilencer, checkForUpdates } = require('./utils.js');
     
     // 1. Carga de Dados (RAM)
     CerberusData.load();
@@ -90,6 +92,7 @@ function init(FCADE) {
     setTimeout(() => applyTheme(CerberusData.selectedTheme), 5000);
 
     scheduleAutoSync(FCADE);
+    checkForUpdates();
 }
 
 function scheduleAutoSync(FCADE) {
@@ -102,7 +105,7 @@ function scheduleAutoSync(FCADE) {
         const gameId = getActiveGameId(FCADE);
         if (gameId && !RankCache.isSyncing) {
             const lastSync = RankCache.data[gameId]?.lastUpdate || 0;
-            if (Date.now() - lastSync > 3600000) { 
+            if (Date.now() - lastSync > 43200000) { 
                 RankCache.syncRankings(gameId);
             }
         }

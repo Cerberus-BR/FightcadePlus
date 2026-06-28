@@ -1,3 +1,5 @@
+// cerberus/ui.js
+
 const { t, isNewerVersion, executeChatCommand, normalizeUsername, isSystemUser, getActiveChannelWrapper, getActiveGameId, executeChatMacro } = require('./utils.js');
 const { AVAILABLE_COUNTRIES, CURRENT_VERSION, COUNTRY_NAME_TO_CODE } = require('./constants.js');
 
@@ -418,7 +420,8 @@ function createAboutTab() {
     
     let updateHtml = '';
     if (isNewerVersion(CerberusData.latestVersion, CURRENT_VERSION)) {
-        updateHtml = `<div style="background: rgba(255, 165, 0, 0.2); border: 1px solid rgba(255, 165, 0, 0.5); padding: 10px; border-radius: 8px; margin-top: 15px; color: #ffdca5; font-weight: bold; text-align: center;">${t('about.updateAvailable')} ${CerberusData.latestVersion}</div>`;
+        const downloadLink = CerberusData.downloadUrl ? ` <a href="${CerberusData.downloadUrl}" target="_blank" style="color: #4ade80; text-decoration: underline; margin-left: 5px;">Download</a>` : '';
+        updateHtml = `<div style="background: rgba(255, 165, 0, 0.2); border: 1px solid rgba(255, 165, 0, 0.5); padding: 10px; border-radius: 8px; margin-top: 15px; color: #ffdca5; font-weight: bold; text-align: center;">${t('about.updateAvailable')} ${CerberusData.latestVersion}${downloadLink}</div>`;
     }
     
     document.getElementById('aboutTab').innerHTML = `
@@ -447,7 +450,7 @@ function createAboutTab() {
                 </div>
             </div>
             
-            <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/latest" target="_blank" class="cerb-update-btn" style="margin-top: 25px; width: calc(100% - 40px); display: block; margin-left: auto; margin-right: auto; box-sizing: border-box;">
+            <a href="https://cerberus-br.github.io/FightcadePlus" target="_blank" class="cerb-update-btn" style="margin-top: 25px; width: calc(100% - 40px); display: block; margin-left: auto; margin-right: auto; box-sizing: border-box;">
                 ${t('about.updateBtn')}
             </a>
         </div>
@@ -802,7 +805,8 @@ function injectUIEnhancements() {
     const motdWrapper = chatWrapper.querySelector('.messageWrapper.motd');
     if (motdWrapper && CerberusData.latestVersion && isNewerVersion(CerberusData.latestVersion, CURRENT_VERSION) && motdWrapper.dataset.cerbUpdateAdded !== "true") {
         const updateNotice = document.createElement('div'); updateNotice.className = 'cerb-motd-update-notice';
-        updateNotice.innerHTML = `🐺 <b>${t('motd.updateAvail')} ${CerberusData.latestVersion}</b> <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/latest" target="_blank" style="color: #4ade80; text-decoration: underline; margin-left: 10px;">Download</a>`;
+        const dlUrl = CerberusData.downloadUrl || 'https://cerberus-br.github.io/FightcadePlus';
+        updateNotice.innerHTML = `🐺 <b>${t('motd.updateAvail')} ${CerberusData.latestVersion}</b> <a href="${dlUrl}" target="_blank" style="color: #4ade80; text-decoration: underline; margin-left: 10px;">Download</a> <a href="https://cerberus-br.github.io/FightcadePlus" target="_blank" style="color: #a3bffa; text-decoration: underline; margin-left: 10px;">${t('motd.moreDetails')}</a>`;
         const blocksContainer = motdWrapper.querySelector('.blocksContainer');
         if (blocksContainer) blocksContainer.appendChild(updateNotice); else motdWrapper.appendChild(updateNotice);
         motdWrapper.dataset.cerbUpdateAdded = "true";

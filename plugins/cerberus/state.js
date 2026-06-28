@@ -1,3 +1,5 @@
+// cerberus/state.js
+
 const fs = require('fs');
 const path = require('path');
 const { AVAILABLE_COUNTRIES } = require('./constants.js');
@@ -33,7 +35,7 @@ function safeLoadJSON(filePath, defaults) {
 let dataSaveTimeout = null;
 
 const CerberusData = {
-    blockedCountriesSet: new Set(), positive: new Set(), negative: new Set(), selectedTheme: 'bretema', lastUpdateCheck: 0, latestVersion: null, liveQueue: [], queueTimestamp: 0,
+    blockedCountriesSet: new Set(), positive: new Set(), negative: new Set(), selectedTheme: 'bretema', lastUpdateCheck: 0, latestVersion: null, downloadUrl: null, liveQueue: [], queueTimestamp: 0,
     
     load() {
         const data = safeLoadJSON(dataPath, null);
@@ -44,14 +46,14 @@ const CerberusData = {
                 Object.keys(AVAILABLE_COUNTRIES).forEach(code => { if (!allowed.has(code)) this.blockedCountriesSet.add(code); });
             }
             this.positive = new Set(data.positive || []); this.negative = new Set(data.negative || []); this.selectedTheme = data.selectedTheme || 'bretema';
-            this.lastUpdateCheck = data.lastUpdateCheck || 0; this.latestVersion = data.latestVersion || null; this.queueTimestamp = data.queueTimestamp || 0;
+            this.lastUpdateCheck = data.lastUpdateCheck || 0; this.latestVersion = data.latestVersion || null; this.downloadUrl = data.downloadUrl || null; this.queueTimestamp = data.queueTimestamp || 0;
             if (Date.now() - this.queueTimestamp > 43200000) { this.liveQueue = []; this.queueTimestamp = Date.now(); } else { this.liveQueue = data.liveQueue || []; }
         }
     },
     save() {
         clearTimeout(dataSaveTimeout);
         dataSaveTimeout = setTimeout(() => {
-            atomicWriteJSON(dataPath, { blockedCountries: [...this.blockedCountriesSet], positive: [...this.positive], negative: [...this.negative], selectedTheme: this.selectedTheme, lastUpdateCheck: this.lastUpdateCheck, latestVersion: this.latestVersion, liveQueue: this.liveQueue, queueTimestamp: this.queueTimestamp, lastUpdated: new Date().toISOString() }).catch(() => { });
+            atomicWriteJSON(dataPath, { blockedCountries: [...this.blockedCountriesSet], positive: [...this.positive], negative: [...this.negative], selectedTheme: this.selectedTheme, lastUpdateCheck: this.lastUpdateCheck, latestVersion: this.latestVersion, downloadUrl: this.downloadUrl, liveQueue: this.liveQueue, queueTimestamp: this.queueTimestamp, lastUpdated: new Date().toISOString() }).catch(() => { });
         }, 500);
     },
     addQueue(playerName) {

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#150a14" rx="16" />
+  
+  <!-- Outer glowing border -->
+  <rect x="2" y="2" width="796" height="496" fill="none" stroke="#33f1e5" stroke-width="2" rx="14" opacity="0.3" />
+
+  <!-- App Header / Toolbar -->
+  <rect x="0" y="0" width="800" height="60" fill="#0f070e" rx="16" />
+  <circle cx="25" cy="30" r="6" fill="#ff5f56" />
+  <circle cx="45" cy="30" r="6" fill="#ffbd2e" />
+  <circle cx="65" cy="30" r="6" fill="#27c93f" />
+  <text x="400" y="38" fill="#a295a1" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">🌍 GESTÃO DE PAÍSES &amp; LATÊNCIA</text>
+
+  <!-- Sidebar -->
+  <rect x="20" y="80" width="220" height="390" fill="#1d101c" rx="8" />
+  <rect x="30" y="150" width="200" height="36" fill="rgba(51,241,229,0.1)" stroke="rgba(51,241,229,0.2)" rx="6" />
+  <text x="45" y="173" fill="#33f1e5" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">🌍 Filtro de Países</text>
+  
+  <text x="45" y="123" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">⚙️ Ajustes Gerais</text>
+  <text x="45" y="223" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🤖 Fila de Live</text>
+  <text x="45" y="273" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🛡️ Reputação &amp; Chat</text>
+
+  <!-- Main Settings Panel Area -->
+  <rect x="260" y="80" width="520" height="390" fill="#1b0e1a" rx="8" />
+
+  <!-- Search input mock -->
+  <rect x="280" y="100" width="480" height="36" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.1)" rx="6" />
+  <text x="295" y="123" fill="#6b5b6a" font-family="system-ui, sans-serif" font-size="13">🔍 Buscar país por nome ou sigla...</text>
+
+  <!-- List Item 1: Brasil -->
+  <rect x="280" y="155" width="480" height="50" fill="rgba(255,255,255,0.02)" stroke="#59b240" stroke-width="1" rx="6" />
+  <!-- Flag (BR) stylized -->
+  <rect x="300" y="168" width="24" height="16" fill="#009c3b" rx="2" />
+  <polygon points="300,176 312,168 324,176 312,184" fill="#ffdf00" />
+  <circle cx="312" cy="176" r="4" fill="#002776" />
+  <text x="340" y="186" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="bold">Brazil (BR)</text>
+  <!-- Allowed Switch -->
+  <text x="660" y="185" fill="#59b240" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">PERMITIDO</text>
+  <circle cx="735" cy="180" r="8" fill="#59b240" />
+
+  <!-- List Item 2: Estados Unidos -->
+  <rect x="280" y="215" width="480" height="50" fill="rgba(255,255,255,0.02)" stroke="#ff0031" stroke-width="1" rx="6" />
+  <!-- Flag (US) stylized -->
+  <rect x="300" y="228" width="24" height="16" fill="#b22234" rx="2" />
+  <rect x="300" y="228" width="12" height="9" fill="#3c3b6e" />
+  <text x="340" y="246" fill="#8b7b8a" font-family="system-ui, sans-serif" font-size="14">United States (US)</text>
+  <!-- Blocked Switch -->
+  <text x="660" y="245" fill="#ff0031" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">BLOQUEADO</text>
+  <circle cx="735" cy="240" r="8" fill="#ff0031" />
+
+  <!-- List Item 3: Argentina -->
+  <rect x="280" y="275" width="480" height="50" fill="rgba(255,255,255,0.02)" rx="6" />
+  <!-- Flag (AR) stylized -->
+  <rect x="300" y="288" width="24" height="16" fill="#74acdf" rx="2" />
+  <rect x="300" y="293" width="24" height="6" fill="#fff" />
+  <circle cx="312" cy="296" r="2" fill="#f6b426" />
+  <text x="340" y="306" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="bold">Argentina (AR)</text>
+  <!-- Allowed Switch -->
+  <text x="660" y="305" fill="#59b240" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">PERMITIDO</text>
+  <circle cx="735" cy="300" r="8" fill="#59b240" />
+
+  <!-- List Item 4: Japão -->
+  <rect x="280" y="335" width="480" height="50" fill="rgba(255,255,255,0.02)" stroke="#ff0031" stroke-width="1" rx="6" />
+  <!-- Flag (JP) stylized -->
+  <rect x="300" y="348" width="24" height="16" fill="#fff" rx="2" />
+  <circle cx="312" cy="356" r="5" fill="#bc002d" />
+  <text x="340" y="366" fill="#8b7b8a" font-family="system-ui, sans-serif" font-size="14">Japan (JP)</text>
+  <!-- Blocked Switch -->
+  <text x="660" y="365" fill="#ff0031" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">BLOQUEADO</text>
+  <circle cx="735" cy="360" r="8" fill="#ff0031" />
+</svg>

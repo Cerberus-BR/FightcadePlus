@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#150a14" rx="16" />
+  
+  <!-- Outer glowing border -->
+  <rect x="2" y="2" width="796" height="496" fill="none" stroke="#9d2cb3" stroke-width="2" rx="14" opacity="0.3" />
+
+  <!-- App Header / Toolbar -->
+  <rect x="0" y="0" width="800" height="60" fill="#0f070e" rx="16" />
+  <circle cx="25" cy="30" r="6" fill="#ff5f56" />
+  <circle cx="45" cy="30" r="6" fill="#ffbd2e" />
+  <circle cx="65" cy="30" r="6" fill="#27c93f" />
+  <text x="400" y="38" fill="#a295a1" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">🤖 GERENCIADOR DE FILA PARA LIVE STREAMERS</text>
+
+  <!-- Sidebar -->
+  <rect x="20" y="80" width="220" height="390" fill="#1d101c" rx="8" />
+  <rect x="30" y="200" width="200" height="36" fill="rgba(157,44,179,0.1)" stroke="rgba(157,44,179,0.2)" rx="6" />
+  <text x="45" y="223" fill="#9d2cb3" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">🤖 Fila de Live</text>
+  
+  <text x="45" y="123" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">⚙️ Ajustes Gerais</text>
+  <text x="45" y="173" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🌍 Filtro de Países</text>
+  <text x="45" y="273" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🛡️ Reputação &amp; Chat</text>
+
+  <!-- Main Settings Panel Area -->
+  <rect x="260" y="80" width="520" height="390" fill="#1b0e1a" rx="8" />
+
+  <!-- Queue status header in widget -->
+  <rect x="280" y="100" width="480" height="50" fill="rgba(157,44,179,0.1)" rx="6" />
+  <text x="300" y="130" fill="#fff" font-family="system-ui, sans-serif" font-size="15" font-weight="bold">Fila Ativa: 5 Jogadores</text>
+  <!-- BOT ON Status badge -->
+  <rect x="650" y="112" width="90" height="26" fill="#59b240" rx="4" />
+  <text x="695" y="129" fill="#fff" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" text-anchor="middle">BOT ON</text>
+
+  <!-- Add Player input simulation -->
+  <rect x="280" y="165" width="370" height="34" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.08)" rx="4" />
+  <text x="295" y="186" fill="#6b5b6a" font-family="system-ui, sans-serif" font-size="12">Digitar nick para adicionar manualmente...</text>
+  <rect x="660" y="165" width="100" height="34" fill="#9d2cb3" rx="4" />
+  <text x="710" y="186" fill="#fff" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">ADICIONAR</text>
+
+  <!-- Queue list elements -->
+  <!-- 1. Player: KOF_Master -->
+  <rect x="280" y="215" width="480" height="40" fill="rgba(255,255,255,0.02)" rx="6" />
+  <text x="295" y="240" fill="#fff" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">1. KOF_Master</text>
+  <text x="630" y="239" fill="#59b240" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">AGUARDANDO</text>
+  <!-- Action buttons simulation -->
+  <rect x="715" y="223" width="30" height="24" fill="rgba(255,255,255,0.05)" rx="3" />
+  <text x="730" y="239" fill="#a295a1" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">❌</text>
+
+  <!-- 2. Player: KenSf3 -->
+  <rect x="280" y="260" width="480" height="40" fill="rgba(255,255,255,0.02)" rx="6" />
+  <text x="295" y="285" fill="#fff" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">2. KenSf3</text>
+  <text x="630" y="284" fill="#59b240" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">AGUARDANDO</text>
+  <rect x="715" y="268" width="30" height="24" fill="rgba(255,255,255,0.05)" rx="3" />
+  <text x="730" y="284" fill="#a295a1" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">❌</text>
+
+  <!-- 3. Player: RyuSf3 (Already Played) -->
+  <rect x="280" y="305" width="480" height="40" fill="rgba(255,255,255,0.01)" rx="6" opacity="0.5" />
+  <text x="295" y="330" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13" style="text-decoration: line-through;">3. RyuFighter</text>
+  <text x="630" y="329" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">JOGOU</text>
+  <rect x="715" y="313" width="30" height="24" fill="rgba(255,255,255,0.05)" rx="3" />
+  <text x="730" y="329" fill="#a295a1" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">❌</text>
+
+  <!-- Auto reply details -->
+  <rect x="280" y="360" width="480" height="50" fill="rgba(0,0,0,0.15)" stroke="rgba(255,255,255,0.03)" rx="6" />
+  <text x="295" y="380" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11">Resposta Automática no Chat do Canal:</text>
+  <text x="295" y="396" fill="#33f1e5" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">"[Fila] Bem-vindos: KOF_Master, KenSf3. Digite !join para entrar."</text>
+</svg>

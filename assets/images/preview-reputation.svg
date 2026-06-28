@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#150a14" rx="16" />
+  
+  <!-- Outer glowing border -->
+  <rect x="2" y="2" width="796" height="496" fill="none" stroke="#f5b50e" stroke-width="2" rx="14" opacity="0.3" />
+
+  <!-- App Header / Toolbar -->
+  <rect x="0" y="0" width="800" height="60" fill="#0f070e" rx="16" />
+  <circle cx="25" cy="30" r="6" fill="#ff5f56" />
+  <circle cx="45" cy="30" r="6" fill="#ffbd2e" />
+  <circle cx="65" cy="30" r="6" fill="#27c93f" />
+  <text x="400" y="38" fill="#a295a1" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">🛡️ SISTEMA DE REPUTAÇÃO E DESTAQUE</text>
+
+  <!-- Sidebar -->
+  <rect x="20" y="80" width="220" height="390" fill="#1d101c" rx="8" />
+  <rect x="30" y="250" width="200" height="36" fill="rgba(245,181,14,0.1)" stroke="rgba(245,181,14,0.2)" rx="6" />
+  <text x="45" y="273" fill="#f5b50e" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">🛡️ Reputação &amp; Chat</text>
+  
+  <text x="45" y="123" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">⚙️ Ajustes Gerais</text>
+  <text x="45" y="173" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🌍 Filtro de Países</text>
+  <text x="45" y="223" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🤖 Fila de Live</text>
+
+  <!-- Main Settings Panel Area -->
+  <rect x="260" y="80" width="520" height="390" fill="#1b0e1a" rx="8" />
+
+  <!-- Chat simulation mockup box inside panel -->
+  <rect x="280" y="100" width="480" height="190" fill="#110910" rx="6" />
+  <text x="295" y="122" fill="#6b5b6a" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">CHAT DO CANAL (PREVIEW)</text>
+
+  <!-- Message 1: Positive Player (glowing green name & border) -->
+  <rect x="290" y="135" width="460" height="42" fill="rgba(0,255,0,0.04)" stroke="rgba(0,255,0,0.2)" stroke-width="1" rx="4" />
+  <text x="305" y="160" fill="#59b240" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">👍 KOF_Master:</text>
+  <text x="395" y="160" fill="#fff" font-family="system-ui, sans-serif" font-size="12">Bora jogar FT5 galera!</text>
+  <text x="715" y="159" fill="#59b240" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">FAVORITO</text>
+
+  <!-- Message 2: Negative Player (crossed out name & dimmed message) -->
+  <rect x="290" y="185" width="460" height="42" fill="rgba(0,0,0,0.2)" rx="4" opacity="0.45" />
+  <text x="305" y="210" fill="#a295a1" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" style="text-decoration: line-through;">👎 ToxicPlayer:</text>
+  <text x="385" y="210" fill="#a295a1" font-family="system-ui, sans-serif" font-size="12">Esse mod é ruim...</text>
+  <text x="700" y="209" fill="#ff0031" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">NEGATIVADO</text>
+
+  <!-- Message 3: Normal Player -->
+  <rect x="290" y="235" width="460" height="42" fill="rgba(255,255,255,0.01)" rx="4" />
+  <text x="305" y="260" fill="#ff007a" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">KenSf3:</text>
+  <text x="355" y="260" fill="#fff" font-family="system-ui, sans-serif" font-size="12">Bora! Me desafia aí.</text>
+
+  <!-- Options related to reputation -->
+  <rect x="280" y="305" width="480" height="50" fill="rgba(255,255,255,0.02)" rx="6" />
+  <text x="300" y="334" fill="#fff" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">Auto-Recusar Desafios de Negativados</text>
+  <rect x="690" y="317" width="50" height="26" fill="#33f1e5" rx="13" />
+  <circle cx="727" cy="330" r="10" fill="#fff" />
+
+  <!-- Action Help -->
+  <text x="520" y="445" fill="#f5b50e" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" opacity="0.8">🛡️ ATALHOS RÁPIDOS DIRETO NO CLIQUE DO CHAT</text>
+</svg>

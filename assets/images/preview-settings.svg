@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#150a14" rx="16" />
+  
+  <!-- Outer glowing border -->
+  <rect x="2" y="2" width="796" height="496" fill="none" stroke="#ff007a" stroke-width="2" rx="14" opacity="0.3" />
+
+  <!-- App Header / Toolbar -->
+  <rect x="0" y="0" width="800" height="60" fill="#0f070e" rx="16" />
+  <circle cx="25" cy="30" r="6" fill="#ff5f56" />
+  <circle cx="45" cy="30" r="6" fill="#ffbd2e" />
+  <circle cx="65" cy="30" r="6" fill="#27c93f" />
+  <text x="400" y="38" fill="#a295a1" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">🐺 FIGHTCADE PLUS — CONFIGURAÇÕES MODULARES</text>
+
+  <!-- Sidebar -->
+  <rect x="20" y="80" width="220" height="390" fill="#1d101c" rx="8" />
+  <!-- Sidebar Menu Items -->
+  <rect x="30" y="100" width="200" height="36" fill="rgba(255,0,122,0.1)" stroke="rgba(255,0,122,0.2)" rx="6" />
+  <text x="45" y="123" fill="#ff007a" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">⚙️ Ajustes Gerais</text>
+  
+  <text x="45" y="173" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🌍 Filtro de Países</text>
+  <text x="45" y="223" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🤖 Fila de Live</text>
+  <text x="45" y="273" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🛡️ Reputação &amp; Chat</text>
+  <text x="45" y="323" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">ℹ️ Sobre o Mod</text>
+
+  <!-- Main Settings Panel Area -->
+  <rect x="260" y="80" width="520" height="390" fill="#1b0e1a" rx="8" border="1px solid rgba(255,255,255,0.05)" />
+
+  <!-- Option 1 -->
+  <rect x="280" y="110" width="480" height="60" fill="rgba(255,255,255,0.02)" rx="6" />
+  <text x="300" y="136" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="bold">Filtro de Região Automatizado</text>
+  <text x="300" y="152" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11">Oculta jogadores com latência superior a 150ms</text>
+  <!-- Switch ON -->
+  <rect x="690" y="125" width="50" height="26" fill="#33f1e5" rx="13" />
+  <circle cx="727" cy="138" r="10" fill="#fff" />
+
+  <!-- Option 2 -->
+  <rect x="280" y="185" width="480" height="60" fill="rgba(255,255,255,0.02)" rx="6" />
+  <text x="300" y="211" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="bold">Exibir Badges de Ranking</text>
+  <text x="300" y="227" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11">Injeta badges com a pontuação ELO nas salas</text>
+  <!-- Switch ON -->
+  <rect x="690" y="200" width="50" height="26" fill="#33f1e5" rx="13" />
+  <circle cx="727" cy="213" r="10" fill="#fff" />
+
+  <!-- Option 3 -->
+  <rect x="280" y="260" width="480" height="60" fill="rgba(255,255,255,0.02)" rx="6" />
+  <text x="300" y="286" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="bold">Modo de Privacidade Streamer (Blur)</text>
+  <text x="300" y="302" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11">Borra nicks dos jogadores durante a transmissão</text>
+  <!-- Switch OFF -->
+  <rect x="690" y="275" width="50" height="26" fill="rgba(255,255,255,0.15)" rx="13" />
+  <circle cx="703" cy="288" r="10" fill="#fff" />
+
+  <!-- Option 4 -->
+  <rect x="280" y="335" width="480" height="60" fill="rgba(255,255,255,0.02)" rx="6" />
+  <text x="300" y="361" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="bold">Fila Interativa do Chat (!join)</text>
+  <text x="300" y="377" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11">Permite a entrada de desafiantes usando comandos rápidos</text>
+  <!-- Switch ON -->
+  <rect x="690" y="350" width="50" height="26" fill="#33f1e5" rx="13" />
+  <circle cx="727" cy="363" r="10" fill="#fff" />
+
+  <!-- Footnote -->
+  <text x="520" y="445" fill="#33f1e5" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" opacity="0.8">✦ SALVAMENTO AUTOMÁTICO ATIVADO ✦</text>
+</svg>

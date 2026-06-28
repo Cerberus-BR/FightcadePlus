@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="neon-pink-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff007a" />
+      <stop offset="100%" stop-color="#79003b" />
+    </linearGradient>
+    <linearGradient id="neon-teal-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#33f1e5" />
+      <stop offset="100%" stop-color="#008f86" />
+    </linearGradient>
+    <!-- Glow Filters -->
+    <filter id="glow-pink" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="glow-teal" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Shield (Subtle Dark Plum) -->
+  <path d="M50 5 L90 25 L90 65 L50 95 L10 65 L10 25 Z" fill="#140713" stroke="url(#neon-pink-grad)" stroke-width="2" opacity="0.8" />
+
+  <!-- Outer Ring Grid Accent -->
+  <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255, 0, 122, 0.15)" stroke-width="1" stroke-dasharray="4, 4" />
+
+  <!-- Wolf Head Stylized Geometry -->
+  <!-- Left Side (Pink / Neon) -->
+  <path d="M50 20 L30 35 L40 45 L32 50 L42 58 L50 82 Z" fill="url(#neon-pink-grad)" filter="url(#glow-pink)" opacity="0.9" />
+  <path d="M30 35 L18 30 L25 45 Z" fill="url(#neon-pink-grad)" />
+
+  <!-- Right Side (Teal / Neon) -->
+  <path d="M50 20 L70 35 L60 45 L68 50 L58 58 L50 82 Z" fill="url(#neon-teal-grad)" filter="url(#glow-teal)" opacity="0.9" />
+  <path d="M70 35 L82 30 L75 45 Z" fill="url(#neon-teal-grad)" />
+
+  <!-- Wolf Eyes -->
+  <polygon points="38,42 44,43 40,46" fill="#ffffff" filter="url(#glow-pink)" />
+  <polygon points="62,42 56,43 60,46" fill="#ffffff" filter="url(#glow-teal)" />
+
+  <!-- Center divider (Shadow highlight) -->
+  <line x1="50" y1="20" x2="50" y2="82" stroke="#140713" stroke-width="2" />
+
+  <!-- Controller D-pad & Buttons Accent on Nose/Mouth area -->
+  <circle cx="50" cy="65" r="4" fill="#33f1e5" filter="url(#glow-teal)" />
+</svg>

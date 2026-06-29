@@ -20,6 +20,7 @@ const ConfigManager = {
             runtimeConfig.chatUserInfo = { ...defaultConfig.chatUserInfo, ...(runtimeConfig.chatUserInfo || {}) };
             runtimeConfig.liveQueue = { ...defaultConfig.liveQueue, ...(runtimeConfig.liveQueue || {}) };
             runtimeConfig.rankings = { ...defaultConfig.rankings, ...(runtimeConfig.rankings || {}) };
+            runtimeConfig.countryFilter = { ...defaultConfig.countryFilter, ...(runtimeConfig.countryFilter || {}) };
         } else { 
             runtimeConfig = JSON.parse(JSON.stringify(defaultConfig)); 
             fullConfigCache = { cerberus: runtimeConfig }; 

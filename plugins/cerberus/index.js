@@ -5,8 +5,9 @@ function init(FCADE) {
     const { CerberusData } = require('./state.js');
     const { ConfigManager } = require('./config.js');
     const { RankCache } = require('./api.js');
-    const { injectStyles, createControlPanel, createQueuePanel, applyTheme, injectGlobalMenu } = require('./ui.js');
-    const { connectToChannelWhenAvailable, setupAudioSilencer, checkForUpdates } = require('./utils.js');
+    const { injectStyles, createControlPanel, createQueuePanel, applyTheme, injectGlobalMenu, injectHeaderButtons, injectSidebarSearch, injectUIEnhancements, unlockColorThemes } = require('./ui.js');
+    const { connectToChannelWhenAvailable, setupAudioSilencer, checkForUpdates, executeChatMacro, t } = require('./utils.js');
+    const { updateFilterShield, attachMultiObservers } = require('./chat.js');
     
     // 1. Carga de Dados (RAM)
     CerberusData.load();
@@ -32,8 +33,7 @@ function init(FCADE) {
     if (window.cerbMainLoopInterval) clearInterval(window.cerbMainLoopInterval);
     
     window.cerbMainLoopInterval = setInterval(() => {
-        const { updateFilterShield, attachMultiObservers } = require('./chat.js');
-        const { injectHeaderButtons, injectSidebarSearch, injectUIEnhancements, unlockColorThemes } = require('./ui.js');
+        // [CERBERUS] Performance: require() movidos para o topo do init()
         
         // Defesas e Observadores Base
         updateFilterShield(); 
@@ -63,9 +63,7 @@ function init(FCADE) {
     if (window.cerbReplyQueueInterval) clearInterval(window.cerbReplyQueueInterval);
     
     window.cerbReplyQueueInterval = setInterval(() => {
-        const { ConfigManager } = require('./config.js');
-        const { CerberusData } = require('./state.js');
-        const { executeChatMacro, t } = require('./utils.js');
+        // [CERBERUS] Performance: require() movidos para o topo do init()
 
         const rtCfg = ConfigManager.getRuntimeConfig();
         const qEnabled = rtCfg.liveQueue?.enabled === true;

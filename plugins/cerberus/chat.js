@@ -1,7 +1,22 @@
 // cerberus/chat.js
 
+// [CERBERUS] Performance: Lazy-cached module references
+// Circular deps resolved once on first use, eliminating thousands of require() lookups per cycle
+let _d = null;
+function _deps() {
+    if (_d) return _d;
+    return (_d = {
+        ...require('./state.js'),
+        ...require('./api.js'),
+        ...require('./config.js'),
+        ...require('./constants.js'),
+        ...require('./utils.js'),
+        ...require('./ui.js')
+    });
+}
+
 function updateFilterShield() {
-    const { ConfigManager } = require('./config.js');
+    const { ConfigManager } = _deps();
     const isCountryActive = ConfigManager.getSetting('countryFilter.enabled') === true;
     const isHideNegActive = ConfigManager.getSetting('chatUserInfo.hideNegativeMessages') === true;
     const isSearchActive = (window.CerberusState.sidebarSearchTerm || '') !== '';
@@ -26,8 +41,7 @@ function unfilterAllUsers() {
 }
 
 function invalidateCountryFilterCache() {
-    const { getActiveChannelWrapper } = require('./utils.js');
-    const { ConfigManager } = require('./config.js');
+    const { getActiveChannelWrapper, ConfigManager } = _deps();
 
     unfilterAllMessages(); unfilterAllUsers();
     if (window.CerberusFCADE && ConfigManager.getRuntimeConfig()) {
@@ -91,7 +105,7 @@ function attachMultiObservers(FCADE, configFull) {
 }
 
 function processCollectedWrappers(wrappersArray, FCADE, configFull) {
-    const { getActiveGameId } = require('./utils.js');
+    const { getActiveGameId } = _deps();
     if (!wrappersArray || wrappersArray.length === 0) return;
 
     const cw = wrappersArray[0].closest('.channelWrapper');
@@ -123,11 +137,7 @@ function fullChatScanScoped(channelWrapper, FCADE, configFull) {
 }
 
 function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, globalUsers, activeGameId, activeUsersMap) {
-    const { CerberusData } = require('./state.js');
-    const { RankCache } = require('./api.js');
-    const { normalizeUsername, isSystemUser, getMinPing, playPopSound, silenceRecentAudios } = require('./utils.js');
-    const { createStatusElement, createFlagElement, createRankElement, createPingElement, createPingTextElement, createRankBadge, applyReputationStyleChat, addReputationControlsToElement, applyDevBadge } = require('./ui.js');
-    const { ConfigManager } = require('./config.js');
+    const { CerberusData, RankCache, normalizeUsername, isSystemUser, getMinPing, playPopSound, silenceRecentAudios, createStatusElement, createFlagElement, createRankElement, createPingElement, createPingTextElement, createRankBadge, applyReputationStyleChat, addReputationControlsToElement, applyDevBadge, ConfigManager, executeChatMacro, t } = _deps();
 
     const isImmuneSystem = wrapper.querySelector('.endgameMessageWrapper') !== null || wrapper.classList.contains('endgame') || wrapper.classList.contains('challengeRequested') || wrapper.classList.contains('requestChallenge');
     
@@ -206,6 +216,16 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                             declineBtn.click();
                             silenceRecentAudios(); 
                         }
+
+                        // [CERBERUS] Auto-Reject Notify: Envia aviso genérico no chat com cooldown de 9s
+                        if (ConfigManager.getSetting('countryFilter.autoRejectNotify')) {
+                            const now = Date.now();
+                            if (!window.CerberusState.lastAutoRejectNotifyTime || (now - window.CerberusState.lastAutoRejectNotifyTime >= 9000)) {
+                                window.CerberusState.lastAutoRejectNotifyTime = now;
+                                setTimeout(() => executeChatMacro([t('autoReject.notifyMsg')]), 500);
+                            }
+                        }
+
                         return; // Encerra o processamento do DOM para este nó
                     }
                 }
@@ -287,13 +307,7 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
 }
 
 const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
-    const { CerberusData } = require('./state.js');
-    const { RankCache } = require('./api.js');
-    const { normalizeUsername, isSystemUser, extractMinPing } = require('./utils.js');
-    const { getActiveGameId } = require('./utils.js');
-    const { createRankBadge, applyReputationStyleList, applyReputationStyleMatch, addReputationControlsToElement, applyDevBadge } = require('./ui.js');
-    const { ConfigManager } = require('./config.js');
-    const { COUNTRY_NAME_TO_CODE } = require('./constants.js');
+    const { CerberusData, RankCache, normalizeUsername, isSystemUser, extractMinPing, getActiveGameId, createRankBadge, applyReputationStyleList, applyReputationStyleMatch, addReputationControlsToElement, applyDevBadge, ConfigManager, COUNTRY_NAME_TO_CODE } = _deps();
 
     if (!sidebarElement) return;
 
@@ -357,8 +371,11 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                     if (minPing !== null) {
                         let color = minPing < 60 ? '#00ff00' : (minPing > 90 ? '#ff4444' : '#aaa');
                         let txt = pingWrapper.querySelector('.cerberus-ping-text');
+                        const newText = `${minPing}ms`;
                         if (!txt) { txt = document.createElement('span'); txt.className = 'cerberus-ping-text'; Object.assign(txt.style, { fontSize: '11px', fontWeight: 'bold', marginLeft: 'auto', verticalAlign: 'middle' }); pingWrapper.appendChild(txt); }
-                        txt.style.color = color; txt.innerText = `${minPing}ms`;
+                        // [CERBERUS] CPU Guard: Só toca no DOM se o valor mudou
+                        if (txt.innerText !== newText) txt.innerText = newText;
+                        if (txt.style.color !== color) txt.style.color = color;
                     }
                 }
             } else { 
@@ -371,8 +388,10 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
 
             let isBlockedByCountry = countryFilterEnabled && !CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(userKey);
 
-            if (!matchesSearch || isBlockedByCountry) { item.style.display = 'none'; item.dataset.cerbSearchHidden = !matchesSearch ? "true" : "false"; item.dataset.countryBlocked = isBlockedByCountry ? "true" : "false"; }
-            else { item.style.display = ''; item.dataset.cerbSearchHidden = "false"; item.dataset.countryBlocked = "false"; }
+            // [CERBERUS] CPU Guard: Só toca no display se o valor alvo é diferente do atual
+            const targetDisplay = (!matchesSearch || isBlockedByCountry) ? 'none' : '';
+            if (item.style.display !== targetDisplay) item.style.display = targetDisplay;
+            item.dataset.cerbSearchHidden = !matchesSearch ? "true" : "false"; item.dataset.countryBlocked = isBlockedByCountry ? "true" : "false";
             item.dataset.cerberusProcessed = "true";
         } catch (e) { }
     });
@@ -411,17 +430,18 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                 match.dataset.cerbIdentity = identity; 
             }
             
-            if ((searchTerm !== '' && !matchesSearch) || (countryFilterEnabled && shouldHideMatch && players.length > 0)) { match.style.display = 'none'; match.dataset.countryBlocked = "true"; }
-            else { match.style.display = ''; match.dataset.countryBlocked = "false"; }
+            // [CERBERUS] CPU Guard: Só toca no display se o valor alvo é diferente do atual
+            const shouldHide = (searchTerm !== '' && !matchesSearch) || (countryFilterEnabled && shouldHideMatch && players.length > 0);
+            const targetDisplay = shouldHide ? 'none' : '';
+            if (match.style.display !== targetDisplay) match.style.display = targetDisplay;
+            match.dataset.countryBlocked = shouldHide ? "true" : "false";
             match.dataset.cerberusProcessed = "true";
         } catch (e) { }
     });
 };
 
 function reprocessUserMessages(userKey, hideNegative) {
-    const { normalizeUsername, getActiveChannelWrapper } = require('./utils.js');
-    const { applyReputationStyleChat, applyReputationStyleList, applyReputationStyleMatch } = require('./ui.js');
-    const { ConfigManager } = require('./config.js');
+    const { normalizeUsername, getActiveChannelWrapper, applyReputationStyleChat, applyReputationStyleList, applyReputationStyleMatch, ConfigManager } = _deps();
 
     const menu = document.getElementById('cerbGlobalMenu'); if (menu) menu.classList.remove('visible');
     document.querySelectorAll('.messageWrapper').forEach(wrapper => {

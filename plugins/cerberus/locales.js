@@ -54,7 +54,7 @@ module.exports = {
                 queuePromo: "Live Promo Msg"
             },
             about: {
-                title: "Fightcade Plus 1.14.0",
+                title: "Fightcade Plus 1.14.1",
                 subtitle: "By Cerberus",
                 desc: "Fightcade Plus is a mod focused on high performance, quality of life, and community filters.",
                 supportTitle: "Support the Development ☕",
@@ -90,7 +90,8 @@ module.exports = {
             sync: { rankingsBtn: "Sync Rankings", wait30: "Wait 30 minutes", clickCancel: "Click to cancel", autoSyncDone: "Rankings auto-synced for today", liveOn: "🟢 BOT ON", liveOff: "🔴 BOT OFF", confirmClear: "Are you sure you want to clear the entire queue?" },
             queue: { title: "Live Queue", addBtn: "Add", clearBtn: "Clear All", empty: "Queue is empty.", inputPh: "Player nickname...", mark: "Toggle Played", remove: "Remove Player", up: "Move Up", down: "Move Down", welcome: "`[Queue]` Welcome:", currentQueue: "*Current queue:*", fabLiveOff: "Bot Off", fabLiveOn: "Bot On" },
             sidebar: { search: "🔍 Search player..." },
-            status: { online: "Online", away: "Away", offline: "Offline / Unknown" }
+            status: { online: "Online", away: "Away", offline: "Offline / Unknown" },
+            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` ᴄʜᴀʟʟᴇɴɢᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟy ᴅᴇᴄʟɪɴᴇᴅ (ʀᴇɢɪᴏɴ, ʀᴀɴᴋ, ᴏʀ ᴩɪɴɢ ꜰɪʟᴛᴇʀ).", notifyToggle: "Send chat notice on auto-reject" }
         },
         pt: {
             btnTitle: "Configurações Fightcade Plus", panelTitle: "Configurações",
@@ -144,9 +145,9 @@ module.exports = {
                 queuePromo: "Mensagem do Bot (a cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.14.0",
+                title: "Fightcade Plus 1.14.1",
                 subtitle: "By Cerberus",
-                desc: "O Fightcade Plus é um mod focado em alta performance, qualidade de vida e filtros comunitários.",
+                desc: "O Fightcade Plus é um mod focado em performance, melhorias de usabilidade e ferramentas para streamers.",
                 supportTitle: "Apoie o Desenvolvimento ☕",
                 supportDesc: "Manter este projeto atualizado exige muito tempo e café. Se o mod melhora a sua jogatina, considere apoiar o desenvolvimento!",
                 catBot: "🤖 Ferramentas para Streamers",
@@ -180,7 +181,8 @@ module.exports = {
             sync: { rankingsBtn: "Sincronizar Rankings", wait30: "Aguarde 30 minutos", clickCancel: "Clique para cancelar", autoSyncDone: "Rankings sincronizados automaticamente hoje", liveOn: "🟢 BOT ON", liveOff: "🔴 BOT OFF", confirmClear: "Tem certeza que deseja limpar toda a fila?" },
             queue: { title: "Fila da Live", addBtn: "Adicionar", clearBtn: "Limpar Fila", empty: "A fila está vazia.", inputPh: "Nick do jogador...", mark: "Alternar Jogado", remove: "Remover Jogador", up: "Subir na Fila", down: "Descer na Fila", welcome: "`[Fila]` Bem-vindo(s):", currentQueue: "*Fila atual:*", fabLiveOff: "Bot Desligado", fabLiveOn: "Bot Ligado" },
             sidebar: { search: "🔍 Buscar jogador..." },
-            status: { online: "Online", away: "Ausente", offline: "Offline / Desconhecido" }
+            status: { online: "Online", away: "Ausente", offline: "Offline / Desconhecido" },
+            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` ᴅᴇꜱᴀꜰɪᴏ ʀᴇᴄᴜꜱᴀᴅᴏ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀᴍᴇɴᴛᴇ (ꜰɪʟᴛʀᴏ ᴅᴇ ʀᴇɢɪᴀᴏ, ʀᴀɴᴋ ᴏᴜ ᴄᴏɴᴇxᴀᴏ)", notifyToggle: "Enviar aviso no chat ao auto-recusar" }
         },
         es: {
             btnTitle: "Configuraciones Fightcade Plus", panelTitle: "Configuraciones",
@@ -234,7 +236,7 @@ module.exports = {
                 queuePromo: "Mensaje del Bot (cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.14.0",
+                title: "Fightcade Plus 1.14.1",
                 subtitle: "By Cerberus",
                 desc: "Fightcade Plus es un mod enfocado en alto rendimiento, calidad de vida y filtros comunitarios.",
                 supportTitle: "Apoya el Desarrollo ☕",
@@ -270,7 +272,8 @@ module.exports = {
             sync: { rankingsBtn: "Sincronizar Rankings", wait30: "Espere 30 minutos", clickCancel: "Clic para cancelar", autoSyncDone: "Rankings sincronizados automáticamente hoy", liveOn: "🟢 BOT ON", liveOff: "🔴 BOT OFF", confirmClear: "¿Está seguro de que desea limpiar toda la cola?" },
             queue: { title: "Cola de Live", addBtn: "Añadir", clearBtn: "Limpiar Cola", empty: "La cola está vacía.", inputPh: "Nick del jugador...", mark: "Alternar Jugado", remove: "Remover Jugador", up: "Subir en la Fila", down: "Bajar en la Fila", welcome: "`[Cola]` Bienvenidos:", currentQueue: "*Cola actual:*", fabLiveOff: "Bot Desactivado", fabLiveOn: "Bot Activado" },
             sidebar: { search: "🔍 Buscar jugador..." },
-            status: { online: "Online", away: "Ausente", offline: "Offline / Desconocido" }
+            status: { online: "Online", away: "Ausente", offline: "Offline / Desconocido" },
+            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` ᴅᴇsᴀꜰíᴏ ʀᴇᴄʜᴀᴢᴀᴅᴏ ᴀᴜᴛᴏᴍáᴛɪᴄᴀᴍᴇɴᴛᴇ (ʀᴇɢɪóɴ, ʀᴀɴɢᴏ ᴏ ᴩɪɴɢ).", notifyToggle: "Enviar aviso en el chat al auto-rechazar" }
         }
     }
 };

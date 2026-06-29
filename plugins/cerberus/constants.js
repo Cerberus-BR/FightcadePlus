@@ -20,7 +20,7 @@ const COUNTRY_NAME_TO_CODE = Object.fromEntries(
 const defaultConfig = {
     language: 'en',
     autoJoin: { enabled: true, channelId: '' },
-    countryFilter: { enabled: false, autoReject: false },
+    countryFilter: { enabled: false, autoReject: false, autoRejectNotify: false },
     rankings: { masterEnabled: true, limit: 500, country: '', minRankToAccept: 0 },
     chatUserInfo: {
         masterEnabled: true, enableStatus: true, enableFlag: true, enableRank: true,
@@ -31,12 +31,12 @@ const defaultConfig = {
     liveQueue: {
         enabled: false, keyword: '!join', limit: 10, streamerNick: '',
         autoReply: false, promoEnabled: false,
-        promoMessage: '`[AO VIVO]` *Venham jogar e participar da live!*\nDigite: `!join` no chat para entrar na fila.\nAssista em: `https://www.youtube.com/@Cerberus-BR`'
+        promoMessage: '`[AO VIVO]` *Venham jogar e participar da live!*\nDigite: `!join` no chat para entrar na fila.\nAssista em: `https://www.youtube.com/channel/UCHLOCrvPfeS8J4T8k5qpYwQ`'
     }
 };
 
 module.exports = {
-    CURRENT_VERSION: "1.14.0",
+    CURRENT_VERSION: "1.14.1",
     AVAILABLE_COUNTRIES,
     COUNTRY_NAME_TO_CODE,
     defaultConfig

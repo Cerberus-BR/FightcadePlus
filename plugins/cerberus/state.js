@@ -10,7 +10,8 @@ if (!window.CerberusState) {
     window.CerberusState = { 
         liveMasterOn: false, promoBotInterval: null, replyQueue: [], 
         menuIsHovered: false, menuHideTimeout: null, menuShowTimeout: null, 
-        menuCleanupInterval: null, sidebarSearchTerm: '', lastUIRenderSignature: '' 
+        menuCleanupInterval: null, sidebarSearchTerm: '', lastUIRenderSignature: '',
+        lastAutoRejectNotifyTime: 0
     };
 }
 

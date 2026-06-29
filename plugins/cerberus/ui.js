@@ -53,15 +53,15 @@ function injectStyles() {
         @keyframes cerbBlockPulse { 0% { background-color: rgba(255, 68, 68, 0.4); box-shadow: inset 4px 0 0px #ff4444; } 50% { background-color: rgba(255, 68, 68, 0.05); box-shadow: inset 4px 0 0px #ff4444; } 100% { background-color: transparent; box-shadow: none; } }
         .cerberus-anim-block-pulse { animation: cerbBlockPulse 2s ease-in-out 2 forwards !important; }
         
-        .cerb-clear-chat-fab { position: absolute; right: 15px; bottom: 65px; background: rgba(30, 30, 35, 0.9); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); color: #ccc; }
+        .cerb-clear-chat-fab { position: absolute; right: 15px; bottom: 65px; background: rgba(30, 30, 35, 0.6); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); color: #ccc; }
         .cerb-clear-chat-fab:hover { background: rgba(50, 50, 60, 0.95); color: #fff; transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.3); }
         
-        .cerb-mute-chat-fab { position: absolute; right: 15px; bottom: 100px; background: rgba(30, 30, 35, 0.9); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); color: #ccc; }
+        .cerb-mute-chat-fab { position: absolute; right: 15px; bottom: 100px; background: rgba(30, 30, 35, 0.6); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); color: #ccc; }
         .cerb-mute-chat-fab:hover { background: rgba(50, 50, 60, 0.95); color: #fff; transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.3); }
         .cerb-mute-chat-fab[data-muted="true"] { border-color: rgba(251, 191, 36, 0.9); color: #fbbf24; background: rgba(251, 191, 36, 0.18); }
         .cerb-mute-chat-fab[data-muted="true"]:hover { border-color: rgba(251, 191, 36, 1); color: #fff; background: rgba(251, 191, 36, 0.25); }
         
-        .cerb-queue-fab { position: absolute; right: 15px; bottom: 135px; background: rgba(30, 30, 35, 0.9); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px); border: 1px solid var(--mainColor-light, rgba(102, 126, 234, 0.4)); color: var(--mainColor-lighter, #a3bffa); }
+        .cerb-queue-fab { position: absolute; right: 15px; bottom: 135px; background: rgba(30, 30, 35, 0.6); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px); border: 1px solid var(--mainColor-light, rgba(102, 126, 234, 0.4)); color: var(--mainColor-lighter, #a3bffa); }
         .cerb-queue-fab:hover { background: var(--mainColor-light, rgba(102, 126, 234, 0.3)); color: #fff; transform: translateY(-2px); }
         .cerb-queue-fab[data-live="true"] { border-color: rgba(74, 222, 128, 0.9); color: #4ade80; background: rgba(74, 222, 128, 0.18); }
         .cerb-queue-fab[data-live="true"]:hover { border-color: rgba(74, 222, 128, 1); color: #fff; background: rgba(74, 222, 128, 0.25); }
@@ -307,7 +307,8 @@ function createSettingsTab() {
             ])) +
         createSection(t('settings.filters'), 
             settingToggle('countryFilter.enabled', t('settings.enableFilter')) +
-            settingToggle('countryFilter.autoReject', t('settings.autoRejectCountry'))) +
+            settingToggle('countryFilter.autoReject', t('settings.autoRejectCountry')) +
+            settingToggle('countryFilter.autoRejectNotify', t('autoReject.notifyToggle'))) +
         createMasterSection('chatUserInfo.masterEnabled', t('settings.chatVisual'), 'cerbChatVisualChildren',
             settingToggle('chatUserInfo.enableStatus', t('settings.showStatus')) +
             settingToggle('chatUserInfo.enableFlag', t('settings.showFlags')) +
@@ -570,38 +571,62 @@ function injectGlobalMenu() {
 
 function applyReputationStyleChat(author, msg, userKey, hideNegative) {
     const { CerberusData } = require('./state.js');
+    if (userKey === '<offline>' || userKey.startsWith('<')) return;
+
+    // [CERBERUS] CPU Guard: Retorno precoce se o estado de reputação não mudou
+    const isPos = CerberusData.isPositive(userKey);
+    const isNeg = CerberusData.isNegative(userKey);
+    const repState = isPos ? 'pos' : (isNeg ? 'neg' : 'neutral');
+    if (msg.dataset.cerbRepState === repState) return;
+    msg.dataset.cerbRepState = repState;
+
     author.style.color = ''; author.style.fontWeight = ''; author.style.textShadow = ''; author.style.textDecoration = '';
     msg.style.backgroundColor = ''; msg.style.borderLeft = ''; msg.style.paddingLeft = '';
-    if (userKey === '<offline>' || userKey.startsWith('<')) return;
-    if (CerberusData.isPositive(userKey)) {
+    if (isPos) {
         author.style.color = '#00aa00'; author.style.fontWeight = 'bold'; author.style.textShadow = '0 0 3px rgba(0, 170, 0, 0.5)';
         msg.style.backgroundColor = 'rgba(0, 255, 0, 0.08)'; msg.style.borderLeft = '3px solid #00aa00'; msg.style.paddingLeft = '5px';
     } 
-    else if (CerberusData.isNegative(userKey)) {
+    else if (isNeg) {
         author.style.color = '#888'; author.style.textDecoration = 'line-through';
     }
 }
 
 function applyReputationStyleList(playerName, userItem, userKey) {
     const { CerberusData } = require('./state.js');
+    if (userKey === '<offline>' || userKey.startsWith('<')) return;
+
+    // [CERBERUS] CPU Guard: Retorno precoce se o estado de reputação não mudou
+    const isPos = CerberusData.isPositive(userKey);
+    const isNeg = CerberusData.isNegative(userKey);
+    const repState = isPos ? 'pos' : (isNeg ? 'neg' : 'neutral');
+    if (userItem.dataset.cerbRepState === repState) return;
+    userItem.dataset.cerbRepState = repState;
+
     playerName.style.color = ''; playerName.style.fontWeight = ''; playerName.style.textDecoration = ''; playerName.style.textShadow = '';
     userItem.style.opacity = ''; userItem.style.backgroundColor = ''; userItem.style.borderLeft = '';
-    if (userKey === '<offline>' || userKey.startsWith('<')) return;
-    if (CerberusData.isPositive(userKey)) {
+    if (isPos) {
         playerName.style.color = '#00aa00'; playerName.style.fontWeight = 'bold'; playerName.style.textShadow = '0 0 5px rgba(0, 255, 0, 0.6)';
         userItem.style.backgroundColor = 'rgba(0, 255, 0, 0.12)'; userItem.style.borderLeft = '4px solid #00aa00';
-    } else if (CerberusData.isNegative(userKey)) {
+    } else if (isNeg) {
         playerName.style.color = '#888'; playerName.style.textDecoration = 'line-through'; userItem.style.opacity = '0.35';
     }
 }
 
 function applyReputationStyleMatch(playerName, userKey) {
     const { CerberusData } = require('./state.js');
-    playerName.style.color = ''; playerName.style.fontWeight = ''; playerName.style.textShadow = ''; playerName.style.textDecoration = '';
     if (userKey === '<offline>' || userKey.startsWith('<')) return;
-    if (CerberusData.isPositive(userKey)) {
+
+    // [CERBERUS] CPU Guard: Retorno precoce se o estado de reputação não mudou
+    const isPos = CerberusData.isPositive(userKey);
+    const isNeg = CerberusData.isNegative(userKey);
+    const repState = isPos ? 'pos' : (isNeg ? 'neg' : 'neutral');
+    if (playerName.dataset.cerbRepState === repState) return;
+    playerName.dataset.cerbRepState = repState;
+
+    playerName.style.color = ''; playerName.style.fontWeight = ''; playerName.style.textShadow = ''; playerName.style.textDecoration = '';
+    if (isPos) {
         playerName.style.color = '#00aa00'; playerName.style.fontWeight = 'bold'; playerName.style.textShadow = '0 0 5px rgba(0, 255, 0, 0.6)';
-    } else if (CerberusData.isNegative(userKey)) {
+    } else if (isNeg) {
         playerName.style.color = '#888'; playerName.style.textDecoration = 'line-through';
     }
 }

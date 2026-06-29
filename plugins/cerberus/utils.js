@@ -81,7 +81,7 @@ async function executeChatMacro(lines) {
 function getActiveChannelWrapper() {
     const all = document.querySelectorAll('.channelWrapper');
     for (const cw of all) { 
-        if (cw.style.display !== 'none' && cw.offsetParent !== null) {
+        if (cw.style.display !== 'none') {
             return cw; 
         }
     }

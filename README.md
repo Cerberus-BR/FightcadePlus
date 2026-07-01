@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="plugin/cerberus/logo.png" alt="Fightcade Plus Logo" width="120" height="120" style="object-fit: contain;" />
+  <img src="plugins/cerberus/logo.png" alt="Fightcade Plus Logo" width="120" height="120" style="object-fit: contain;" />
 </p>
 
 <h1 align="center">Fightcade Plus (Plugin: Cerberus)</h1>

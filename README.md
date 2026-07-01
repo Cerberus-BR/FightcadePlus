@@ -1,6 +1,6 @@
 # Fightcade+
 
-![Plugin Version](https://img.shields.io/badge/Version-1.14.1-blue?style=for-the-badge)
+![Plugin Version](https://img.shields.io/badge/Version-1.15.0-blue?style=for-the-badge)
 ![Fightcade Inject](https://img.shields.io/badge/Plugin-Fightcade_Plus-red?style=for-the-badge)
 ![Languages](https://img.shields.io/badge/Languages-EN%20%7C%20PT%20%7C%20ES-green?style=for-the-badge)
 

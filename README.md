@@ -1,10 +1,18 @@
-# Fightcade Plus (Plugin: Cerberus)
+<p align="center">
+  <img src="plugins/cerberus/logo.png" alt="Fightcade Plus Logo" width="120" height="120" style="object-fit: contain;" />
+</p>
 
-![Plugin Version](https://img.shields.io/badge/Version-1.15.1-blue?style=for-the-badge)
-![Fightcade Inject](https://img.shields.io/badge/Plugin-Fightcade_Plus-red?style=for-the-badge)
-![Languages](https://img.shields.io/badge/Languages-EN%20%7C%20PT%20%7C%20ES-green?style=for-the-badge)
+<h1 align="center">Fightcade Plus</h1>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-1.15.1-blue?style=for-the-badge" alt="Plugin Version" />
+  <img src="https://img.shields.io/badge/Plugin-Fightcade_Plus-red?style=for-the-badge" alt="Fightcade Inject" />
+  <img src="https://img.shields.io/badge/Languages-EN%20%7C%20PT%20%7C%20ES-green?style=for-the-badge" alt="Languages" />
+</p>
 
 A powerful, high-performance plugin injected directly into your Fightcade client. Designed to elevate your gaming, streaming, and community interaction with real-time tools, customizable filter shields, automated lobbies, and customized visual tweaks.
+
+🌐 **Project Website**: [https://cerberus-br.github.io/FightcadePlus](https://cerberus-br.github.io/FightcadePlus)
 
 ---
 
@@ -33,6 +41,8 @@ A powerful, high-performance plugin injected directly into your Fightcade client
 ### Welcome to Fightcade Plus (by Cerberus)
 
 **Fightcade Plus** enhances your Fightcade experience by adding quality-of-life additions, robust tools for streamers, custom ranking integrations, reputation-based filtering, and real-time interface enhancements.
+
+🌐 **Project Page**: [https://cerberus-br.github.io/FightcadePlus](https://cerberus-br.github.io/FightcadePlus)
 
 ---
 
@@ -164,6 +174,8 @@ Developing and maintaining Fightcade Plus requires substantial time and effort. 
 
 O **Fightcade Plus** eleva sua experiência no Fightcade adicionando melhorias de qualidade de vida, utilitários completos para streamers, rankings atualizados em tempo real, filtros de reputação e modificações na interface.
 
+🌐 **Página do Projeto**: [https://cerberus-br.github.io/FightcadePlus](https://cerberus-br.github.io/FightcadePlus)
+
 ---
 
 ### 🚀 Funcionalidades
@@ -198,7 +210,7 @@ O **Fightcade Plus** eleva sua experiência no Fightcade adicionando melhorias d
 * **Filtro de Região**: Oculta e silencia desafios de oponentes de regiões bloqueadas (com opção de auto-recusa e aviso no chat).
 
 #### 🔊 Sons de Desafio Customizados
-* Substitua o audio de desafio padrão do Fightcade por **8 falas exclusivas e de alta qualidade**:
+* Substitua o sino padrão do Fightcade por **8 falas exclusivas e de alta qualidade**:
   1. *Go, new challenger!*
   2. *A challenger awaits!*
   3. *Step up!*
@@ -293,6 +305,8 @@ Manter o projeto atualizado e adicionar novas melhorias requer tempo e dedicaç�
 ### Bienvenido a Fightcade Plus (por Cerberus)
 
 **Fightcade Plus** mejora significativamente tu experiencia en Fightcade integrando herramientas de calidad de vida, un completo panel para creadores de contenido (streamers), sincronización de clasificaciones en vivo, filtros avanzados de reputación y personalización de la interfaz.
+
+🌐 **Página del Proyecto**: [https://cerberus-br.github.io/FightcadePlus](https://cerberus-br.github.io/FightcadePlus)
 
 ---
 

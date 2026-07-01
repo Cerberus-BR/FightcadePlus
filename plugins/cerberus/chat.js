@@ -185,14 +185,22 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                     const userCountry = globalUsers[chalUserKey]?.country?.iso_code?.toUpperCase();
                     const isCountryBlocked = filterCfg?.enabled && !CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(chalUserKey);
 
+                    // [CERBERUS] Desacoplamento: shouldFilter = ocultar+silenciar (sempre), shouldReject = clicar decline (só com toggle)
+                    let shouldFilter = false;
                     let shouldReject = false;
 
-                    if ((isNeg && cfg?.autoRejectNegative) || (isCountryBlocked && filterCfg?.autoReject)) {
-                        shouldReject = true;
+                    if (isNeg) {
+                        shouldFilter = true;
+                        if (cfg?.autoRejectNegative) shouldReject = true;
+                    }
+
+                    if (isCountryBlocked) {
+                        shouldFilter = true;
+                        if (filterCfg?.autoReject) shouldReject = true;
                     }
 
                     const minRank = ConfigManager.getSetting('rankings.minRankToAccept') || 0;
-                    if (!shouldReject && minRank > 0 && !CerberusData.isPositive(chalUserKey)) {
+                    if (minRank > 0 && !CerberusData.isPositive(chalUserKey)) {
                         const rankImg = wrapper.querySelector('.challengeContent .userInfo .rank img');
                         let userRankNum = 0; 
                         
@@ -202,27 +210,31 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                         }
                         
                         if (userRankNum < minRank) {
-                            shouldReject = true;
+                            shouldFilter = true;
+                            if (ConfigManager.getSetting('rankings.autoRejectBelowMin')) shouldReject = true;
                         }
                     }
 
-                    if (shouldReject) {
-                        // [CERBERUS] Desacoplamento Visual: Esconde incondicionalmente (corrige o botão fantasma)
+                    if (shouldFilter) {
+                        // [CERBERUS] Filtragem Base: Oculta e silencia desafios de usuários filtrados incondicionalmente
                         wrapper.dataset.cerbRejected = "true";
                         wrapper.style.display = 'none'; 
+                        silenceRecentAudios();
 
-                        const declineBtn = wrapper.querySelector('.decline-challenge, .decline') || Array.from(wrapper.querySelectorAll('.button-generic, button, div')).find(b => /decline|recusar|reject|cancel/i.test(b.textContent));
-                        if (declineBtn) {
-                            declineBtn.click();
-                            silenceRecentAudios(); 
-                        }
+                        // [CERBERUS] Auto-Reject: Clica em decline apenas se o toggle correspondente estiver ativo
+                        if (shouldReject) {
+                            const declineBtn = wrapper.querySelector('.decline-challenge, .decline') || Array.from(wrapper.querySelectorAll('.button-generic, button, div')).find(b => /decline|recusar|reject|cancel/i.test(b.textContent));
+                            if (declineBtn) {
+                                declineBtn.click();
+                            }
 
-                        // [CERBERUS] Auto-Reject Notify: Envia aviso genérico no chat com cooldown de 9s
-                        if (ConfigManager.getSetting('countryFilter.autoRejectNotify')) {
-                            const now = Date.now();
-                            if (!window.CerberusState.lastAutoRejectNotifyTime || (now - window.CerberusState.lastAutoRejectNotifyTime >= 9000)) {
-                                window.CerberusState.lastAutoRejectNotifyTime = now;
-                                setTimeout(() => executeChatMacro([t('autoReject.notifyMsg')]), 500);
+                            // [CERBERUS] Auto-Reject Notify: Envia aviso genérico no chat com cooldown de 5s
+                            if (ConfigManager.getSetting('countryFilter.autoRejectNotify')) {
+                                const now = Date.now();
+                                if (!window.CerberusState.lastAutoRejectNotifyTime || (now - window.CerberusState.lastAutoRejectNotifyTime >= 5000)) {
+                                    window.CerberusState.lastAutoRejectNotifyTime = now;
+                                    setTimeout(() => executeChatMacro([t('autoReject.notifyMsg')]), 500);
+                                }
                             }
                         }
 

@@ -20,13 +20,13 @@ const COUNTRY_NAME_TO_CODE = Object.fromEntries(
 const defaultConfig = {
     language: 'en',
     autoJoin: { enabled: true, channelId: '' },
-    countryFilter: { enabled: false, autoReject: false, autoRejectNotify: false },
-    rankings: { masterEnabled: true, limit: 500, country: '', minRankToAccept: 0 },
+    countryFilter: { enabled: false, autoReject: false, autoRejectNotify: true },
+    rankings: { masterEnabled: true, limit: 500, country: '', minRankToAccept: 0, autoRejectBelowMin: false },
     chatUserInfo: {
         masterEnabled: true, enableStatus: true, enableFlag: true, enableRank: true,
-        showNumericRanks: true, enablePingText: true, enablePingBars: false,
-        replacePingBarWithText: false, enableReputation: true, hideNegativeMessages: true,
-        autoRejectNegative: false, unlockColorThemes: true, blurMode: 'none', challengeSound: 'native'
+        showNumericRanks: true, enablePingText: true, enablePingBars: true,
+        replacePingBarWithText: true, enableReputation: true, hideNegativeMessages: false,
+        autoRejectNegative: true, unlockColorThemes: true, blurMode: 'none', challengeSound: 'native'
     },
     liveQueue: {
         enabled: false, keyword: '!join', limit: 10, streamerNick: '',
@@ -36,7 +36,7 @@ const defaultConfig = {
 };
 
 module.exports = {
-    CURRENT_VERSION: "1.14.1",
+    CURRENT_VERSION: "1.15.0",
     AVAILABLE_COUNTRIES,
     COUNTRY_NAME_TO_CODE,
     defaultConfig

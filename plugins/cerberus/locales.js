@@ -40,7 +40,8 @@ module.exports = {
                 rankingsApi: "Rankings (Online Sync)",
                 rankLimit: "Player limit (⚠️ >500 is slower to load)",
                 rankCountry: "Country Filter (ISO 2-letters)",
-                minRankToAccept: "Auto-Reject below Rank",
+                minRankToAccept: "Filter Challenges by Rank",
+                autoRejectRank: "Auto-Reject filtered rank challenges",
                 rankOptions: { r0: "All (No Filter)", r1: "Rank E or above", r2: "Rank D or above", r3: "Rank C or above", r4: "Rank B or above", r5: "Rank A or above", r6: "Rank S only" },
                 extras: "Extras",
                 unlockThemes: "Unlock Color Themes",
@@ -54,9 +55,9 @@ module.exports = {
                 queuePromo: "Live Promo Msg"
             },
             about: {
-                title: "Fightcade Plus 1.14.1",
+                title: "Fightcade Plus 1.15.0",
                 subtitle: "By Cerberus",
-                desc: "Fightcade Plus is a mod focused on high performance, quality of life, and community filters.",
+                desc: "Elevate your gaming and streams. Fightcade Plus combines high performance, advanced challenger filtering, and dynamic community interaction in a single mod.",
                 supportTitle: "Support the Development ☕",
                 supportDesc: "Keeping this project updated takes a lot of time and coffee. If the mod improves your gaming experience, consider supporting the development!",
                 catBot: "🤖 Streamer Tools",
@@ -91,7 +92,7 @@ module.exports = {
             queue: { title: "Live Queue", addBtn: "Add", clearBtn: "Clear All", empty: "Queue is empty.", inputPh: "Player nickname...", mark: "Toggle Played", remove: "Remove Player", up: "Move Up", down: "Move Down", welcome: "`[Queue]` Welcome:", currentQueue: "*Current queue:*", fabLiveOff: "Bot Off", fabLiveOn: "Bot On" },
             sidebar: { search: "🔍 Search player..." },
             status: { online: "Online", away: "Away", offline: "Offline / Unknown" },
-            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` ᴄʜᴀʟʟᴇɴɢᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟy ᴅᴇᴄʟɪɴᴇᴅ (ʀᴇɢɪᴏɴ, ʀᴀɴᴋ, ᴏʀ ᴩɪɴɢ ꜰɪʟᴛᴇʀ).", notifyToggle: "Send chat notice on auto-reject" }
+            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` *ᴄʜᴀʟʟᴇɴɢᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟy ᴅᴇᴄʟɪɴᴇᴅ (ʀᴇɢɪᴏɴ, ʀᴀɴᴋ, ᴏʀ ᴩɪɴɢ ꜰɪʟᴛᴇʀ).*", notifyToggle: "Send chat notice on auto-reject" }
         },
         pt: {
             btnTitle: "Configurações Fightcade Plus", panelTitle: "Configurações",
@@ -131,7 +132,8 @@ module.exports = {
                 rankingsApi: "Rankings (Sincronização Online)",
                 rankLimit: "Limite de jogadores para sincronizar",
                 rankCountry: "Filtrar por País (Ex: BR, vazio=Todos)",
-                minRankToAccept: "Limitar Desafios por Rank",
+                minRankToAccept: "Filtrar Desafios por Rank",
+                autoRejectRank: "Rejeitar automaticamente desafios filtrados por rank",
                 rankOptions: { r0: "Todos (Sem Filtro)", r1: "Rank E ou superior", r2: "Rank D ou superior", r3: "Rank C ou superior", r4: "Rank B ou superior", r5: "Rank A ou superior", r6: "Rank S apenas" },
                 extras: "Extras",
                 unlockThemes: "Desbloquear Temas de Cor",
@@ -145,9 +147,9 @@ module.exports = {
                 queuePromo: "Mensagem do Bot (a cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.14.1",
+                title: "Fightcade Plus 1.15.0",
                 subtitle: "By Cerberus",
-                desc: "O Fightcade Plus é um mod focado em performance, melhorias de usabilidade e ferramentas para streamers.",
+                desc: "Eleve o nível da sua jogatina e transmissões. O Fightcade Plus une alta performance, filtros avançados de desafiantes e interação dinâmica com a comunidade em um único mod.",
                 supportTitle: "Apoie o Desenvolvimento ☕",
                 supportDesc: "Manter este projeto atualizado exige muito tempo e café. Se o mod melhora a sua jogatina, considere apoiar o desenvolvimento!",
                 catBot: "🤖 Ferramentas para Streamers",
@@ -182,7 +184,7 @@ module.exports = {
             queue: { title: "Fila da Live", addBtn: "Adicionar", clearBtn: "Limpar Fila", empty: "A fila está vazia.", inputPh: "Nick do jogador...", mark: "Alternar Jogado", remove: "Remover Jogador", up: "Subir na Fila", down: "Descer na Fila", welcome: "`[Fila]` Bem-vindo(s):", currentQueue: "*Fila atual:*", fabLiveOff: "Bot Desligado", fabLiveOn: "Bot Ligado" },
             sidebar: { search: "🔍 Buscar jogador..." },
             status: { online: "Online", away: "Ausente", offline: "Offline / Desconhecido" },
-            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` ᴅᴇꜱᴀꜰɪᴏ ʀᴇᴄᴜꜱᴀᴅᴏ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀᴍᴇɴᴛᴇ (ꜰɪʟᴛʀᴏ ᴅᴇ ʀᴇɢɪᴀᴏ, ʀᴀɴᴋ ᴏᴜ ᴄᴏɴᴇxᴀᴏ)", notifyToggle: "Enviar aviso no chat ao auto-recusar" }
+            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` *ᴅᴇꜱᴀꜰɪᴏ ʀᴇᴄᴜꜱᴀᴅᴏ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀᴍᴇɴᴛᴇ (ꜰɪʟᴛʀᴏ ᴅᴇ ʀᴇɢɪᴀᴏ, ʀᴀɴᴋ ᴏᴜ ᴄᴏɴᴇxᴀᴏ)*", notifyToggle: "Enviar aviso no chat ao auto-recusar" }
         },
         es: {
             btnTitle: "Configuraciones Fightcade Plus", panelTitle: "Configuraciones",
@@ -222,7 +224,8 @@ module.exports = {
                 rankingsApi: "Rankings (Sincronización Online)",
                 rankLimit: "Límite de jugadores para sincronizar",
                 rankCountry: "Filtrar por País (Ej: BR, vacío=Todos)",
-                minRankToAccept: "Limitar Desafíos por Rango",
+                minRankToAccept: "Filtrar Desafíos por Rango",
+                autoRejectRank: "Rechazar automáticamente desafíos filtrados por rango",
                 rankOptions: { r0: "Todos (Sin Filtro)", r1: "Rank E o superior", r2: "Rank D o superior", r3: "Rank C o superior", r4: "Rank B o superior", r5: "Rank A o superior", r6: "Solo Rank S" },
                 extras: "Extras",
                 unlockThemes: "Desbloquear Temas de Color",
@@ -236,9 +239,9 @@ module.exports = {
                 queuePromo: "Mensaje del Bot (cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.14.1",
+                title: "Fightcade Plus 1.15.0",
                 subtitle: "By Cerberus",
-                desc: "Fightcade Plus es un mod enfocado en alto rendimiento, calidad de vida y filtros comunitarios.",
+                desc: "Eleva el nivel de tu juego y transmisiones. Fightcade Plus combina alto rendimiento, filtros avanzados de retadores e interacción dinámica con la comunidad en un solo mod.",
                 supportTitle: "Apoya el Desarrollo ☕",
                 supportDesc: "Mantener este proyecto actualizado requiere mucho tiempo y café. Si el mod mejora tu experiencia de juego, ¡considera apoyar el desarrollo!",
                 catBot: "🤖 Herramientas para Streamers",
@@ -273,7 +276,7 @@ module.exports = {
             queue: { title: "Cola de Live", addBtn: "Añadir", clearBtn: "Limpiar Cola", empty: "La cola está vacía.", inputPh: "Nick del jugador...", mark: "Alternar Jugado", remove: "Remover Jugador", up: "Subir en la Fila", down: "Bajar en la Fila", welcome: "`[Cola]` Bienvenidos:", currentQueue: "*Cola actual:*", fabLiveOff: "Bot Desactivado", fabLiveOn: "Bot Activado" },
             sidebar: { search: "🔍 Buscar jugador..." },
             status: { online: "Online", away: "Ausente", offline: "Offline / Desconocido" },
-            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` ᴅᴇsᴀꜰíᴏ ʀᴇᴄʜᴀᴢᴀᴅᴏ ᴀᴜᴛᴏᴍáᴛɪᴄᴀᴍᴇɴᴛᴇ (ʀᴇɢɪóɴ, ʀᴀɴɢᴏ ᴏ ᴩɪɴɢ).", notifyToggle: "Enviar aviso en el chat al auto-rechazar" }
+            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` *ᴅᴇsᴀꜰíᴏ ʀᴇᴄʜᴀᴢᴀᴅᴏ ᴀᴜᴛᴏᴍáᴛɪᴄᴀᴍᴇɴᴛᴇ (ʀᴇɢɪóɴ, ʀᴀɴɢᴏ ᴏ ᴩɪɴɢ).*", notifyToggle: "Enviar aviso en el chat al auto-rechazar" }
         }
     }
 };

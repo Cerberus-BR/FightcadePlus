@@ -122,10 +122,10 @@ function isNewerVersion(latest, current) {
     return false;
 }
 
-async function checkForUpdates() {
+async function checkForUpdates(force = false) {
     const { CerberusData } = require('./state.js');
     const now = Date.now();
-    if (!CerberusData.lastUpdateCheck || (now - CerberusData.lastUpdateCheck > 86400000)) {
+    if (force || !CerberusData.lastUpdateCheck || (now - CerberusData.lastUpdateCheck > 86400000)) {
         try {
             const response = await fetch('https://cerberus-br.github.io/FightcadePlus/version.json');
             if (response.ok) {
@@ -135,10 +135,13 @@ async function checkForUpdates() {
                     CerberusData.downloadUrl = data.downloadUrl || null;
                     CerberusData.lastUpdateCheck = now; 
                     CerberusData.save(); 
+                    return true;
                 }
             }
         } catch (e) { }
+        return false;
     }
+    return true; // Already verified recently, treated as success
 }
 
 const connectToChannelWhenAvailable = (FCADE, autoJoinConfig) => {
@@ -157,9 +160,9 @@ const connectToChannelWhenAvailable = (FCADE, autoJoinConfig) => {
     }, 500);
 };
 
-// [CERBERUS] BOM Audio Hijacking (Silenciador Preditivo e Delegação via Promessa Suspensa)
+// [CERBERUS] BOM Audio Hijacking (Predictive Muting and Delegation via Suspended Promise)
 window.cerberusActiveAudios = new Set();
-window.cerberusAudioCache = new Map(); // [CERBERUS] Cache de RAM para otimização de I/O
+window.cerberusAudioCache = new Map(); // [CERBERUS] RAM Cache for I/O optimization
 
 function setupAudioSilencer() {
     if (window.cerbAudioHooked) return;
@@ -170,17 +173,17 @@ function setupAudioSilencer() {
         const audioObj = this;
         const src = (audioObj.src || '').toLowerCase();
 
-        // 1. Escudo Agnóstico: Se não for um desafio (ex: DMs e Menções), toca imediatamente e sai.
+        // 1. Agnostic Shield: If not a challenge (e.g. DMs and Mentions), play immediately and exit.
         if (!src.includes('-challenge')) {
             return originalPlay.apply(audioObj, arguments);
         }
         
-        // 2. É um desafio nativo. Tornamos o áudio refém antes de ir para a placa de som.
+        // 2. Native challenge. Hold audio hostage before it reaches the sound card.
         window.cerberusActiveAudios.add(audioObj);
         
-        // 3. Janela de Avaliação (400ms)
+        // 3. Evaluation Window (400ms)
         setTimeout(() => {
-            // O chat.js validou este desafio? (Se o dom rejeitou, ele limpou este Set)
+            // Did chat.js validate this challenge? (If DOM rejected, it cleared this Set)
             if (window.cerberusActiveAudios.has(audioObj)) {
                 window.cerberusActiveAudios.delete(audioObj);
                 
@@ -188,13 +191,13 @@ function setupAudioSilencer() {
                 const soundPref = ConfigManager.getSetting('chatUserInfo.challengeSound') || 'native';
 
                 if (soundPref === 'native') {
-                    // Desafio legítimo com som nativo. Disparamos a função real agora.
+                    // Legitimate challenge with native sound. Trigger the real function now.
                     try {
                         const playPromise = originalPlay.apply(audioObj);
                         if (playPromise !== undefined) playPromise.catch(() => {});
                     } catch(e) {}
                 } else if (soundPref !== 'silent') {
-                    // Desafio legítimo com som customizado via injeção RAM (Base64).
+                    // Legitimate challenge with custom sound via RAM injection (Base64).
                     try {
                         const playBase64 = (dataUri) => {
                             const customAudio = new window.Audio(dataUri);
@@ -222,14 +225,14 @@ function setupAudioSilencer() {
             }
         }, 400);
         
-        // Retornamos uma Promessa falsa instantaneamente para não quebrar a reatividade do Vue.js
+        // Return a fake promise instantly so we don't break Vue.js reactivity
         return Promise.resolve();
     };
 }
 
 function silenceRecentAudios() {
-    // A Abordagem Limpa: Como o áudio foi mantido refém, basta limpar a lista.
-    // O setTimeout não encontrará o objeto e não enviará NADA para a placa de som.
+    // Clean approach: Since the audio was held hostage, simply clear the list.
+    // setTimeout won't find the object and won't send anything to the sound card.
     window.cerberusActiveAudios.clear();
 }
 

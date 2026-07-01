@@ -30,6 +30,8 @@ module.exports = {
                 soundCustom4: "#4 Challenged!",
                 soundCustom5: "#5 CHAAAALLENGED!",
                 soundCustom6: "#6 Fight awaits!",
+				soundCustom7: "#7 You have been challenged",
+				soundCustom8: "#8 Challenged",
                 soundSilent: "Silent (Mute)",
                 reputation: "Reputation",
                 enableRep: "Reputation System (👍/👎)",
@@ -55,8 +57,9 @@ module.exports = {
                 queuePromo: "Live Promo Msg"
             },
             about: {
-                title: "Fightcade Plus 1.15.0",
+                title: "Fightcade Plus 1.15.1",
                 subtitle: "By Cerberus",
+                projectPage: "Project Page",
                 desc: "Elevate your gaming and streams. Fightcade Plus combines high performance, advanced challenger filtering, and dynamic community interaction in a single mod.",
                 supportTitle: "Support the Development ☕",
                 supportDesc: "Keeping this project updated takes a lot of time and coffee. If the mod improves your gaming experience, consider supporting the development!",
@@ -84,7 +87,9 @@ module.exports = {
                 feat16: "Multi-language support",
                 note: "Ultimate Modular (CommonJS): High Stability.",
                 updateBtn: "🔄 Check for Updates",
-                updateAvailable: "⚠️ Update Available: "
+                updateAvailable: "⚠️ Update Available: ",
+                upToDate: "✓ Mod is up to date!",
+                updateError: "Failed to check for updates. Try again later."
             },
             rep: { like: "Favorite (Ignores Filters)", dislike: "Downvote", clear: "Clear Reputation", block: "Block (Fightcade)", unblock: "Unblock (Fightcade)" },
             motd: { clearChat: "CLEAR CHAT", muteChat: "PAUSE CHAT", resumeChat: "RESUME CHAT", queueTitle: "PLAYERS QUEUE", updateAvail: "Update Available:", moreDetails: "More details" },
@@ -122,6 +127,8 @@ module.exports = {
                 soundCustom4: "#4 Challenged!",
                 soundCustom5: "#5 CHAAAALLENGED!",
                 soundCustom6: "#6 Fight awaits!",
+				soundCustom7: "#7 You have been challenged",
+				soundCustom8: "#8 Challenged",
                 soundSilent: "Silencioso",
                 reputation: "Reputação",
                 enableRep: "Sistema de Reputação (👍/👎)",
@@ -147,8 +154,9 @@ module.exports = {
                 queuePromo: "Mensagem do Bot (a cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.15.0",
+                title: "Fightcade Plus 1.15.1",
                 subtitle: "By Cerberus",
+                projectPage: "Página do Projeto",
                 desc: "Eleve o nível da sua jogatina e transmissões. O Fightcade Plus une alta performance, filtros avançados de desafiantes e interação dinâmica com a comunidade em um único mod.",
                 supportTitle: "Apoie o Desenvolvimento ☕",
                 supportDesc: "Manter este projeto atualizado exige muito tempo e café. Se o mod melhora a sua jogatina, considere apoiar o desenvolvimento!",
@@ -176,7 +184,9 @@ module.exports = {
                 feat16: "Suporte multi-idioma (EN/PT/ES)",
                 note: "Ultimate Modular (CommonJS): Alta Estabilidade.",
                 updateBtn: "🔄 Verificar Atualizações",
-                updateAvailable: "⚠️ Atualização Disponível: "
+                updateAvailable: "⚠️ Atualização Disponível: ",
+                upToDate: "✓ O mod está atualizado!",
+                updateError: "Falha ao verificar atualizações. Tente novamente mais tarde."
             },
             rep: { like: "Destacar (Ignora Filtros)", dislike: "Negativar", clear: "Limpar Reputação", block: "Bloquear", unblock: "Desbloquear" },
             motd: { clearChat: "LIMPAR CHAT", muteChat: "PAUSAR CHAT", resumeChat: "RETORNAR CHAT", queueTitle: "FILA DE JOGADORES", updateAvail: "Atualização Disponível:", moreDetails: "Mais detalhes" },
@@ -214,6 +224,8 @@ module.exports = {
                 soundCustom4: "#4 Challenged!",
                 soundCustom5: "#5 CHAAAALLENGED!",
                 soundCustom6: "#6 Fight awaits!",
+				soundCustom7: "#7 You have been challenged",
+				soundCustom8: "#8 Challenged",
                 soundSilent: "Silencioso",
                 reputation: "Reputación",
                 enableRep: "Sistema de Reputación (👍/👎)",
@@ -239,8 +251,9 @@ module.exports = {
                 queuePromo: "Mensaje del Bot (cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.15.0",
+                title: "Fightcade Plus 1.15.1",
                 subtitle: "By Cerberus",
+                projectPage: "Página del Proyecto",
                 desc: "Eleva el nivel de tu juego y transmisiones. Fightcade Plus combina alto rendimiento, filtros avanzados de retadores e interacción dinámica con la comunidad en un solo mod.",
                 supportTitle: "Apoya el Desarrollo ☕",
                 supportDesc: "Mantener este proyecto actualizado requiere mucho tiempo y café. Si el mod mejora tu experiencia de juego, ¡considera apoyar el desarrollo!",
@@ -268,7 +281,9 @@ module.exports = {
                 feat16: "Soporte multi-idioma (EN/PT/ES)",
                 note: "Ultimate Modular (CommonJS): Alta Estabilidad.",
                 updateBtn: "🔄 Buscar Actualizaciones",
-                updateAvailable: "⚠️ Actualización Disponible: "
+                updateAvailable: "⚠️ Actualización Disponible: ",
+                upToDate: "✓ ¡El mod está actualizado!",
+                updateError: "Error al verificar las actualizaciones. Inténtelo más tarde."
             },
             rep: { like: "Destacar (Ignora Filtros)", dislike: "Negativar", clear: "Limpiar Reputación", block: "Bloquear", unblock: "Desbloquear" },
             motd: { clearChat: "LIMPIAR CHAT", muteChat: "PAUSAR CHAT", resumeChat: "REANUDAR CHAT", queueTitle: "COLA DE JUGADORES", updateAvail: "Actualización Disponible:", moreDetails: "Más detalles" },

@@ -71,13 +71,13 @@ const RankCache = {
                     consecutiveEmptyPages = 0;
                 }
 
-                if (consecutiveEmptyPages >= 3) break; // Abate Precoce: 3 páginas lidas sem qualquer utilizador válido
+                if (consecutiveEmptyPages >= 3) break; // Early exit: 3 consecutive pages fetched without finding a matching user
 
                 if (players.length < 100 || validPlayersFound >= targetLimit) break;
                 offset += 100;
                 if (btn) { const p = btn.querySelector('.cerb-sync-progress'); if (p) p.textContent = validPlayersFound + '/' + targetLimit; }
                 
-                // Intervalo estrito de segurança contra Cloudflare
+                // Strict safety interval against Cloudflare rate limits
                 await new Promise(resolve => { const timeout = setTimeout(resolve, 5000); signal.addEventListener('abort', () => { clearTimeout(timeout); resolve(); }, { once: true }); });
             } catch (e) { break; }
         }

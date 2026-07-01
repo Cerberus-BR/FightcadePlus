@@ -109,7 +109,7 @@ function processCollectedWrappers(wrappersArray, FCADE, configFull) {
     if (!wrappersArray || wrappersArray.length === 0) return;
 
     const cw = wrappersArray[0].closest('.channelWrapper');
-    // [CERBERUS] Trava de Visibilidade Removida: Processar abas em background (Correção de Fuga de Áudio)
+    // [CERBERUS] Visibility Lock Removed: Process tabs in background (Audio leak fix)
 
     const activeGameId = getActiveGameId(FCADE, cw);
     const globalUsers = FCADE.globalUsers || {};
@@ -157,12 +157,12 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
     if (wrapper.dataset.cerbIdentity !== identity) {
         const chalName = wrapper.querySelector('.challengeContent .name');
         if (wrapper.dataset.cerbRejected === "true" && !chalName) {
-            // [CERBERUS] Preservação de Estado: O Vue.js reciclou um convite bloqueado para texto puro. Mantemos oculto.
+            // [CERBERUS] State Preservation: Vue.js recycled a blocked invitation to plain text. Keep hidden.
             wrapper.style.display = 'none';
             wrapper.dataset.cerbIdentity = identity;
             wrapper.dataset.cerberusProcessed = "true";
         } else {
-            // Nova mensagem ou novo desafio legítimo. Limpamos a ficha de bloqueio.
+            // New message or legitimate challenge. Clear the block status.
             wrapper.removeAttribute('data-cerb-rejected');
             wrapper.removeAttribute('data-cerberus-processed'); 
             wrapper.removeAttribute('data-cerberus-hidden'); 
@@ -185,7 +185,7 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                     const userCountry = globalUsers[chalUserKey]?.country?.iso_code?.toUpperCase();
                     const isCountryBlocked = filterCfg?.enabled && !CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(chalUserKey);
 
-                    // [CERBERUS] Desacoplamento: shouldFilter = ocultar+silenciar (sempre), shouldReject = clicar decline (só com toggle)
+                    // [CERBERUS] Decoupling: shouldFilter = hide+silence (always), shouldReject = click decline (only with toggle)
                     let shouldFilter = false;
                     let shouldReject = false;
 
@@ -216,19 +216,19 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                     }
 
                     if (shouldFilter) {
-                        // [CERBERUS] Filtragem Base: Oculta e silencia desafios de usuários filtrados incondicionalmente
+                        // [CERBERUS] Base Filtering: Hides and silences filtered challenges unconditionally
                         wrapper.dataset.cerbRejected = "true";
                         wrapper.style.display = 'none'; 
                         silenceRecentAudios();
 
-                        // [CERBERUS] Auto-Reject: Clica em decline apenas se o toggle correspondente estiver ativo
+                        // [CERBERUS] Auto-Reject: Clicks decline only if the corresponding toggle is enabled
                         if (shouldReject) {
                             const declineBtn = wrapper.querySelector('.decline-challenge, .decline') || Array.from(wrapper.querySelectorAll('.button-generic, button, div')).find(b => /decline|recusar|reject|cancel/i.test(b.textContent));
                             if (declineBtn) {
                                 declineBtn.click();
                             }
 
-                            // [CERBERUS] Auto-Reject Notify: Envia aviso genérico no chat com cooldown de 5s
+                            // [CERBERUS] Auto-Reject Notify: Sends a generic notice in the chat with a 5s cooldown
                             if (ConfigManager.getSetting('countryFilter.autoRejectNotify')) {
                                 const now = Date.now();
                                 if (!window.CerberusState.lastAutoRejectNotifyTime || (now - window.CerberusState.lastAutoRejectNotifyTime >= 5000)) {
@@ -238,7 +238,7 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                             }
                         }
 
-                        return; // Encerra o processamento do DOM para este nó
+                        return; // End DOM processing for this node
                     }
                 }
             }
@@ -259,7 +259,7 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                                 if (CerberusData.addQueue(userKey)) { 
                                     playPopSound(); 
                                     if (!window.CerberusState.replyQueue) window.CerberusState.replyQueue = []; 
-                                    // [CERBERUS] Anexa o channelId para evitar o Spam Cruzado
+                                    // [CERBERUS] Attach channelId to prevent cross-channel spam
                                     window.CerberusState.replyQueue.push({ name: userKey, channelId: FCADE.activeChannelId }); 
                                 }
                             }
@@ -385,7 +385,7 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                         let txt = pingWrapper.querySelector('.cerberus-ping-text');
                         const newText = `${minPing}ms`;
                         if (!txt) { txt = document.createElement('span'); txt.className = 'cerberus-ping-text'; Object.assign(txt.style, { fontSize: '11px', fontWeight: 'bold', marginLeft: 'auto', verticalAlign: 'middle' }); pingWrapper.appendChild(txt); }
-                        // [CERBERUS] CPU Guard: Só toca no DOM se o valor mudou
+                        // [CERBERUS] CPU Guard: Only updates DOM if the value has changed
                         if (txt.innerText !== newText) txt.innerText = newText;
                         if (txt.style.color !== color) txt.style.color = color;
                     }
@@ -400,7 +400,7 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
 
             let isBlockedByCountry = countryFilterEnabled && !CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(userKey);
 
-            // [CERBERUS] CPU Guard: Só toca no display se o valor alvo é diferente do atual
+            // [CERBERUS] CPU Guard: Only updates display if target style differs from current
             const targetDisplay = (!matchesSearch || isBlockedByCountry) ? 'none' : '';
             if (item.style.display !== targetDisplay) item.style.display = targetDisplay;
             item.dataset.cerbSearchHidden = !matchesSearch ? "true" : "false"; item.dataset.countryBlocked = isBlockedByCountry ? "true" : "false";
@@ -442,7 +442,7 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                 match.dataset.cerbIdentity = identity; 
             }
             
-            // [CERBERUS] CPU Guard: Só toca no display se o valor alvo é diferente do atual
+            // [CERBERUS] CPU Guard: Only updates display if target style differs from current
             const shouldHide = (searchTerm !== '' && !matchesSearch) || (countryFilterEnabled && shouldHideMatch && players.length > 0);
             const targetDisplay = shouldHide ? 'none' : '';
             if (match.style.display !== targetDisplay) match.style.display = targetDisplay;

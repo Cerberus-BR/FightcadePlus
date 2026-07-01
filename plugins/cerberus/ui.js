@@ -247,7 +247,7 @@ function createSettingsTab() {
 
     const langSelect = `<div class="modern-toggle" style="margin-bottom: 24px;"><span style="font-size: 14px; color: #e0e0e0; font-weight: bold;">${t('settings.language')}</span><select id="cerbLangSelect" data-setting="language" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 4px; outline: none; font-size: 13px; cursor: pointer;"><option value="en" ${ConfigManager.getSetting('language') === 'en' ? 'selected' : ''}>🇺🇸 English</option><option value="pt" ${ConfigManager.getSetting('language') === 'pt' ? 'selected' : ''}>🇧🇷 Português</option><option value="es" ${ConfigManager.getSetting('language') === 'es' ? 'selected' : ''}>🇪🇸 Español</option></select></div>`;
 
-    // [CERBERUS] Bloco Customizado de Áudio com Reprodutor de Teste
+    // [CERBERUS] Custom Audio Block with Test Player
     const soundPref = ConfigManager.getSetting('chatUserInfo.challengeSound') || 'native';
     const isAudioDisabled = soundPref === 'native' || soundPref === 'silent';
     const customAudioSelect = `
@@ -262,6 +262,8 @@ function createSettingsTab() {
 					<option value="custom4" ${soundPref === 'custom4' ? 'selected' : ''}>${t('settings.soundCustom4')}</option>
 					<option value="custom5" ${soundPref === 'custom5' ? 'selected' : ''}>${t('settings.soundCustom5')}</option>
 					<option value="custom6" ${soundPref === 'custom6' ? 'selected' : ''}>${t('settings.soundCustom6')}</option>
+					<option value="custom7" ${soundPref === 'custom7' ? 'selected' : ''}>${t('settings.soundCustom7')}</option>
+					<option value="custom8" ${soundPref === 'custom8' ? 'selected' : ''}>${t('settings.soundCustom8')}</option>
                     <option value="silent" ${soundPref === 'silent' ? 'selected' : ''}>${t('settings.soundSilent')}</option>
                 </select>
                 <button id="cerbAudioPlayBtn" ${isAudioDisabled ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="cursor: pointer;"'} class="q-live-btn on" style="padding: 4px 12px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">▶️</button>
@@ -353,7 +355,7 @@ function createSettingsTab() {
         if (input.type === 'text' || input.type === 'number') { let inputDebounce = null; input.addEventListener('input', (e) => { clearTimeout(inputDebounce); inputDebounce = setTimeout(() => handleSettingChange(e), 500); }); }
     });
 
-    // [CERBERUS] Lógica de Play/Pause Preventivo do Áudio
+    // [CERBERUS] Preventative Audio Play/Pause Logic
     const audioSelect = document.getElementById('cerbAudioSelect');
     const audioPlayBtn = document.getElementById('cerbAudioPlayBtn');
     if (audioSelect && audioPlayBtn) {
@@ -410,7 +412,7 @@ function createSettingsTab() {
 
 function createAboutTab() {
     const { CerberusData } = require('./state.js');
-    const { isNewerVersion } = require('./utils.js');
+    const { isNewerVersion, checkForUpdates } = require('./utils.js');
     const { CURRENT_VERSION } = require('./constants.js');
 
     let updateHtml = '';
@@ -419,15 +421,34 @@ function createAboutTab() {
         updateHtml = `<div style="background: rgba(255, 165, 0, 0.2); border: 1px solid rgba(255, 165, 0, 0.5); padding: 10px; border-radius: 8px; margin-top: 15px; color: #ffdca5; font-weight: bold; text-align: center;">${t('about.updateAvailable')} ${CerberusData.latestVersion}${downloadLink}</div>`;
     }
 
+    let logoHtml = `<div style="font-size: 40px; margin-bottom: 10px;">🐺</div>`;
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const logoPath = path.join(__dirname, 'logo.png');
+        if (fs.existsSync(logoPath)) {
+            const logoData = fs.readFileSync(logoPath);
+            const base64Logo = `data:image/png;base64,${logoData.toString('base64')}`;
+            logoHtml = `<img src="${base64Logo}" alt="Fightcade Plus Logo" style="width: 80px; height: 80px; margin-bottom: 10px; object-fit: contain;" />`;
+        }
+    } catch (e) {
+        console.error("[Cerberus] Falha ao carregar logo.png em base64:", e);
+    }
+
     document.getElementById('aboutTab').innerHTML = `
         <div style="text-align: center; padding: 10px 20px;">
-            <div style="font-size: 40px; margin-bottom: 10px;">🐺</div>
+            ${logoHtml}
             <h2 style="margin: 0; color: var(--mainColor-light, #667eea);">${t('about.title')}</h2>
+            <div style="font-size: 12px; opacity: 0.6; margin-top: 4px; margin-bottom: 12px;">
+                ${t('about.subtitle')} | <a href="https://cerberus-br.github.io/FightcadePlus" target="_blank" style="color: var(--mainColor-lighter, #a3bffa); text-decoration: underline;">${t('about.projectPage')}</a>
+            </div>
             <p style="opacity: 0.8; margin-top: 8px; font-weight: 500; font-size: 13px; line-height: 1.4;">
                 ${t('about.desc')}
             </p>
             
-            ${updateHtml}
+            <div id="cerbUpdateContainer">
+                ${updateHtml}
+            </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-top: 20px; border: 1px solid rgba(255,255,255,0.05);">
                 <h3 style="margin: 0 0 8px 0; color: #fff; font-size: 14px;">${t('about.supportTitle')}</h3>
@@ -445,11 +466,33 @@ function createAboutTab() {
                 </div>
             </div>
             
-            <a href="https://cerberus-br.github.io/FightcadePlus" target="_blank" class="cerb-update-btn" style="margin-top: 25px; width: calc(100% - 40px); display: block; margin-left: auto; margin-right: auto; box-sizing: border-box;">
+            <button id="cerbManualUpdateBtn" class="cerb-update-btn" style="margin-top: 25px; width: calc(100% - 40px); display: block; margin-left: auto; margin-right: auto; box-sizing: border-box; cursor: pointer; border: none; outline: none; text-align: center; justify-content: center; align-items: center;">
                 ${t('about.updateBtn')}
-            </a>
+            </button>
         </div>
     `;
+
+    document.getElementById('cerbManualUpdateBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('cerbManualUpdateBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ ...';
+        
+        const success = await checkForUpdates(true);
+        btn.disabled = false;
+        btn.textContent = t('about.updateBtn');
+        
+        const updateContainer = document.getElementById('cerbUpdateContainer');
+        if (success) {
+            if (isNewerVersion(CerberusData.latestVersion, CURRENT_VERSION)) {
+                const downloadLink = CerberusData.downloadUrl ? ` <a href="${CerberusData.downloadUrl}" target="_blank" style="color: #4ade80; text-decoration: underline; margin-left: 5px;">Download</a>` : '';
+                updateContainer.innerHTML = `<div style="background: rgba(255, 165, 0, 0.2); border: 1px solid rgba(255, 165, 0, 0.5); padding: 10px; border-radius: 8px; margin-top: 15px; color: #ffdca5; font-weight: bold; text-align: center;">${t('about.updateAvailable')} ${CerberusData.latestVersion}${downloadLink}</div>`;
+            } else {
+                updateContainer.innerHTML = `<div style="background: rgba(0, 170, 0, 0.15); border: 1px solid rgba(0, 170, 0, 0.4); padding: 10px; border-radius: 8px; margin-top: 15px; color: #a5ffd0; font-weight: bold; text-align: center;">${t('about.upToDate')}</div>`;
+            }
+        } else {
+            updateContainer.innerHTML = `<div style="background: rgba(255, 0, 0, 0.15); border: 1px solid rgba(255, 0, 0, 0.4); padding: 10px; border-radius: 8px; margin-top: 15px; color: #ffa5a5; font-weight: bold; text-align: center;">${t('about.updateError')}</div>`;
+        }
+    });
 }
 
 function createQueuePanel() {
@@ -567,7 +610,7 @@ function applyReputationStyleChat(author, msg, userKey, hideNegative) {
     const { CerberusData } = require('./state.js');
     if (userKey === '<offline>' || userKey.startsWith('<')) return;
 
-    // [CERBERUS] CPU Guard: Retorno precoce se o estado de reputação não mudou
+    // [CERBERUS] CPU Guard: Early return if reputation state did not change
     const isPos = CerberusData.isPositive(userKey);
     const isNeg = CerberusData.isNegative(userKey);
     const repState = isPos ? 'pos' : (isNeg ? 'neg' : 'neutral');
@@ -590,7 +633,7 @@ function applyReputationStyleList(playerName, userItem, userKey) {
     const { CerberusData } = require('./state.js');
     if (userKey === '<offline>' || userKey.startsWith('<')) return;
 
-    // [CERBERUS] CPU Guard: Retorno precoce se o estado de reputação não mudou
+    // [CERBERUS] CPU Guard: Early return if reputation state did not change
     const isPos = CerberusData.isPositive(userKey);
     const isNeg = CerberusData.isNegative(userKey);
     const repState = isPos ? 'pos' : (isNeg ? 'neg' : 'neutral');
@@ -611,7 +654,7 @@ function applyReputationStyleMatch(playerName, userKey) {
     const { CerberusData } = require('./state.js');
     if (userKey === '<offline>' || userKey.startsWith('<')) return;
 
-    // [CERBERUS] CPU Guard: Retorno precoce se o estado de reputação não mudou
+    // [CERBERUS] CPU Guard: Early return if reputation state did not change
     const isPos = CerberusData.isPositive(userKey);
     const isNeg = CerberusData.isNegative(userKey);
     const repState = isPos ? 'pos' : (isNeg ? 'neg' : 'neutral');

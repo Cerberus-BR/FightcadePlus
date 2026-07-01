@@ -9,17 +9,17 @@ function init(FCADE) {
     const { connectToChannelWhenAvailable, setupAudioSilencer, checkForUpdates, executeChatMacro, t } = require('./utils.js');
     const { updateFilterShield, attachMultiObservers } = require('./chat.js');
     
-    // 1. Carga de Dados (RAM)
+    // 1. Data Loading (RAM)
     CerberusData.load();
     ConfigManager.loadConfig();
     RankCache.load();
     
-    // 2. Setup Base
+    // 2. Base Setup
     injectStyles();
     createControlPanel();
     setupAudioSilencer();
     
-    // [CERBERUS] Correção do Bug do Hover: O menu tem de ser injetado fisicamente no milissegundo zero
+    // [CERBERUS] Hover bug fix: The menu must be physically injected at millisecond zero
     injectGlobalMenu();
 
     const runtimeConfig = ConfigManager.getRuntimeConfig();
@@ -33,13 +33,13 @@ function init(FCADE) {
     if (window.cerbMainLoopInterval) clearInterval(window.cerbMainLoopInterval);
     
     window.cerbMainLoopInterval = setInterval(() => {
-        // [CERBERUS] Performance: require() movidos para o topo do init()
+        // [CERBERUS] Performance: require() calls moved to top of init()
         
-        // Defesas e Observadores Base
+        // Base Defenses and Observers
         updateFilterShield(); 
         attachMultiObservers(FCADE, runtimeConfig);
 
-        // [CERBERUS] UI Healing Watchdog: Protege contra a reciclagem do Vue.js
+        // [CERBERUS] UI Healing Watchdog: Protects against Vue.js component recycling
         try {
             injectHeaderButtons(FCADE);
             injectSidebarSearch();
@@ -49,9 +49,9 @@ function init(FCADE) {
             }
         } catch (e) {}
         
-        // NOTA DE ENGENHARIA: As funções fullChatScanScoped e updateSidebarScope foram amputadas
-        // deste loop de 3s para erradicar o estrangulamento de CPU (Reflow Violations de 121ms).
-        // A injeção de novas mensagens está agora 100% delegada à eficiência do MutationObserver.
+        // ENGINEERING NOTE: fullChatScanScoped and updateSidebarScope functions were removed
+        // from this 3s loop to eradicate CPU throttling (121ms Reflow Violations).
+        // New message processing is now 100% delegated to the MutationObserver.
 
         const menu = document.getElementById('cerbGlobalMenu');
         if (menu && menu.classList.contains('visible') && !window.CerberusState.menuIsHovered) {
@@ -59,11 +59,11 @@ function init(FCADE) {
         }
     }, 3000);
     
-    // [CERBERUS] Correção Spam Cruzado: Bot Aggregator Isolado por Sala
+    // [CERBERUS] Cross-Chat Spam Fix: Isolated Bot Aggregator per Room
     if (window.cerbReplyQueueInterval) clearInterval(window.cerbReplyQueueInterval);
     
     window.cerbReplyQueueInterval = setInterval(() => {
-        // [CERBERUS] Performance: require() movidos para o topo do init()
+        // [CERBERUS] Performance: require() calls moved to top of init()
 
         const rtCfg = ConfigManager.getRuntimeConfig();
         const qEnabled = rtCfg.liveQueue?.enabled === true;
@@ -72,7 +72,7 @@ function init(FCADE) {
             const currentChannel = FCADE.activeChannelId;
             const validEntries = window.CerberusState.replyQueue.filter(q => q.channelId === currentChannel);
             
-            // Retém ou descarta as mensagens que pertencem a salas invisíveis
+            // Keep or discard messages belonging to invisible rooms
             window.CerberusState.replyQueue = window.CerberusState.replyQueue.filter(q => q.channelId !== currentChannel);
 
             if (validEntries.length > 0) {
@@ -86,7 +86,7 @@ function init(FCADE) {
         }
     }, 15000);
 
-    // [CERBERUS] Correção de Tema: O tempo subiu de 2.5s para 5s para aguardar construção do HTML
+    // [CERBERUS] Theme Fix: Timeout increased from 2.5s to 5s to wait for HTML construction
     setTimeout(() => applyTheme(CerberusData.selectedTheme), 5000);
 
     scheduleAutoSync(FCADE);

@@ -1,6 +1,6 @@
-# Fightcade+
+# Fightcade Plus (Plugin: Cerberus)
 
-![Plugin Version](https://img.shields.io/badge/Version-1.15.0-blue?style=for-the-badge)
+![Plugin Version](https://img.shields.io/badge/Version-1.15.1-blue?style=for-the-badge)
 ![Fightcade Inject](https://img.shields.io/badge/Plugin-Fightcade_Plus-red?style=for-the-badge)
 ![Languages](https://img.shields.io/badge/Languages-EN%20%7C%20PT%20%7C%20ES-green?style=for-the-badge)
 
@@ -30,7 +30,7 @@ A powerful, high-performance plugin injected directly into your Fightcade client
 
 ## 🇺🇸 English
 
-### Fightcade Plus (by Cerberus)
+### Welcome to Fightcade Plus (by Cerberus)
 
 **Fightcade Plus** enhances your Fightcade experience by adding quality-of-life additions, robust tools for streamers, custom ranking integrations, reputation-based filtering, and real-time interface enhancements.
 
@@ -47,7 +47,7 @@ A powerful, high-performance plugin injected directly into your Fightcade client
 #### 🏆 Live Rankings Synchronization
 * **Ranking Badges**: Displays current position ranking badges directly next to player names in the chat logs.
 * **Automated Backend Sync**: Periodic background synchronization of global/regional rankings per game (runs every 12 hours).
-* **Minimal Rank Threshold**: Restrict challenge popups to players of a certain letter rank (e.g. only accept Rank C and above).
+* **Minimal Rank Threshold**: Filter challenge popups from players below a certain rank (can also be configured to auto-reject).
 
 #### 💬 Interface & Chat Upgrades
 * **Visual Additions**: Shows country flags, letter ranks, and direct ping numbers in the chat stream.
@@ -60,21 +60,23 @@ A powerful, high-performance plugin injected directly into your Fightcade client
 * **Reputation System (👍/👎)**: Upvote friendly rivals (Favorite) or downvote toxic players.
 * **Filter Override**: Favorited players bypass all country/rank block lists.
 * **Clean Chat**: Auto-hide chat messages from downvoted players.
-* **Auto-Reject Challenge Protection**: Instantly decline challenge requests from downvoted players.
+* **Challenger Protection**: Instantly hide and silence challenges from downvoted players (can also auto-decline).
 * **Blur Mode**: Blur chat histories on screen to protect user privacy during live broadcasts.
 
 #### 🌍 Country Filters
 * **Real-time Filter**: Toggle allowed or blocked countries in real-time.
-* **Auto-Reject Mode**: Automatically decline challenges from players originating from filtered countries.
+* **Filter Mode**: Hide and silence challenges from filtered countries (with optional auto-decline and chat notices).
 
 #### 🔊 Custom Challenger Audio
-* Replace the default Fightcade challenge bell with one of **6 custom high-quality voice/sound lines**:
+* Replace the default Fightcade challenge bell with one of **8 custom high-quality voice/sound lines**:
   1. *Go, new challenger!*
   2. *A challenger awaits!*
   3. *Step up!*
   4. *Challenged!*
   5. *CHAAAALLENGED!*
   6. *Fight awaits!*
+  7. *You have been challenged*
+  8. *Challenged*
 * Includes a **Silent (Mute)** option to block challenge sounds entirely.
 
 ---
@@ -88,7 +90,7 @@ The recommended method is downloading the pre-configured **Fightcade Plus** bund
 #### Setup Steps:
 1. Extract the downloaded archive folder to a location of your choice.
 2. Launch the included Fightcade executable.
-3. Open the **Settings "⚙️"** panel from the main Fightcade title bar to customize your preferences.
+3. Open the **Cerberus Settings** panel from the main Fightcade title bar to customize your preferences.
 
 > [!NOTE]
 > **Manual Installation**: If you already have a Fightcade client, extract the plugin directory into `resources/app/inject/plugins` within your current Fightcade directory.
@@ -108,13 +110,15 @@ Settings are stored in `cerberus_config.json` inside the parent plugins director
   },
   "countryFilter": {
     "enabled": false,                   // Toggle country filter shield
-    "autoReject": false                 // Decline challenges from blocked countries
+    "autoReject": false,                // Decline challenges from blocked countries
+    "autoRejectNotify": true            // Send chat notification on auto-reject
   },
   "rankings": {
     "masterEnabled": true,              // Enable rankings integration
     "limit": 500,                       // Number of players to cache (max 500 recommended)
     "country": "",                      // Limit rankings to a country (e.g. "BR")
-    "minRankToAccept": 0                // Auto-reject below: 0=All, 1=E, 2=D, 3=C, 4=B, 5=A, 6=S
+    "minRankToAccept": 0,               // Filter challenges below: 0=All, 1=E, 2=D, 3=C, 4=B, 5=A, 6=S
+    "autoRejectBelowMin": false         // Auto-reject filtered rank challenges
   },
   "chatUserInfo": {
     "masterEnabled": true,              // Enable chat decorations
@@ -123,14 +127,14 @@ Settings are stored in `cerberus_config.json` inside the parent plugins director
     "enableRank": true,                 // Show ranking letters
     "showNumericRanks": true,           // Show ranking badges next to names
     "enablePingText": true,             // Show ping values in chat
-    "enablePingBars": false,            // Use bars instead of text
-    "replacePingBarWithText": false,    // Replace ping bars with text in sidebar
+    "enablePingBars": true,             // Use bars instead of text
+    "replacePingBarWithText": true,     // Replace ping bars with text in sidebar
     "enableReputation": true,           // Enable reputation (Favorite/Downvote)
-    "hideNegativeMessages": true,       // Hide messages from downvoted players
-    "autoRejectNegative": false,        // Auto-reject challenges from downvoted players
+    "hideNegativeMessages": false,      // Hide messages from downvoted players
+    "autoRejectNegative": true,         // Auto-reject challenges from downvoted players
     "unlockColorThemes": true,          // Unlock premium color UI themes
     "blurMode": "none",                 // Chat blur mode ("none" | "all")
-    "challengeSound": "native"          // Sound file: "native", "custom1" to "custom6", or "silent"
+    "challengeSound": "native"          // Sound file: "native", "custom1" to "custom8", or "silent"
   },
   "liveQueue": {
     "enabled": false,                   // Enable streamer live queue
@@ -150,13 +154,13 @@ Settings are stored in `cerberus_config.json` inside the parent plugins director
 
 Developing and maintaining Fightcade Plus requires substantial time and effort. If this plugin enhances your setup, please consider buying a coffee to support continued updates!
 
-* **Ko-Fi / Support Page**: Check the **About** tab inside the Settings "⚙️" panel for active support links.
+* **Ko-Fi / Support Page**: Check the **About** tab inside the Cerberus Settings panel for active support links.
 
 ---
 
 ## 🇧🇷 Português
 
-### Fightcade Plus (por Cerberus)
+### Bem-vindo ao Fightcade Plus (por Cerberus)
 
 O **Fightcade Plus** eleva sua experiência no Fightcade adicionando melhorias de qualidade de vida, utilitários completos para streamers, rankings atualizados em tempo real, filtros de reputação e modificações na interface.
 
@@ -173,7 +177,7 @@ O **Fightcade Plus** eleva sua experiência no Fightcade adicionando melhorias d
 #### 🏆 Sincronização de Rankings em Tempo Real
 * **Emblemas de Posição**: Exibe medalhas numéricas com a colocação exata do ranking diretamente ao lado dos nicks no chat.
 * **Sincronização em Background**: Atualiza rankings globais e regionais automaticamente a cada 12 horas.
-* **Filtro de Desafios por Patente**: Recusa desafios automaticamente caso o desafiante esteja abaixo do Rank desejado (ex: rejeitar abaixo de Rank D).
+* **Filtro de Desafios por Patente**: Oculta e silencia oponentes abaixo do Rank desejado, com opção de recusar de forma automática.
 
 #### 💬 Melhorias no Chat e Lista Lateral
 * **Detalhamento Visual**: Exibe bandeiras de países, letras de patentes (Ranks) e ping numérico no histórico do chat.
@@ -186,21 +190,23 @@ O **Fightcade Plus** eleva sua experiência no Fightcade adicionando melhorias d
 * **Sistema de Reputação (👍/👎)**: Destaque bons jogadores (Favorito) ou negative usuários indesejados.
 * **Ignorar Filtros**: Jogadores marcados como Favorito ignoram qualquer regra de bloqueio de país ou rank.
 * **Chat Limpo**: Oculta automaticamente mensagens enviadas por usuários negativados.
-* **Auto-Recusa Inteligente**: Bloqueia e recusa instantaneamente desafios enviados por jogadores negativados.
+* **Filtro de Desafiantes**: Oculta e silencia instantaneamente desafios de jogadores negativados (com opção de auto-recusa).
 * **Modo Blur (Privacidade)**: Borra o histórico do chat na tela para proteger a privacidade durante as streams.
 
 #### 🌍 Filtros de Região (País)
 * **Filtro em Tempo Real**: Ative ou desative países específicos instantaneamente através de checkboxes na interface.
-* **Auto-Recusa por Região**: Declina desafios de forma automática se o oponente for de uma região bloqueada.
+* **Filtro de Região**: Oculta e silencia desafios de oponentes de regiões bloqueadas (com opção de auto-recusa e aviso no chat).
 
 #### 🔊 Sons de Desafio Customizados
-* Substitua o alerta de desafio padrão do Fightcade por **6 falas exclusivas e de alta qualidade**:
+* Substitua o sino padrão do Fightcade por **8 falas exclusivas e de alta qualidade**:
   1. *Go, new challenger!*
   2. *A challenger awaits!*
   3. *Step up!*
   4. *Challenged!*
   5. *CHAAAALLENGED!*
   6. *Fight awaits!*
+  7. *You have been challenged*
+  8. *Challenged*
 * Inclui a opção **Silencioso (Mute)** para desativar completamente os avisos sonoros de novos desafios.
 
 ---
@@ -214,7 +220,7 @@ A maneira recomendada para utilizar é baixando o pacote pré-configurado do **F
 #### Passo a Passo:
 1. Extraia o conteúdo do arquivo baixado em uma pasta de sua escolha.
 2. Inicie o executável do Fightcade contido na pasta.
-3. Clique no botão de configurações do **Settings "⚙️"** na barra superior da interface para ajustar suas preferências!
+3. Clique no botão de configurações do **Cerberus Settings** na barra superior da interface para ajustar suas preferências!
 
 > [!NOTE]
 > **Instalação Manual**: Caso prefira instalar na sua versão do Fightcade existente, extraia a pasta deste plugin no diretório `resources/app/inject/plugins` da sua instalação.
@@ -234,13 +240,15 @@ Os ajustes são salvos em `cerberus_config.json` no diretório de plugins. Usuá
   },
   "countryFilter": {
     "enabled": false,                   // Ativar filtro de países
-    "autoReject": false                 // Recusar desafios de países bloqueados
+    "autoReject": false,                // Recusar desafios de países bloqueados
+    "autoRejectNotify": true            // Enviar aviso no chat ao auto-recusar
   },
   "rankings": {
     "masterEnabled": true,              // Ativar módulo de rankings
     "limit": 500,                       // Quantidade limite de jogadores para sincronizar
     "country": "",                      // Limitar ranking para um país específico (ex: "BR")
-    "minRankToAccept": 0                // Recusa automática abaixo de: 0=Todos, 1=E, 2=D, 3=C, 4=B, 5=A, 6=S
+    "minRankToAccept": 0,               // Filtrar desafios abaixo de: 0=Todos, 1=E, 2=D, 3=C, 4=B, 5=A, 6=S
+    "autoRejectBelowMin": false         // Rejeitar automaticamente desafios filtrados por rank
   },
   "chatUserInfo": {
     "masterEnabled": true,              // Ativar decorações no chat
@@ -249,14 +257,14 @@ Os ajustes são salvos em `cerberus_config.json` no diretório de plugins. Usuá
     "enableRank": true,                 // Exibir letra do Rank
     "showNumericRanks": true,           // Mostrar medalha de posição no ranking
     "enablePingText": true,             // Mostrar ping em texto no chat
-    "enablePingBars": false,            // Mostrar ping em barras
-    "replacePingBarWithText": false,    // Substituir barras de ping por texto na barra lateral
+    "enablePingBars": true,             // Mostrar ping em barras
+    "replacePingBarWithText": true,     // Substituir barras de ping por texto na barra lateral
     "enableReputation": true,           // Ativar sistema de Favorito/Negativado
-    "hideNegativeMessages": true,       // Ocultar mensagens de usuários negativados
-    "autoRejectNegative": false,        // Recusar desafios de usuários negativados
+    "hideNegativeMessages": false,      // Ocultar mensagens de usuários negativados
+    "autoRejectNegative": true,         // Recusar desafios de usuários negativados
     "unlockColorThemes": true,          // Desbloquear temas de cor premium
     "blurMode": "none",                 // Modo blur ("none" | "all")
-    "challengeSound": "native"          // Som de desafio: "native", "custom1" até "custom6" ou "silent"
+    "challengeSound": "native"          // Som de desafio: "native", "custom1" até "custom8" ou "silent"
   },
   "liveQueue": {
     "enabled": false,                   // Ativar fila de desafios para streams
@@ -282,7 +290,7 @@ Manter o projeto atualizado e adicionar novas melhorias requer tempo e dedicaç�
 
 ## 🇪🇸 Español
 
-### Fightcade Plus (por Cerberus)
+### Bienvenido a Fightcade Plus (por Cerberus)
 
 **Fightcade Plus** mejora significativamente tu experiencia en Fightcade integrando herramientas de calidad de vida, un completo panel para creadores de contenido (streamers), sincronización de clasificaciones en vivo, filtros avanzados de reputación y personalización de la interfaz.
 
@@ -299,7 +307,7 @@ Manter o projeto atualizado e adicionar novas melhorias requer tempo e dedicaç�
 #### 🏆 Sincronización de Clasificaciones (Rankings)
 * **Medallas de Posición**: Muestra medallas visuales con la posición exacta del jugador en el chat, justo al lado de su nick.
 * **Sincronización Silenciosa**: Clasificaciones regionales y globales actualizadas automáticamente en segundo plano cada 12 horas.
-* **Auto-Rechazo por Rango**: Configura el plugin para rechazar desafíos de oponentes que no alcancen una determinada letra de rango (ej: solo aceptar rango C o superior).
+* **Filtro por Rango**: Oculta y silencia retos de oponentes que no alcancen el rango configurado, con opción de rechazo automático.
 
 #### 💬 Mejoras de Chat y Lista Lateral
 * **Información Visual Ampliada**: Muestra la bandera de procedencia, el rango de letra y el ping numérico en el chat en vivo.
@@ -312,21 +320,23 @@ Manter o projeto atualizado e adicionar novas melhorias requer tempo e dedicaç�
 * **Reputación Dinámica (👍/👎)**: Califica positivamente (Favorito) a buenos contrincantes o reporta (Downvote) a usuarios tóxicos.
 * **Bypass de Filtros**: Los usuarios marcados como Favorito ignorarán las restricciones de rango o país.
 * **Chat Limpio**: Oculta de forma automática los mensajes enviados por usuarios con reputación negativa.
-* **Auto-Rechazo por Reputación**: Ignora y declina retos de combate de usuarios con reputación negativa.
+* **Filtro por Reputación**: Oculta y silencia retos de usuarios con reputación negativa (con opción de auto-rechazo).
 * **Modo Blur (Privacidad)**: Desenfoca los chats en pantalla para proteger datos privados durante directos.
 
 #### 🌍 Filtro de Países
 * **Filtros Interactivos**: Selecciona qué países bloquear o permitir en tiempo real mediante un menú de casillas interactivo.
-* **Auto-Rechazo Regional**: Declina de manera automática los desafíos procedentes de países filtrados.
+* **Filtro de Región**: Oculta y silencia retos de países bloqueados (con opción de auto-rechazo y aviso en chat).
 
 #### 🔊 Sonidos de Desafío Personalizados
-* Remplaza el sonido nativo de Fightcade con **6 voces exclusivas de alta calidad**:
+* Remplaza el sonido nativo de Fightcade con **8 voces exclusivas de alta calidad**:
   1. *Go, new challenger!*
   2. *A challenger awaits!*
   3. *Step up!*
   4. *Challenged!*
   5. *CHAAAALLENGED!*
   6. *Fight awaits!*
+  7. *You have been challenged*
+  8. *Challenged*
 * Incluye un modo **Silencioso (Mute)** para desactivar las alertas auditivas por completo.
 
 ---
@@ -340,7 +350,7 @@ El método recomendado es descargar el paquete integrado de **Fightcade Plus**. 
 #### Pasos para la configuración:
 1. Extrae el archivo comprimido descargado en una ubicación de tu preferencia.
 2. Abre el ejecutable de Fightcade dentro de la carpeta extraída.
-3. Haz clic en el botón de **Settings "⚙️"** ubicado en la barra de herramientas superior para configurar tus opciones.
+3. Haz clic en el botón de **Cerberus Settings** ubicado en la barra de herramientas superior para configurar tus opciones.
 
 > [!NOTE]
 > **Instalación Manual**: Si prefieres usar tu propia instalación de Fightcade, copia la carpeta de este plugin en el directorio `resources/app/inject/plugins`.
@@ -360,13 +370,15 @@ Los ajustes se almacenan en `cerberus_config.json` en el directorio de plugins. 
   },
   "countryFilter": {
     "enabled": false,                   // Habilitar filtros de país
-    "autoReject": false                 // Auto-rechazar retos de países bloqueados
+    "autoReject": false,                // Auto-rechazar retos de países bloqueados
+    "autoRejectNotify": true            // Enviar aviso en el chat al auto-rechazar
   },
   "rankings": {
     "masterEnabled": true,              // Activar clasificaciones
     "limit": 500,                       // Máximo de registros a almacenar
     "country": "",                      // Filtro regional de clasificación (ej: "BR")
-    "minRankToAccept": 0                // Auto-rechazo si es menor a: 0=Todos, 1=E, 2=D, 3=C, 4=B, 5=A, 6=S
+    "minRankToAccept": 0,               // Filtrar desafíos si es menor a: 0=Todos, 1=E, 2=D, 3=C, 4=B, 5=A, 6=S
+    "autoRejectBelowMin": false         // Rechazar automáticamente desafíos filtrados por rango
   },
   "chatUserInfo": {
     "masterEnabled": true,              // Decorar chat
@@ -375,14 +387,14 @@ Los ajustes se almacenan en `cerberus_config.json` en el directorio de plugins. 
     "enableRank": true,                 // Mostrar rangos de letras
     "showNumericRanks": true,           // Mostrar posición numérica en el chat
     "enablePingText": true,             // Mostrar ping en texto
-    "enablePingBars": false,            // Mostrar ping en barras
-    "replacePingBarWithText": false,    // Reemplazar barra de ping lateral por texto
+    "enablePingBars": true,             // Mostrar ping en barras
+    "replacePingBarWithText": true,     // Reemplazar barra de ping lateral por texto
     "enableReputation": true,           // Habilitar reputación (Favorito/Downvote)
-    "hideNegativeMessages": true,       // Ocultar mensajes de usuarios reportados
-    "autoRejectNegative": false,        // Auto-rechazar retos de usuarios reportados
+    "hideNegativeMessages": false,      // Ocultar mensajes de usuarios reportados
+    "autoRejectNegative": true,         // Auto-rechazar retos de usuarios reportados
     "unlockColorThemes": true,          // Desbloquear temas de color premium
     "blurMode": "none",                 // Modo desenfoque ("none" | "all")
-    "challengeSound": "native"          // Sonido de reto: "native", "custom1" a "custom6" o "silent"
+    "challengeSound": "native"          // Sonido de reto: "native", "custom1" a "custom8" o "silent"
   },
   "liveQueue": {
     "enabled": false,                   // Activar cola de retos en vivo

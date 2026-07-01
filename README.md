@@ -2,7 +2,7 @@
   <img src="plugins/cerberus/logo.png" alt="Fightcade Plus Logo" width="120" height="120" style="object-fit: contain;" />
 </p>
 
-<h1 align="center">Fightcade Plus (Plugin: Cerberus)</h1>
+<h1 align="center">Plugin Fightcade Plus</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Version-1.15.1-blue?style=for-the-badge" alt="Plugin Version" />

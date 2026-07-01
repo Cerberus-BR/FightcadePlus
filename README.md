@@ -198,7 +198,7 @@ O **Fightcade Plus** eleva sua experiência no Fightcade adicionando melhorias d
 * **Filtro de Região**: Oculta e silencia desafios de oponentes de regiões bloqueadas (com opção de auto-recusa e aviso no chat).
 
 #### 🔊 Sons de Desafio Customizados
-* Substitua o sino padrão do Fightcade por **8 falas exclusivas e de alta qualidade**:
+* Substitua o audio de desafio padrão do Fightcade por **8 falas exclusivas e de alta qualidade**:
   1. *Go, new challenger!*
   2. *A challenger awaits!*
   3. *Step up!*

@@ -37,7 +37,7 @@ const setPluginsDisabledState = (disabled) => {
                 try {
                     config = JSON.parse(content);
                 } catch (err) {
-                    // Ignorar para ativar fallback
+                    // Ignore to trigger fallback
                 }
             }
         }

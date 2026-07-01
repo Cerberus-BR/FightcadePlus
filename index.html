@@ -180,6 +180,44 @@
             color: white;
         }
 
+        /* Language Selector */
+        .lang-selector {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2px;
+            border-radius: 20px;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            line-height: 1;
+            filter: grayscale(80%);
+            opacity: 0.5;
+            outline: none;
+        }
+
+        .lang-btn:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.08);
+        }
+
+        .lang-btn.active {
+            filter: grayscale(0%);
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.1);
+        }
+
         /* Hero Section */
         .hero {
             padding: 80px 0 100px 0;
@@ -208,6 +246,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             box-shadow: 0 0 10px rgba(255, 0, 122, 0.1);
+            transition: all 0.3s ease;
         }
 
         .hero h1 {
@@ -219,12 +258,14 @@
             background: linear-gradient(135deg, #ffffff 30%, #e2cce1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
         }
 
         .hero p {
             font-size: 18px;
             color: var(--fc-text-mute);
             line-height: 1.6;
+            transition: all 0.3s ease;
         }
 
         .hero-actions {
@@ -305,136 +346,6 @@
             box-shadow: 0 6px 16px rgba(0, 255, 135, 0.3);
         }
 
-        /* Client Simulator Widget */
-        .hero-visual {
-            position: relative;
-            background: var(--fc-bg-panel);
-            border: 1px solid var(--fc-border);
-            border-radius: 12px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-        }
-
-        .hero-visual:hover {
-            border-color: var(--fc-pink);
-            box-shadow: 0 30px 60px rgba(255, 0, 122, 0.15);
-        }
-
-        .widget-header {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--fc-border);
-        }
-
-        .widget-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--fc-text-mute);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .dots {
-            display: flex;
-            gap: 6px;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .dot.pink { background: var(--fc-pink); }
-        .dot.teal { background: var(--fc-teal); }
-        
-        .widget-content {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .widget-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--fc-bg-panel-alt);
-            padding: 14px 18px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            transition: all 0.2s ease;
-        }
-
-        .widget-row:hover {
-            border-color: rgba(255, 255, 255, 0.08);
-            background: rgba(38, 20, 37, 0.8);
-        }
-
-        .row-info h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 2px;
-        }
-
-        .row-info p {
-            font-size: 12px;
-            color: var(--fc-text-mute);
-        }
-
-        /* Toggle Switch UI */
-        .widget-switch {
-            position: relative;
-            display: inline-block;
-            width: 46px;
-            height: 24px;
-            cursor: pointer;
-        }
-
-        .widget-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .widget-slider {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(255, 255, 255, 0.1);
-            transition: .25s ease;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .widget-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 3px;
-            background-color: #fff;
-            transition: .25s ease;
-            border-radius: 50%;
-        }
-
-        input:checked + .widget-slider {
-            background-color: var(--fc-pink);
-        }
-
-        input:checked + .widget-slider:before {
-            transform: translateX(22px);
-        }
-
         /* Demo Video Section */
         .demo-video-section {
             padding: 100px 0;
@@ -458,11 +369,13 @@
             background: linear-gradient(135deg, #fff 0%, #ebd3eb 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
         }
 
         .section-header p {
             color: var(--fc-text-mute);
             font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .video-container {
@@ -495,6 +408,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: background 0.3s ease;
         }
 
         .play-btn {
@@ -597,15 +511,15 @@
             font-size: 20px;
             font-weight: 700;
             color: #fff;
+            transition: all 0.3s ease;
         }
 
         .feature-card p {
             color: var(--fc-text-mute);
             font-size: 15px;
             line-height: 1.6;
+            transition: all 0.3s ease;
         }
-
-
 
         /* Gallery Carousel Styles */
         .gallery-carousel-container {
@@ -640,7 +554,7 @@
 
         .gallery-image-wrapper {
             width: 100%;
-            height: 500px; /* Fixed height to match 16/10 ratio on 800px max-width */
+            height: 500px;
             background: #10080f;
             display: flex;
             justify-content: center;
@@ -662,7 +576,7 @@
             border-top: 1px solid var(--fc-border);
             background: rgba(21, 10, 20, 0.95);
             text-align: center;
-            min-height: 140px; /* Consistent height to prevent layout jumps */
+            min-height: 140px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -677,6 +591,7 @@
             color: var(--fc-teal);
             text-shadow: 0 0 10px rgba(51, 241, 229, 0.2);
             margin: 0;
+            transition: all 0.3s ease;
         }
 
         .gallery-info p {
@@ -685,11 +600,12 @@
             line-height: 1.6;
             max-width: 680px;
             margin: 0;
+            transition: all 0.3s ease;
         }
 
         .carousel-nav-btn {
             position: absolute;
-            top: 250px; /* Centered exactly on the 500px tall image area */
+            top: 250px;
             transform: translateY(-50%);
             width: 48px;
             height: 48px;
@@ -831,6 +747,7 @@
             background: linear-gradient(135deg, #fff 0%, #ebd3eb 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
         }
 
         .support-cta p {
@@ -838,6 +755,7 @@
             color: var(--fc-text-mute);
             font-size: 16px;
             line-height: 1.6;
+            transition: all 0.3s ease;
         }
 
         /* Footer */
@@ -902,22 +820,22 @@
                 font-size: 42px;
             }
 
-            .sim-container {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
             .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .gallery-grid {
                 grid-template-columns: 1fr;
             }
 
             nav {
                 display: none;
             }
+        }
+
+        /* Animation class for smooth language change transitions */
+        .fade-i18n {
+            animation: i18nFade 0.35s ease;
+        }
+        @keyframes i18nFade {
+            0% { opacity: 0.4; transform: translateY(2px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -930,36 +848,43 @@
     <header>
         <div class="container nav-wrapper">
             <a href="#" class="logo">
-                <img src="assets/logo.svg" alt="Fightcade Plus Logo" style="height: 32px; width: 32px; margin-right: 8px;">
+                <img src="assets/logo.png" alt="Fightcade Plus Logo" style="height: 36px; width: 36px; margin-right: 8px; border-radius: 50%;">
                 Fightcade<span>Plus</span>
             </a>
-            <nav>
-                <a href="#features">Funcionalidades</a>
-                <a href="#gallery">Galeria</a>
-                <a href="#changelog">Changelog</a>
-                <a href="#support">Apoiar</a>
-                <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">GitHub</a>
-                <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.0/Setup-FightcadePlus-1.15.0.exe" class="btn-header">Download v1.15.0</a>
-            </nav>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <nav>
+                    <a href="#features" data-i18n="navFeatures">Funcionalidades</a>
+                    <a href="#gallery" data-i18n="navGallery">Galeria</a>
+                    <a href="#changelog" data-i18n="navChangelog">Changelog</a>
+                    <a href="#support" data-i18n="navSupport">Apoiar</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">GitHub</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.1/Setup-FightcadePlus-1.15.1.exe" class="btn-header" data-i18n="downloadBtn">Download v1.15.1</a>
+                </nav>
+                <div class="lang-selector">
+                    <button class="lang-btn active" data-lang="pt" title="Português">🇧🇷</button>
+                    <button class="lang-btn" data-lang="en" title="English">🇺🇸</button>
+                    <button class="lang-btn" data-lang="es" title="Español">🇪🇸</button>
+                </div>
+            </div>
         </div>
     </header>
 
     <!-- Hero Section -->
     <section class="container hero">
         <div class="hero-content">
-            <span class="hero-tag">v1.15.0 — Novo Update</span>
-            <h1>Melhore sua experiência no Fightcade</h1>
-            <p>
+            <span class="hero-tag" data-i18n="heroTag">v1.15.1 — Novo Update</span>
+            <h1 data-i18n="heroTitle">Melhore sua experiência no Fightcade</h1>
+            <p data-i18n="heroDesc">
                 O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, 
                 filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.
             </p>
             <div class="hero-actions">
                 <div class="hero-actions-row-top">
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.0/Setup-FightcadePlus-1.15.0.exe" class="btn btn-download">Download Setup v1.15.0 (.exe)</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.1/Setup-FightcadePlus-1.15.1.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v1.15.1 (.exe)</a>
                 </div>
                 <div class="hero-actions-row-bottom">
-                    <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal">Donate via PayPal</a>
-                    <a href="https://livepix.gg/cerberusbr" target="_blank" class="btn btn-livepix">Apoiar via LivePix</a>
+                    <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal" data-i18n="heroPaypal">Donate via PayPal</a>
+                    <a href="https://livepix.gg/cerberusbr" target="_blank" class="btn btn-livepix" data-i18n="heroLivepix">Apoiar via LivePix</a>
                 </div>
             </div>
         </div>
@@ -973,8 +898,8 @@
     <!-- Demo Video Section -->
     <section class="container demo-video-section">
         <div class="section-header">
-            <h2>Veja o Mod em Ação</h2>
-            <p>Um preview rápido de como os componentes injetados aparecem direto na interface original do Fightcade.</p>
+            <h2 data-i18n="demoTitle">Veja o Mod em Ação</h2>
+            <p data-i18n="demoDesc">Um preview rápido de como os componentes injetados aparecem direto na interface original do Fightcade.</p>
         </div>
         <div class="video-container">
             <div class="video-placeholder">
@@ -991,51 +916,49 @@
     <section id="features" class="features">
         <div class="container">
             <div class="section-header">
-                <h2>Funcionalidades Principais</h2>
-                <p>Módulos de alto rendimento criados para otimizar partidas e economizar tempo nos lobbies.</p>
+                <h2 data-i18n="featuresTitle">Funcionalidades Principais</h2>
+                <p data-i18n="featuresDesc">Módulos de alto rendimento criados para otimizar partidas e economizar tempo nos lobbies.</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon-wrapper">🌍</div>
-                    <h3>Filtro por Países</h3>
-                    <p>Filtre e elimine oponentes indesejados em tempo real na lista lateral e chat. Reduza o lag focando em conexões locais.</p>
+                    <h3 data-i18n="featCountryTitle">Filtro por Países</h3>
+                    <p data-i18n="featCountryDesc">Filtre e elimine oponentes indesejados em tempo real na lista lateral e chat. Reduza o lag focando em conexões locais.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper">🏆</div>
-                    <h3>Badges de Ranking</h3>
-                    <p>Injeta badges de classificação e pontuação ELO ao lado dos nicks para você identificar a habilidade do oponente imediatamente.</p>
+                    <h3 data-i18n="featRankTitle">Badges de Ranking</h3>
+                    <p data-i18n="featRankDesc">Injeta badges de classificação e pontuação ELO ao lado dos nicks para você identificar a habilidade do oponente imediatamente.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper">💬</div>
-                    <h3>Bandeiras & Ping</h3>
-                    <p>Substitui as barras nativas de ping por ping exato em milissegundos e inclui a bandeira real do país do jogador no chat.</p>
+                    <h3 data-i18n="featPingTitle">Bandeiras & Ping</h3>
+                    <p data-i18n="featPingDesc">Substitui as barras nativas de ping por ping exato em milissegundos e inclui a bandeira real do país do jogador no chat.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper">🛡️</div>
-                    <h3>Reputação de Usuários</h3>
-                    <p>Favorite jogadores amigáveis ou classifique trolls e usuários nocivos com dislikes para silenciá-los automaticamente.</p>
+                    <h3 data-i18n="featRepTitle">Reputação de Usuários</h3>
+                    <p data-i18n="featRepDesc">Favorite jogadores amigáveis ou classifique trolls e usuários nocivos com dislikes para silenciá-los automaticamente.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper">🤖</div>
-                    <h3>Fila Automática (Streamer)</h3>
-                    <p>Gerencie filas em live sem esforço com comandos rápidos (`!join`). O bot envia atualizações periódicas no chat.</p>
+                    <h3 data-i18n="featQueueTitle">Fila Automática (Streamer)</h3>
+                    <p data-i18n="featQueueDesc">Gerencie filas em live sem esforço com comandos rápidos (`!join`). O bot envia atualizações periódicas no chat.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper">🎨</div>
-                    <h3>Estilos Desbloqueados</h3>
-                    <p>Acesse novos temas e gradientes de cores da interface sem a necessidade de licenças premium ou custos extras.</p>
+                    <h3 data-i18n="featThemesTitle">Estilos Desbloqueados</h3>
+                    <p data-i18n="featThemesDesc">Acesse novos temas e gradientes de cores da interface sem a necessidade de licenças premium ou custos extras.</p>
                 </div>
             </div>
         </div>
     </section>
 
-
-
     <!-- Gallery Section -->
     <section id="gallery" class="container gallery-section">
         <div class="section-header">
-            <h2>Interface & Capturas</h2>
-            <p>Veja imagens demonstrativas da extensão rodando diretamente integrada ao cliente desktop do Fightcade.</p>
+            <h2 data-i18n="galleryTitle">Interface & Capturas</h2>
+            <p data-i18n="galleryDesc">Veja imagens demonstrativas da extensão rodando diretamente integrada ao cliente desktop do Fightcade.</p>
         </div>
         <div class="gallery-carousel-container">
             <button class="carousel-nav-btn prev" aria-label="Slide anterior">&lt;</button>
@@ -1048,8 +971,8 @@
                         <img src="assets/images/preview-settings.svg" alt="Painel Principal do Plus" width="800" height="500">
                     </div>
                     <div class="gallery-info">
-                        <h4>Painel de Configurações Nativo</h4>
-                        <p>Integração de UI impecável, preservando o layout clássico com novas chaves para o controle modular de todos os recursos instalados.</p>
+                        <h4 data-i18n="gallerySlide1Title">Painel de Configurações Nativo</h4>
+                        <p data-i18n="gallerySlide1Desc">Integração de UI impecável, preservando o layout clássico com novas chaves para o controle modular de todos os recursos instalados.</p>
                     </div>
                 </div>
                 <!-- Slide 2 -->
@@ -1058,8 +981,8 @@
                         <img src="assets/images/preview-countries.svg" alt="Melhorias Visuais no Lobby" width="800" height="500">
                     </div>
                     <div class="gallery-info">
-                        <h4>Lista de Jogadores Avançada</h4>
-                        <p>Identificação instantânea de ping exato e localização regional em formato de lista compacta para garantir partidas estáveis.</p>
+                        <h4 data-i18n="gallerySlide2Title">Lista de Jogadores Avançada</h4>
+                        <p data-i18n="gallerySlide2Desc">Identificação instantânea de ping exato e localização regional em formato de lista compacta para garantir partidas estáveis.</p>
                     </div>
                 </div>
                 <!-- Slide 3 -->
@@ -1068,8 +991,8 @@
                         <img src="assets/images/preview-queue.svg" alt="Controle de fila de jogadores" width="800" height="500">
                     </div>
                     <div class="gallery-info">
-                        <h4>Gerenciamento da Fila de Transmissão</h4>
-                        <p>Controle visual da fila de jogadores, integrando comandos automatizados do chat e controle de partidas jogadas.</p>
+                        <h4 data-i18n="gallerySlide3Title">Gerenciamento da Fila de Transmissão</h4>
+                        <p data-i18n="gallerySlide3Desc">Controle visual da fila de jogadores, integrando comandos automatizados do chat e controle de partidas jogadas.</p>
                     </div>
                 </div>
                 <!-- Slide 4 -->
@@ -1078,8 +1001,8 @@
                         <img src="assets/images/preview-reputation.svg" alt="Destaque de reputação de jogadores" width="800" height="500">
                     </div>
                     <div class="gallery-info">
-                        <h4>Sistema de Reputação Nativa</h4>
-                        <p>Ações rápidas para marcar jogadores de comportamento positivo (verde brilhante) ou ignorar e mutar trolls facilmente.</p>
+                        <h4 data-i18n="gallerySlide4Title">Sistema de Reputação Nativa</h4>
+                        <p data-i18n="gallerySlide4Desc">Ações rápidas para marcar jogadores de comportamento positivo (verde brilhante) ou ignorar e mutar trolls facilmente.</p>
                     </div>
                 </div>
             </div>
@@ -1097,46 +1020,11 @@
     <section id="changelog" class="changelog">
         <div class="container">
             <div class="section-header">
-                <h2>Changelog do Projeto</h2>
-                <p>Acompanhe a evolução, correções de bugs e novos recursos integrados.</p>
+                <h2 data-i18n="changelogTitle">Changelog do Projeto</h2>
+                <p data-i18n="changelogDesc">Acompanhe a evolução, correções de bugs e novos recursos integrados.</p>
             </div>
-            <div class="changelog-timeline">
-                <div class="changelog-item">
-                    <span class="changelog-version">v1.15.0</span>
-                    <span class="changelog-date">01 de Julho de 2026</span>
-                    <ul class="changelog-changes">
-                        <li><strong>Correção de estilos e UX. </strong></li>
-                        <li><strong>Desafios de jogadores filtrados por países, reputação ou rank não são mais notificados. (lembrando que os jogadores destacados "👍🏻" não são afetados por filtros).</strong></li>
-                    </ul>
-                </div>
-                <div class="changelog-item">
-                    <span class="changelog-version">v1.14.1</span>
-                    <span class="changelog-date">29 de Junho de 2026</span>
-                    <ul class="changelog-changes">
-                        <li><strong>Melhorias de desempenho.</strong></li>
-                        <li><strong>Alguns ajustes de UI/UX.</strong></li>
-                    </ul>
-                </div>
-                <div class="changelog-item">
-                    <span class="changelog-version">v1.14.0</span>
-                    <span class="changelog-date">28 de Junho de 2026</span>
-                    <ul class="changelog-changes">
-                        <li><strong>Verificação inteligente de atualizações</strong> através do GitHub Pages oficial.</li>
-                        <li><strong>Otimização de tráfego de rede</strong>: Sincronização automática de ranking agora ocorre a cada 12 horas.</li>
-                        <li><strong>Proteção antispam</strong>: O botão de sincronizar rankings manualmente agora fica bloqueado por 30 minutos após o uso para evitar rate limits.</li>
-                        <li>Correção de links quebrados na aba "Sobre" direcionando diretamente para a landing page.</li>
-                    </ul>
-                </div>
-                <div class="changelog-item">
-                    <span class="changelog-version">v1.13.3</span>
-                    <span class="changelog-date">15 de Maio de 2026</span>
-                    <ul class="changelog-changes">
-                        <li>Injeção nativa de painel de controle e menu global ao inicializar o app.</li>
-                        <li>Suporte completo para controle de fila de live com aviso de promo bot a cada 10 minutos.</li>
-                        <li>Sistema de interceptação de som de desafio com suporte para arquivos customizados de áudio WAV.</li>
-                        <li>Barra de pesquisa em tempo real na lista lateral de jogadores conectada via MutationObserver.</li>
-                    </ul>
-                </div>
+            <div id="changelogTimeline" class="changelog-timeline">
+                <!-- Timeline items rendered dynamically by JavaScript -->
             </div>
         </div>
     </section>
@@ -1144,13 +1032,13 @@
     <!-- Support Section -->
     <section id="support" class="container">
         <div class="support-cta">
-            <h3>Apoie o Desenvolvimento ☕</h3>
-            <p>
+            <h3 data-i18n="supportTitle">Apoie o Desenvolvimento ☕</h3>
+            <p data-i18n="supportDesc">
                 Este projeto é desenvolvido e mantido de forma gratuita. Se o mod melhorou suas jogatinas ou simplificou suas streams, considere deixar uma contribuição financeira para manter os servidores ativos!
             </p>
             <div class="hero-actions">
-                <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal">Apoiar com PayPal</a>
-                <a href="https://livepix.gg/cerberusbr" target="_blank" class="btn btn-livepix">Apoiar com LivePix</a>
+                <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal" data-i18n="supportPaypal">Apoiar com PayPal</a>
+                <a href="https://livepix.gg/cerberusbr" target="_blank" class="btn btn-livepix" data-i18n="supportLivepix">Apoiar com LivePix</a>
             </div>
         </div>
     </section>
@@ -1159,22 +1047,344 @@
     <footer>
         <div class="container">
             <a href="#" class="footer-logo">
-                <img src="assets/logo.svg" alt="Fightcade Plus Logo" style="height: 28px; width: 28px; margin-right: 8px; vertical-align: middle;">
+                <img src="assets/logo.png" alt="Fightcade Plus Logo" style="height: 28px; width: 28px; margin-right: 8px; vertical-align: middle; border-radius: 50%;">
                 Fightcade<span>Plus</span>
             </a>
-            <p>O Fightcade Plus é uma modificação estética e funcional independente. Todos os direitos reservados.</p>
+            <p data-i18n="footerText">O Fightcade Plus é uma modificação estética e funcional independente. Todos os direitos reservados.</p>
             <div class="footer-links">
-                <a href="#features">Funcionalidades</a>
-                <a href="#gallery">Galeria</a>
+                <a href="#features" data-i18n="navFeatures">Funcionalidades</a>
+                <a href="#gallery" data-i18n="navGallery">Galeria</a>
                 <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">Repositório GitHub</a>
             </div>
             <p style="margin-top: 16px; opacity: 0.3; font-size: 12px;">&copy; 2026 Fightcade Plus. Licenciado sob termos Open Source.</p>
         </div>
     </footer>
 
-    <!-- Interactive Simulator Scripts -->
+    <!-- Multilingual Dictionary & Interactive Scripts -->
     <script>
+        const translations = {
+            pt: {
+                navFeatures: "Funcionalidades",
+                navGallery: "Galeria",
+                navChangelog: "Changelog",
+                navSupport: "Apoiar",
+                downloadBtn: "Download v1.15.1",
+                heroTag: "v1.15.1 — Novo Update",
+                heroTitle: "Melhore sua experiência no Fightcade",
+                heroDesc: "O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.",
+                heroDownload: "Download Setup v1.15.1 (.exe)",
+                heroPaypal: "Donate via PayPal",
+                heroLivepix: "Apoiar via LivePix",
+                demoTitle: "Veja o Mod em Ação",
+                demoDesc: "Um preview rápido de como os componentes injetados aparecem direto na interface original do Fightcade.",
+                demoStatus: "EM BREVE",
+                featuresTitle: "Funcionalidades Principais",
+                featuresDesc: "Módulos de alto rendimento criados para otimizar partidas e economizar tempo nos lobbies.",
+                featCountryTitle: "Filtro por Países",
+                featCountryDesc: "Filtre e elimine oponentes indesejados em tempo real na lista lateral e chat. Reduza o lag focando em conexões locais.",
+                featRankTitle: "Badges de Ranking",
+                featRankDesc: "Injeta badges de classificação e pontuação ELO ao lado dos nicks para você identificar a habilidade do oponente imediatamente.",
+                featPingTitle: "Bandeiras & Ping",
+                featPingDesc: "Substitui as barras nativas de ping por ping exato em milissegundos e inclui a bandeira real do país do jogador no chat.",
+                featRepTitle: "Reputação de Usuários",
+                featRepDesc: "Favorite jogadores amigáveis ou classifique trolls e usuários nocivos com dislikes para silenciá-los automaticamente.",
+                featQueueTitle: "Fila Automática (Streamer)",
+                featQueueDesc: "Gerencie queues em live sem esforço com comandos rápidos (`!join`). O bot envia atualizações periódicas no chat.",
+                featThemesTitle: "Estilos Desbloqueados",
+                featThemesDesc: "Acesse novos temas e gradientes de cores da interface sem a necessidade de licenças premium ou custos extras.",
+                galleryTitle: "Interface & Capturas",
+                galleryDesc: "Veja imagens demonstrativas da extensão rodando diretamente integrada ao cliente desktop do Fightcade.",
+                gallerySlide1Title: "Painel de Configurações Nativo",
+                gallerySlide1Desc: "Integração de UI impecável, preservando o layout clássico com novas chaves para o controle modular de todos os recursos instalados.",
+                gallerySlide2Title: "Lista de Jogadores Avançada",
+                gallerySlide2Desc: "Identificação instantânea de ping exato e localização regional em formato de lista compacta para garantir partidas estáveis.",
+                gallerySlide3Title: "Gerenciamento da Fila de Transmissão",
+                gallerySlide3Desc: "Controle visual da fila de jogadores, integrando comandos automatizados do chat e controle de partidas jogadas.",
+                gallerySlide4Title: "Sistema de Reputação Nativa",
+                gallerySlide4Desc: "Ações rápidas para marcar jogadores de comportamento positivo (verde brilhante) ou ignorar e mutar trolls facilmente.",
+                changelogTitle: "Changelog do Projeto",
+                changelogDesc: "Acompanhe a evolução, correções de bugs e novos recursos integrados.",
+                supportTitle: "Apoie o Desenvolvimento ☕",
+                supportDesc: "Este projeto é desenvolvido e mantido de forma gratuita. Se o mod melhorou suas jogatinas ou simplificou suas streams, considere deixar uma contribuição financeira para manter os servidores ativos!",
+                supportPaypal: "Apoiar com PayPal",
+                supportLivepix: "Apoiar com LivePix",
+                footerText: "O Fightcade Plus é uma modificação estética e funcional independente. Todos os direitos reservados."
+            },
+            en: {
+                navFeatures: "Features",
+                navGallery: "Gallery",
+                navChangelog: "Changelog",
+                navSupport: "Support",
+                downloadBtn: "Download v1.15.1",
+                heroTag: "v1.15.1 — New Update",
+                heroTitle: "Elevate your Fightcade experience",
+                heroDesc: "Fightcade Plus is a full modular mod adding stability enhancements, automatic ping/country filters, integrated player reputation, and live stream queues to your native Fightcade client.",
+                heroDownload: "Download Setup v1.15.1 (.exe)",
+                heroPaypal: "Donate via PayPal",
+                heroLivepix: "Support via LivePix",
+                demoTitle: "See the Mod in Action",
+                demoDesc: "A quick preview of how the injected components look directly inside the original Fightcade client.",
+                demoStatus: "COMING SOON",
+                featuresTitle: "Core Features",
+                featuresDesc: "High-performance modules designed to optimize matches and save time in lobbies.",
+                featCountryTitle: "Country Filters",
+                featCountryDesc: "Filter and eliminate unwanted opponents in real-time on the sidebar and chat. Reduce lag by focusing on local connections.",
+                featRankTitle: "Ranking Badges",
+                featRankDesc: "Inject ranking badges and ELO scores next to nicknames so you can immediately identify the opponent's skill level.",
+                featPingTitle: "Flags & Ping",
+                featPingDesc: "Replaces native ping bars with exact millisecond values and includes the player's actual country flag in the chat log.",
+                featRepTitle: "Player Reputation",
+                featRepDesc: "Favorite friendly players or rate trolls and toxic users with downvotes to automatically mute and silence them.",
+                featQueueTitle: "Streamer Live Queue",
+                featQueueDesc: "Manage live stream queues effortlessly with quick chat commands (`!join`). The bot posts automated channel updates.",
+                featThemesTitle: "Unlocked Visual Themes",
+                featThemesDesc: "Access premium interface color themes and gradients without the need for premium licenses or extra costs.",
+                galleryTitle: "Interface & Screenshots",
+                galleryDesc: "See demonstration captures of the extension running directly integrated into the Fightcade desktop client.",
+                gallerySlide1Title: "Native Settings Panel",
+                gallerySlide1Desc: "Impeccable UI integration, preserving the classic layout while adding toggles for modular control of all installed features.",
+                gallerySlide2Title: "Advanced Player List",
+                gallerySlide2Desc: "Instant identification of exact ping and regional location in a compact list layout to guarantee stable match connections.",
+                gallerySlide3Title: "Stream Queue Management",
+                gallerySlide3Desc: "Visual control of the viewer queue, integrating automated chat commands and player tracking.",
+                gallerySlide4Title: "Native Reputation System",
+                gallerySlide4Desc: "Quick actions to mark positive players (glow green) or ignore and mute trolls easily.",
+                changelogTitle: "Project Changelog",
+                changelogDesc: "Track updates, bug fixes, and new integrated features.",
+                supportTitle: "Support Development ☕",
+                supportDesc: "This project is developed and maintained for free. If this mod has enhanced your games or simplified your streams, please consider supporting the development to keep servers active!",
+                supportPaypal: "Support with PayPal",
+                supportLivepix: "Support with LivePix",
+                footerText: "Fightcade Plus is an independent cosmetic and functional modification. All rights reserved."
+            },
+            es: {
+                navFeatures: "Características",
+                navGallery: "Galería",
+                navChangelog: "Changelog",
+                navSupport: "Soporte",
+                downloadBtn: "Descargar v1.15.1",
+                heroTag: "v1.15.1 — Nueva Actualización",
+                heroTitle: "Mejora tu experiencia en Fightcade",
+                heroDesc: "Fightcade Plus es un mod modular completo que añade mejoras de estabilidad, filtros automáticos de ping/país, reputación de jugadores y cola de streaming en vivo a tu cliente nativo de Fightcade.",
+                heroDownload: "Descargar Setup v1.15.1 (.exe)",
+                heroPaypal: "Donate via PayPal",
+                heroLivepix: "Apoyar vía LivePix",
+                demoTitle: "Mira el Mod en Acción",
+                demoDesc: "Una vista previa rápida de cómo aparecen los componentes inyectados directamente en la interfaz original de Fightcade.",
+                demoStatus: "MUY PRONTO",
+                featuresTitle: "Características Principales",
+                featuresDesc: "Módulos de alto rendimiento diseñados para optimizar partidas y ahorrar tiempo en los lobbies.",
+                featCountryTitle: "Filtro de Países",
+                featCountryDesc: "Filtra y elimina oponentes no deseados en tiempo real en la barra lateral y el chat. Reduce el lag enfocándose en conexiones locales.",
+                featRankTitle: "Medallas de Clasificación",
+                featRankDesc: "Inyecta medallas de rango y puntuación ELO al lado de los nicks para identificar la habilidad del oponente inmediatamente.",
+                featPingTitle: "Banderas & Ping",
+                featPingDesc: "Reemplaza las barras de ping nativas con el valor exacto en milisegundos e incluye la bandera real del país del jugador en el chat.",
+                featRepTitle: "Reputación de Usuarios",
+                featRepDesc: "Marca como favorito a jugadores amigables o califica a trolls y usuarios tóxicos con dislikes para silenciarlos automáticamente.",
+                featQueueTitle: "Fila Automática (Streamer)",
+                featQueueDesc: "Gestiona colas en directo sin esfuerzo con comandos rápidos (`!join`). El bot envía actualizaciones automáticas en el chat.",
+                featThemesTitle: "Temas Desbloqueados",
+                featThemesDesc: "Accede a nuevos temas y gradientes de color de la interfaz sin necesidad de licencias premium o costes adicionales.",
+                galleryTitle: "Interfaz & Capturas",
+                galleryDesc: "Mira imágenes demostrativas de la extensión funcionando directamente integrada al cliente de escritorio de Fightcade.",
+                gallerySlide1Title: "Panel de Configuración Nativo",
+                gallerySlide1Desc: "Integración de interfaz impecable, preservando el diseño clásico con nuevos interruptores para el control modular de las funciones.",
+                gallerySlide2Title: "Lista de Jugadores Avanzada",
+                gallerySlide2Desc: "Identificación instantánea de ping exacto y ubicación regional en una lista compacta para garantizar partidas estables.",
+                gallerySlide3Title: "Gestión de Fila de Transmisión",
+                gallerySlide3Desc: "Control visual de la cola de jugadores, integrando comandos automáticos de chat y control de partidas jugadas.",
+                gallerySlide4Title: "Sistema de Reputación Nativa",
+                gallerySlide4Desc: "Acciones rápidas para marcar a jugadores positivos (verde brillante) o ignorar y silenciar trolls fácilmente.",
+                changelogTitle: "Changelog del Proyecto",
+                changelogDesc: "Sigue la evolución, corrección de errores y nuevas funciones integradas.",
+                supportTitle: "Apoya el Desarrollo ☕",
+                supportDesc: "Este proyecto se desarrolla y mantiene de forma gratuita. Si el mod ha mejorado tus partidas o simplificado tus directos, ¡considera realizar una contribución para mantener los servidores activos!",
+                supportPaypal: "Apoyar con PayPal",
+                supportLivepix: "Apoyar con LivePix",
+                footerText: "Fightcade Plus es una modificación estética y funcional independiente. Todos los derechos reservados."
+            }
+        };
 
+        const changelogTimelineData = [
+            {
+                version: "v1.15.1",
+                date: {
+                    pt: "01 de Julho de 2026",
+                    en: "July 01, 2026",
+                    es: "01 de Julio de 2026"
+                },
+                changes: {
+                    pt: [
+                        "<strong>Adicionados 2 novos Sons de Desafio Customizados</strong> (#7 'You have been challenged' e #8 'Challenged').",
+                        "<strong>Refatoração e Tradução total de comentários</strong> de todo o código-fonte do plugin para o inglês para manter a padronização profissional do projeto.",
+                        "<strong>Atualizações e ajustes estruturais na documentação</strong> no README.md oficial."
+                    ],
+                    en: [
+                        "<strong>Added 2 new Custom Challenger Sounds</strong> (#7 'You have been challenged' and #8 'Challenged').",
+                        "<strong>Refactored and fully translated source code comments</strong> to English to maintain project standardization.",
+                        "<strong>Documentation updates and structural adjustments</strong> in the official README.md."
+                    ],
+                    es: [
+                        "<strong>Añadidos 2 nuevos Sonidos de Reto Personalizados</strong> (#7 'You have been challenged' y #8 'Challenged').",
+                        "<strong>Refactorización y traducción completa de comentarios</strong> de todo el código fuente al inglés para estandarización del proyecto.",
+                        "<strong>Actualizaciones y mejoras estructurales de documentación</strong> en el archivo README.md oficial."
+                    ]
+                }
+            },
+            {
+                version: "v1.15.0",
+                date: {
+                    pt: "01 de Julho de 2026",
+                    en: "July 01, 2026",
+                    es: "01 de Julio de 2026"
+                },
+                changes: {
+                    pt: [
+                        "<strong>Correção de estilos e UX.</strong>",
+                        "<strong>Desafios de jogadores filtrados por países, reputação ou rank não são mais notificados.</strong> (Lembrando que jogadores destacados '👍' não são afetados por filtros)."
+                    ],
+                    en: [
+                        "<strong>UX and stylesheet style fixes.</strong>",
+                        "<strong>Challenges from players blocked by country, reputation, or rank filters are no longer notified.</strong> (Note: favorited players '👍' bypass filters)."
+                    ],
+                    es: [
+                        "<strong>Corrección de estilos y UX.</strong>",
+                        "<strong>Los retos de jugadores filtrados por país, reputación o rango ya no son notificados.</strong> (Nota: los jugadores favoritos '👍' no se ven afectados por filtros)."
+                    ]
+                }
+            },
+            {
+                version: "v1.14.1",
+                date: {
+                    pt: "29 de Junho de 2026",
+                    en: "June 29, 2026",
+                    es: "29 de Junio de 2026"
+                },
+                changes: {
+                    pt: [
+                        "<strong>Melhorias de desempenho.</strong>",
+                        "<strong>Alguns ajustes de UI/UX.</strong>"
+                    ],
+                    en: [
+                        "<strong>Performance improvements.</strong>",
+                        "<strong>Minor UI/UX adjustments.</strong>"
+                    ],
+                    es: [
+                        "<strong>Mejoras de rendimiento.</strong>",
+                        "<strong>Ajustes de UI/UX menores.</strong>"
+                    ]
+                }
+            },
+            {
+                version: "v1.14.0",
+                date: {
+                    pt: "28 de Junho de 2026",
+                    en: "June 28, 2026",
+                    es: "28 de Junio de 2026"
+                },
+                changes: {
+                    pt: [
+                        "<strong>Verificação inteligente de atualizações</strong> através do GitHub Pages oficial.",
+                        "<strong>Otimização de tráfego de rede</strong>: Sincronização automática de ranking agora ocorre a cada 12 horas.",
+                        "<strong>Proteção antispam</strong>: O botão de sincronizar rankings manualmente agora fica bloqueado por 30 minutos após o uso para evitar rate limits.",
+                        "Correção de links quebrados na aba 'Sobre' direcionando diretamente para a landing page."
+                    ],
+                    en: [
+                        "<strong>Smart updates check</strong> via official GitHub Pages.",
+                        "<strong>Network traffic optimization</strong>: Automatic ranking sync now runs every 12 hours.",
+                        "<strong>Anti-spam protection</strong>: Manual ranking sync button is now locked for 30 minutes after use to avoid rate limits.",
+                        "Fixed broken links in the 'About' tab redirecting to the landing page."
+                    ],
+                    es: [
+                        "<strong>Verificación inteligente de actualizaciones</strong> a través de GitHub Pages oficial.",
+                        "<strong>Optimización del tráfico de red</strong>: La sincronización automática de clasificaciones ahora ocurre cada 12 horas.",
+                        "<strong>Protección antispam</strong>: El botón manual de sincronizar clasificaciones queda bloqueado por 30 minutos tras su uso para evitar rate limits.",
+                        "Corrección de enlaces rotos en la pestaña 'Acerca de' que redirigían a la landing page."
+                    ]
+                }
+            },
+            {
+                version: "v1.13.3",
+                date: {
+                    pt: "15 de Maio de 2026",
+                    en: "May 15, 2026",
+                    es: "15 de Mayo de 2026"
+                },
+                changes: {
+                    pt: [
+                        "Injeção nativa de painel de controle e menu global ao inicializar o app.",
+                        "Suporte completo para controle de fila de live com aviso de promo bot a cada 10 minutos.",
+                        "Sistema de interceptação de som de desafio com suporte para arquivos customizados de áudio WAV.",
+                        "Barra de pesquisa em tempo real na lista lateral de jogadores conectada via MutationObserver."
+                    ],
+                    en: [
+                        "Native injection of control panel and global menu upon application start.",
+                        "Full support for live stream queue controls with promo bot announcements every 10 minutes.",
+                        "Challenger sound intercept system supporting custom WAV audio files.",
+                        "Real-time search bar in the player list connected via MutationObserver."
+                    ],
+                    es: [
+                        "Inyección nativa del panel de control y menú global al iniciar la aplicación.",
+                        "Soporte completo para control de cola en vivo con anuncios del bot promocional cada 10 minutos.",
+                        "Sistema de interceptación de sonido de desafío con soporte para archivos de audio WAV personalizados.",
+                        "Barra de búsqueda en tiempo real en la lista de jugadores conectada mediante MutationObserver."
+                    ]
+                }
+            }
+        ];
+
+        function renderChangelog(lang) {
+            const timeline = document.getElementById('changelogTimeline');
+            if (!timeline) return;
+            timeline.innerHTML = changelogTimelineData.map(item => `
+                <div class="changelog-item fade-i18n">
+                    <span class="changelog-version">${item.version}</span>
+                    <span class="changelog-date">${item.date[lang]}</span>
+                    <ul class="changelog-changes">
+                        ${item.changes[lang].map(change => `<li>${change}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+
+        function setLanguage(lang) {
+            document.documentElement.lang = lang === 'pt' ? 'pt-BR' : (lang === 'es' ? 'es' : 'en');
+            
+            // Toggle active buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+
+            // Save to LocalStorage
+            localStorage.setItem('fcplus_lang', lang);
+
+            // Translate DOM elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (translations[lang] && translations[lang][key]) {
+                    el.classList.remove('fade-i18n');
+                    void el.offsetWidth; // Trigger reflow for animation restart
+                    el.classList.add('fade-i18n');
+                    
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = translations[lang][key];
+                    } else {
+                        el.innerHTML = translations[lang][key];
+                    }
+                }
+            });
+
+            // Translate Demo Video placeholder state
+            const videoPlaceholder = document.querySelector('.video-placeholder');
+            if (videoPlaceholder) {
+                const statusText = translations[lang].demoStatus || "EM BREVE";
+                videoPlaceholder.style.backgroundImage = `linear-gradient(rgba(21, 10, 20, 0.45), rgba(21, 10, 20, 0.45)), url('https://placehold.co/1280x720/120911/33f1e5?text=${encodeURIComponent(statusText)}')`;
+            }
+
+            // Render translated Changelog Timeline
+            renderChangelog(lang);
+        }
 
         // Gallery Carousel Logic
         let currentSlide = 0;
@@ -1201,8 +1411,21 @@
                 showSlide(slideIdx);
             });
         });
+
+        // Initialize Language Select Event Listeners
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const selectedLang = e.target.dataset.lang;
+                setLanguage(selectedLang);
+            });
+        });
+
+        // Load Initial Language (default to Portuguese or stored preference)
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('fcplus_lang') || 'pt';
+            setLanguage(savedLang);
+        });
     </script>
-        // Initial setup
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();

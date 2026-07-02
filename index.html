@@ -28,6 +28,9 @@
     <meta name="twitter:description" content="Filtros avançados de país/ping, reputação de jogadores, fila de lives e personalização de temas injetados nativamente.">
     <meta name="twitter:image" content="https://cerberus-br.github.io/FightcadePlus/assets/logo.png">
     
+    <!-- Tally Widgets Embed Script -->
+    <script src="https://tally.so/widgets/embed.js"></script>
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -859,6 +862,66 @@
             0% { opacity: 0.4; transform: translateY(2px); }
             100% { opacity: 1; transform: translateY(0); }
         }
+
+        /* Floating Tally Contact Button */
+        .tally-contact-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--fc-pink) 0%, var(--fc-purple) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            box-shadow: 0 8px 24px rgba(255, 0, 122, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        .tally-contact-btn svg {
+            fill: currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        .tally-contact-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 28px rgba(255, 0, 122, 0.6), 0 0 15px var(--fc-pink-glow);
+        }
+
+        .tally-contact-btn:hover svg {
+            transform: rotate(5deg) scale(1.05);
+        }
+
+        .tally-contact-btn::after {
+            content: "";
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 50%;
+            border: 2px solid var(--fc-pink);
+            opacity: 0;
+            transition: all 0.6s ease;
+            animation: tallyPulse 2s infinite;
+        }
+
+        @keyframes tallyPulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .tally-contact-btn {
+                bottom: 16px;
+                right: 16px;
+                width: 52px;
+                height: 52px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -880,7 +943,7 @@
                     <a href="#changelog" data-i18n="navChangelog">Changelog</a>
                     <a href="#support" data-i18n="navSupport">Apoiar</a>
                     <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">GitHub</a>
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.1/Setup-FightcadePlus-1.15.1.exe" class="btn-header" data-i18n="downloadBtn">Download v1.15.1</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.2/Setup-FightcadePlus-1.15.2.exe" class="btn-header" data-i18n="downloadBtn">Download v1.15.2</a>
                 </nav>
                 <div class="lang-selector">
                     <button class="lang-btn active" data-lang="pt" title="Português">🇧🇷</button>
@@ -894,7 +957,7 @@
     <!-- Hero Section -->
     <section class="container hero">
         <div class="hero-content">
-            <span class="hero-tag" data-i18n="heroTag">v1.15.1 — Novo Update</span>
+            <span class="hero-tag" data-i18n="heroTag">v1.15.2 — Novo Update</span>
             <h1 data-i18n="heroTitle">Melhore sua experiência no Fightcade</h1>
             <p data-i18n="heroDesc">
                 O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, 
@@ -902,7 +965,7 @@
             </p>
             <div class="hero-actions">
                 <div class="hero-actions-row-top">
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.1/Setup-FightcadePlus-1.15.1.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v1.15.1 (.exe)</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.2/Setup-FightcadePlus-1.15.2.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v1.15.2 (.exe)</a>
                 </div>
                 <div class="hero-actions-row-bottom">
                     <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal" data-i18n="heroPaypal">Donate via PayPal</a>
@@ -1082,6 +1145,13 @@
         </div>
     </footer>
 
+    <!-- Floating Contact Button -->
+    <button id="tallyContactBtn" class="tally-contact-btn" aria-label="Contact">
+        <svg viewBox="0 0 24 24" width="26" height="26">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+        </svg>
+    </button>
+
     <!-- Multilingual Dictionary & Interactive Scripts -->
     <script>
         const translations = {
@@ -1090,11 +1160,11 @@
                 navGallery: "Galeria",
                 navChangelog: "Changelog",
                 navSupport: "Apoiar",
-                downloadBtn: "Download v1.15.1",
-                heroTag: "v1.15.1 — Novo Update",
+                downloadBtn: "Download v1.15.2",
+                heroTag: "v1.15.2 — Novo Update",
                 heroTitle: "Melhore sua experiência no Fightcade",
                 heroDesc: "O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.",
-                heroDownload: "Download Setup v1.15.1 (.exe)",
+                heroDownload: "Download Setup v1.15.2 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Apoiar via LivePix",
                 demoTitle: "Veja o Mod em Ação",
@@ -1137,11 +1207,11 @@
                 navGallery: "Gallery",
                 navChangelog: "Changelog",
                 navSupport: "Support",
-                downloadBtn: "Download v1.15.1",
-                heroTag: "v1.15.1 — New Update",
+                downloadBtn: "Download v1.15.2",
+                heroTag: "v1.15.2 — New Update",
                 heroTitle: "Elevate your Fightcade experience",
                 heroDesc: "Fightcade Plus is a full modular mod adding stability enhancements, automatic ping/country filters, integrated player reputation, and live stream queues to your native Fightcade client.",
-                heroDownload: "Download Setup v1.15.1 (.exe)",
+                heroDownload: "Download Setup v1.15.2 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Support via LivePix",
                 demoTitle: "See the Mod in Action",
@@ -1184,11 +1254,11 @@
                 navGallery: "Galería",
                 navChangelog: "Changelog",
                 navSupport: "Soporte",
-                downloadBtn: "Descargar v1.15.1",
-                heroTag: "v1.15.1 — Nueva Actualización",
+                downloadBtn: "Descargar v1.15.2",
+                heroTag: "v1.15.2 — Nueva Actualización",
                 heroTitle: "Mejora tu experiencia en Fightcade",
                 heroDesc: "Fightcade Plus es un mod modular completo que añade mejoras de estabilidad, filtros automáticos de ping/país, reputación de jugadores y cola de streaming en vivo a tu cliente nativo de Fightcade.",
-                heroDownload: "Descargar Setup v1.15.1 (.exe)",
+                heroDownload: "Descargar Setup v1.15.2 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Apoyar vía LivePix",
                 demoTitle: "Mira el Mod en Acción",
@@ -1229,6 +1299,28 @@
         };
 
         const changelogTimelineData = [
+            {
+                version: "v1.15.2",
+                date: {
+                    pt: "02 de Julho de 2026",
+                    en: "July 02, 2026",
+                    es: "02 de Julio de 2026"
+                },
+                changes: {
+                    pt: [
+                        "Correções críticas de sincronização e concorrência ao manter múltiplas salas abertas simultaneamente.",
+                        "Resolvido vazamento de filtros de busca e atualizações de botões de controle de chat ao trocar de abas."
+                    ],
+                    en: [
+                        "Critical sync and concurrency fixes when keeping multiple rooms open simultaneously.",
+                        "Resolved sidebar search leakage and chat control button updates when switching room tabs."
+                    ],
+                    es: [
+                        "Correcciones críticas de sincronización y concurrencia al mantener múltiples salas abiertas simultáneamente.",
+                        "Se resolvió la filtración de la búsqueda lateral y las actualizaciones del botón de control de chat al cambiar de pestaña."
+                    ]
+                }
+            },
             {
                 version: "v1.15.1",
                 date: {
@@ -1403,6 +1495,18 @@
 
             // Render translated Changelog Timeline
             renderChangelog(lang);
+
+            // Update floating button language tooltip
+            window.currentLanguage = lang;
+            const contactBtn = document.getElementById('tallyContactBtn');
+            if (contactBtn) {
+                const tooltips = {
+                    pt: 'Suporte & Contato',
+                    en: 'Support & Contact',
+                    es: 'Soporte y Contacto'
+                };
+                contactBtn.setAttribute('title', tooltips[lang] || tooltips['pt']);
+            }
         }
 
         // Gallery Carousel Logic
@@ -1444,19 +1548,25 @@
             const savedLang = localStorage.getItem('fcplus_lang') || 'pt';
             setLanguage(savedLang);
         });
+
+        // Initialize Tally Popup Click Listener
+        document.getElementById('tallyContactBtn').addEventListener('click', () => {
+            const langForms = {
+                pt: 'Gxg8GQ',
+                en: 'eqpkOo',
+                es: 'ODgO2k'
+            };
+            const formId = langForms[window.currentLanguage] || langForms['pt'];
+            if (typeof Tally !== 'undefined') {
+                Tally.openPopup(formId, {
+                    layout: 'modal',
+                    width: 700,
+                    autoClose: 3000
+                });
+            } else {
+                window.open(`https://tally.so/r/${formId}`, '_blank');
+            }
+        });
     </script>
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6a42bd149b23441d48e49ebd/1jsab56m3';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
 </body>
 </html>

@@ -114,8 +114,18 @@ function processCollectedWrappers(wrappersArray, FCADE, configFull) {
     const activeGameId = getActiveGameId(FCADE, cw);
     const globalUsers = FCADE.globalUsers || {};
 
-    const activeChannelId = FCADE.activeChannelId;
-    const usersList = FCADE.$refs[activeChannelId]?.[0]?.$refs?.usersList?.$children;
+    // [CERBERUS] Multi-Room Fix: Resolve channelId from wrapper context, not global activeChannelId
+    let resolvedChannelId = FCADE.activeChannelId;
+    if (cw) {
+        for (const refKey of Object.keys(FCADE.$refs || {})) {
+            const refArr = FCADE.$refs[refKey];
+            if (refArr?.[0]?.$el && (refArr[0].$el === cw || refArr[0].$el.contains(cw) || cw.contains(refArr[0].$el))) {
+                resolvedChannelId = refKey;
+                break;
+            }
+        }
+    }
+    const usersList = FCADE.$refs[resolvedChannelId]?.[0]?.$refs?.usersList?.$children;
 
     const activeUsersMap = new Map();
     if (usersList && usersList.length > 0) {

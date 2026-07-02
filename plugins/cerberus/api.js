@@ -35,15 +35,16 @@ const RankCache = {
         if (Date.now() - lastSync < cooldownMs || this.isSyncing) return;
         this.isSyncing = true; this._abortController = new AbortController(); const signal = this._abortController.signal;
 
-        const btn = document.getElementById('cerberusSyncBtn');
-        if (btn) {
-            btn.classList.add('syncing');
-            btn.innerHTML = '<span class="cerb-spin-icon"></span><span class="cerb-sync-progress">0/' + (ConfigManager.getSetting('rankings.limit') || 100) + '</span>';
-            btn.title = t('sync.clickCancel');
-        }
-
         const initialGameId = gameId; const targetLimit = ConfigManager.getSetting('rankings.limit') || 100;
         const targetCountry = (ConfigManager.getSetting('rankings.country') || '').toUpperCase().trim();
+
+        const cw = getActiveChannelWrapper();
+        const btn = cw ? cw.querySelector('#cerberusSyncBtn') : null;
+        if (btn) {
+            btn.classList.add('syncing');
+            btn.innerHTML = '<span class="cerb-spin-icon"></span><span class="cerb-sync-progress">0/' + targetLimit + '</span>';
+            btn.title = t('sync.clickCancel');
+        }
         let offset = 0; let validPlayersFound = 0; let pagesFetched = 0; const maxPagesSafeguard = 50; const newCache = {};
         let consecutiveEmptyPages = 0;
 

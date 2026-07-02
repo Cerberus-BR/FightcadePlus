@@ -5,7 +5,7 @@ function init(FCADE) {
     const { CerberusData } = require('./state.js');
     const { ConfigManager } = require('./config.js');
     const { RankCache } = require('./api.js');
-    const { injectStyles, createControlPanel, createQueuePanel, applyTheme, injectGlobalMenu, injectHeaderButtons, injectSidebarSearch, injectUIEnhancements, unlockColorThemes } = require('./ui.js');
+    const { injectStyles, createControlPanel, createQueuePanel, applyTheme, injectGlobalMenu, injectHeaderButtons, injectSidebarSearch, injectUIEnhancements, onChannelSwitch, unlockColorThemes } = require('./ui.js');
     const { connectToChannelWhenAvailable, setupAudioSilencer, checkForUpdates, executeChatMacro, t } = require('./utils.js');
     const { updateFilterShield, attachMultiObservers } = require('./chat.js');
     
@@ -90,6 +90,7 @@ function init(FCADE) {
     setTimeout(() => applyTheme(CerberusData.selectedTheme), 5000);
 
     scheduleAutoSync(FCADE);
+    observeChannelSwitches(FCADE);
     checkForUpdates();
 }
 
@@ -108,6 +109,46 @@ function scheduleAutoSync(FCADE) {
             }
         }
     }, 60000);
+}
+
+// [CERBERUS] Multi-Room Fix: Observe channel tab switches via MutationObserver
+function observeChannelSwitches(FCADE) {
+    if (window.cerbChannelSwitchObserver) {
+        window.cerbChannelSwitchObserver.disconnect();
+        window.cerbChannelSwitchObserver = null;
+    }
+
+    const channelsList = document.querySelector('.channelsList');
+    if (!channelsList) return;
+
+    let switchDebounce = null;
+
+    window.cerbChannelSwitchObserver = new MutationObserver(mutations => {
+        let switchDetected = false;
+        for (const mut of mutations) {
+            if (mut.type === 'attributes' && mut.attributeName === 'class') {
+                const target = mut.target;
+                if (target.classList?.contains('channelItem') && target.classList.contains('active')) {
+                    switchDetected = true;
+                    break;
+                }
+            }
+        }
+
+        if (switchDetected) {
+            clearTimeout(switchDebounce);
+            switchDebounce = setTimeout(() => {
+                const { onChannelSwitch } = require('./ui.js');
+                onChannelSwitch(FCADE);
+            }, 100);
+        }
+    });
+
+    window.cerbChannelSwitchObserver.observe(channelsList, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class']
+    });
 }
 
 module.exports = { init };

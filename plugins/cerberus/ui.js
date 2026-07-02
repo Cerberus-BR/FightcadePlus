@@ -794,7 +794,10 @@ function injectHeaderButtons(FCADE) {
             setSyncBtnState(syncBtn, isLocked);
             syncBtn.addEventListener('click', (e) => { e.stopPropagation(); if (RankCache.isSyncing) RankCache.cancelSync(); else { const cId = getActiveGameId(FCADE); if (cId) RankCache.syncRankings(cId); } });
             headerTitle.insertBefore(syncBtn, headerTitle.querySelector('#cerberusBtn'));
-        } else if (!RankCache.isSyncing) setSyncBtnState(existingSyncBtn, isLocked);
+        } else if (!RankCache.isSyncing) {
+            // [CERBERUS] Multi-Room Fix: Always refresh lock state (different rooms have different games)
+            setSyncBtnState(existingSyncBtn, isLocked);
+        }
     } else if (existingSyncBtn) existingSyncBtn.remove();
 }
 
@@ -881,11 +884,40 @@ function injectUIEnhancements() {
     }
 }
 
+// [CERBERUS] Multi-Room Fix: Immediate UI refresh on channel tab switch
+function onChannelSwitch(FCADE) {
+    const { ConfigManager } = require('./config.js');
+    const { fullChatScanScoped, updateSidebarScope, updateFilterShield } = require('./chat.js');
+
+    // Reset sidebar search to avoid cross-room filter leaking
+    window.CerberusState.sidebarSearchTerm = '';
+    const searchInput = document.getElementById('cerbPlayerSearchInput');
+    if (searchInput) searchInput.value = '';
+
+    // Refresh header buttons (sync state recalculated for new game)
+    injectHeaderButtons(FCADE);
+    injectSidebarSearch();
+    injectUIEnhancements();
+    updateFilterShield();
+
+    // Run a full scan on the newly visible room
+    const runtimeConfig = ConfigManager.getRuntimeConfig();
+    if (runtimeConfig) {
+        const { getActiveChannelWrapper } = require('./utils.js');
+        const cw = getActiveChannelWrapper();
+        if (cw) {
+            fullChatScanScoped(cw, FCADE, runtimeConfig);
+            const sidebar = cw.querySelector('.usersListWrapper');
+            if (sidebar) updateSidebarScope(sidebar, FCADE, runtimeConfig);
+        }
+    }
+}
+
 module.exports = {
     injectStyles, createControlPanel, createQueuePanel, renderQueueList, injectGlobalMenu,
     applyReputationStyleChat, applyReputationStyleList, applyReputationStyleMatch,
     addReputationControlsToElement, unlockColorThemes, applyTheme, setSyncBtnState,
-    injectHeaderButtons, injectSidebarSearch, injectUIEnhancements, createFlagElement,
+    injectHeaderButtons, injectSidebarSearch, injectUIEnhancements, onChannelSwitch, createFlagElement,
     createPingElement, createRankElement, createPingTextElement, createStatusElement, createRankBadge,
     applyDevBadge
 };

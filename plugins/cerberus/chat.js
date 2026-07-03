@@ -135,9 +135,18 @@ function processCollectedWrappers(wrappersArray, FCADE, configFull) {
         }
     }
 
+    // [CERBERUS] Auto-Scroll Fix: Capture scroll-to-bottom status before DOM modification
+    const container = cw ? cw.querySelector('.messagesContainer') : null;
+    const wasAtBottom = container ? (container.scrollHeight - (container.scrollTop + container.clientHeight) < 60) : false;
+
     wrappersArray.forEach(wrapper => {
         checkAndProcessWrapper(wrapper, FCADE, configFull.chatUserInfo, configFull.countryFilter, configFull.liveQueue, globalUsers, activeGameId, activeUsersMap);
     });
+
+    // [CERBERUS] Auto-Scroll Fix: Snap back to bottom to resolve height offsets
+    if (wasAtBottom && container) {
+        container.scrollTop = container.scrollHeight;
+    }
 }
 
 function fullChatScanScoped(channelWrapper, FCADE, configFull) {
@@ -166,7 +175,7 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
 
     if (wrapper.dataset.cerbIdentity !== identity) {
         const chalName = wrapper.querySelector('.challengeContent .name');
-        if (wrapper.dataset.cerbRejected === "true" && !chalName) {
+        if (wrapper.dataset.cerbRejected === "true" && !chalName && isImmuneSystem) {
             // [CERBERUS] State Preservation: Vue.js recycled a blocked invitation to plain text. Keep hidden.
             wrapper.style.display = 'none';
             wrapper.dataset.cerbIdentity = identity;

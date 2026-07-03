@@ -30,8 +30,8 @@ module.exports = {
                 soundCustom4: "#4 Challenged!",
                 soundCustom5: "#5 CHAAAALLENGED!",
                 soundCustom6: "#6 Fight awaits!",
-				soundCustom7: "#7 You have been challenged",
-				soundCustom8: "#8 Challenged",
+                soundCustom7: "#7 You have been challenged",
+                soundCustom8: "#8 Challenged",
                 soundSilent: "Silent (Mute)",
                 reputation: "Reputation",
                 enableRep: "Reputation System (👍/👎)",
@@ -57,7 +57,7 @@ module.exports = {
                 queuePromo: "Live Promo Msg"
             },
             about: {
-                title: "Fightcade Plus 1.15.2",
+                title: "Fightcade Plus 1.15.5",
                 subtitle: "By Cerberus",
                 projectPage: "Project Page",
                 desc: "Elevate your gaming and streams. Fightcade Plus combines high performance, advanced challenger filtering, and dynamic community interaction in a single mod.",
@@ -127,8 +127,8 @@ module.exports = {
                 soundCustom4: "#4 Challenged!",
                 soundCustom5: "#5 CHAAAALLENGED!",
                 soundCustom6: "#6 Fight awaits!",
-				soundCustom7: "#7 You have been challenged",
-				soundCustom8: "#8 Challenged",
+                soundCustom7: "#7 You have been challenged",
+                soundCustom8: "#8 Challenged",
                 soundSilent: "Silencioso",
                 reputation: "Reputação",
                 enableRep: "Sistema de Reputação (👍/👎)",
@@ -154,7 +154,7 @@ module.exports = {
                 queuePromo: "Mensagem do Bot (a cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.15.2",
+                title: "Fightcade Plus 1.15.5",
                 subtitle: "By Cerberus",
                 projectPage: "Página do Projeto",
                 desc: "Eleve o nível da sua jogatina e transmissões. O Fightcade Plus une alta performance, filtros avançados de desafiantes e interação dinâmica com a comunidade em um único mod.",
@@ -224,8 +224,8 @@ module.exports = {
                 soundCustom4: "#4 Challenged!",
                 soundCustom5: "#5 CHAAAALLENGED!",
                 soundCustom6: "#6 Fight awaits!",
-				soundCustom7: "#7 You have been challenged",
-				soundCustom8: "#8 Challenged",
+                soundCustom7: "#7 You have been challenged",
+                soundCustom8: "#8 Challenged",
                 soundSilent: "Silencioso",
                 reputation: "Reputación",
                 enableRep: "Sistema de Reputación (👍/👎)",
@@ -251,7 +251,7 @@ module.exports = {
                 queuePromo: "Mensaje del Bot (cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.15.2",
+                title: "Fightcade Plus 1.15.5",
                 subtitle: "By Cerberus",
                 projectPage: "Página del Proyecto",
                 desc: "Eleva el nivel de tu juego y transmisiones. Fightcade Plus combina alto rendimiento, filtros avanzados de retadores e interacción dinámica con la comunidad en un solo mod.",

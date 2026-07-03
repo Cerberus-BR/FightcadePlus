@@ -2,10 +2,10 @@
   <img src="plugins/cerberus/logo.png" alt="Fightcade Plus Logo" width="120" height="120" style="object-fit: contain;" />
 </p>
 
-<h1 align="center">Plugin Fightcade Plus</h1>
+<h1 align="center">Plugin FightcadePlus</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.15.2-blue?style=for-the-badge" alt="Plugin Version" />
+  <img src="https://img.shields.io/badge/Version-1.15.5-blue?style=for-the-badge" alt="Plugin Version" />
   <img src="https://img.shields.io/badge/Plugin-Fightcade_Plus-red?style=for-the-badge" alt="Fightcade Inject" />
   <img src="https://img.shields.io/badge/Languages-EN%20%7C%20PT%20%7C%20ES-green?style=for-the-badge" alt="Languages" />
 </p>

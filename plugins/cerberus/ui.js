@@ -73,6 +73,7 @@ function injectStyles() {
         .q-live-btn.off:hover { background: rgba(170, 0, 0, 0.5); }
         .cerb-motd-update-notice { background: rgba(255, 165, 0, 0.15); border-left: 4px solid #ffaa00; padding: 10px 15px; margin-top: 15px; border-radius: 4px; color: #ffdca5; font-size: 13px; display: inline-block; width: calc(100% - 10px); box-sizing: border-box; line-height: 1.4; }
         body.cerb-hide-sidebar-ping .usersListToolbar .userItem .pingWrapper img.ping { display: none !important; }
+        .chatContent { padding-bottom: 20px !important; }
         .chatContent.blur-all .message .line .blocksContainer { filter: blur(5px); transition: filter 0.2s ease; user-select: none; }
         .chatContent.blur-all:hover .message .line .blocksContainer { filter: blur(0); user-select: text; }
         #cerbGlobalMenu { position: fixed; background: rgba(20, 20, 25, 0.95); border: 1px solid var(--mainColor-light, rgba(102, 126, 234, 0.3)); border-radius: 8px; padding: 4px 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); display: flex; align-items: center; gap: 8px; z-index: 100000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; transform: translateY(-50%) translateX(15px) scale(0.95); user-select: none; white-space: nowrap; }

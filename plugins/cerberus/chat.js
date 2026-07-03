@@ -135,17 +135,20 @@ function processCollectedWrappers(wrappersArray, FCADE, configFull) {
         }
     }
 
-    // [CERBERUS] Auto-Scroll Fix: Capture scroll-to-bottom status before DOM modification
-    const container = cw ? cw.querySelector('.messagesContainer') : null;
-    const wasAtBottom = container ? (container.scrollHeight - (container.scrollTop + container.clientHeight) < 60) : false;
+    // [CERBERUS] Auto-Scroll Fix: Capture scroll-to-bottom status before DOM modification (using correct selector .chatContent)
+    const container = cw ? cw.querySelector('.chatContent') : null;
+    const wasAtBottom = container ? (container.scrollHeight - (container.scrollTop + container.clientHeight) < 150) : false;
 
     wrappersArray.forEach(wrapper => {
         checkAndProcessWrapper(wrapper, FCADE, configFull.chatUserInfo, configFull.countryFilter, configFull.liveQueue, globalUsers, activeGameId, activeUsersMap);
     });
 
-    // [CERBERUS] Auto-Scroll Fix: Snap back to bottom to resolve height offsets
+    // [CERBERUS] Auto-Scroll Fix: Snap back to bottom to resolve height offsets immediately and after layout pass
     if (wasAtBottom && container) {
         container.scrollTop = container.scrollHeight;
+        setTimeout(() => {
+            if (container) container.scrollTop = container.scrollHeight;
+        }, 50);
     }
 }
 

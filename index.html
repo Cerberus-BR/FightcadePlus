@@ -943,7 +943,7 @@
                     <a href="#changelog" data-i18n="navChangelog">Changelog</a>
                     <a href="#support" data-i18n="navSupport">Apoiar</a>
                     <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">GitHub</a>
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.2/Setup-FightcadePlus-1.15.2.exe" class="btn-header" data-i18n="downloadBtn">Download v1.15.2</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.5/Setup-FightcadePlus-1.15.5.exe" class="btn-header" data-i18n="downloadBtn">Download v1.15.5</a>
                 </nav>
                 <div class="lang-selector">
                     <button class="lang-btn active" data-lang="pt" title="Português">🇧🇷</button>
@@ -957,7 +957,7 @@
     <!-- Hero Section -->
     <section class="container hero">
         <div class="hero-content">
-            <span class="hero-tag" data-i18n="heroTag">v1.15.2 — Novo Update</span>
+            <span class="hero-tag" data-i18n="heroTag">v1.15.5 — Novo Update</span>
             <h1 data-i18n="heroTitle">Melhore sua experiência no Fightcade</h1>
             <p data-i18n="heroDesc">
                 O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, 
@@ -965,7 +965,7 @@
             </p>
             <div class="hero-actions">
                 <div class="hero-actions-row-top">
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.2/Setup-FightcadePlus-1.15.2.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v1.15.2 (.exe)</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.5/Setup-FightcadePlus-1.15.5.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v1.15.5 (.exe)</a>
                 </div>
                 <div class="hero-actions-row-bottom">
                     <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal" data-i18n="heroPaypal">Donate via PayPal</a>
@@ -1160,11 +1160,11 @@
                 navGallery: "Galeria",
                 navChangelog: "Changelog",
                 navSupport: "Apoiar",
-                downloadBtn: "Download v1.15.2",
-                heroTag: "v1.15.2 — Novo Update",
+                downloadBtn: "Download v1.15.5",
+                heroTag: "v1.15.5 — Novo Update",
                 heroTitle: "Melhore sua experiência no Fightcade",
                 heroDesc: "O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.",
-                heroDownload: "Download Setup v1.15.2 (.exe)",
+                heroDownload: "Download Setup v1.15.5 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Apoiar via LivePix",
                 demoTitle: "Veja o Mod em Ação",
@@ -1207,11 +1207,11 @@
                 navGallery: "Gallery",
                 navChangelog: "Changelog",
                 navSupport: "Support",
-                downloadBtn: "Download v1.15.2",
-                heroTag: "v1.15.2 — New Update",
+                downloadBtn: "Download v1.15.5",
+                heroTag: "v1.15.5 — New Update",
                 heroTitle: "Elevate your Fightcade experience",
                 heroDesc: "Fightcade Plus is a full modular mod adding stability enhancements, automatic ping/country filters, integrated player reputation, and live stream queues to your native Fightcade client.",
-                heroDownload: "Download Setup v1.15.2 (.exe)",
+                heroDownload: "Download Setup v1.15.5 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Support via LivePix",
                 demoTitle: "See the Mod in Action",
@@ -1254,11 +1254,11 @@
                 navGallery: "Galería",
                 navChangelog: "Changelog",
                 navSupport: "Soporte",
-                downloadBtn: "Descargar v1.15.2",
-                heroTag: "v1.15.2 — Nueva Actualización",
+                downloadBtn: "Descargar v1.15.5",
+                heroTag: "v1.15.5 — Nueva Actualización",
                 heroTitle: "Mejora tu experiencia en Fightcade",
                 heroDesc: "Fightcade Plus es un mod modular completo que añade mejoras de estabilidad, filtros automáticos de ping/país, reputación de jugadores y cola de streaming en vivo a tu cliente nativo de Fightcade.",
-                heroDownload: "Descargar Setup v1.15.2 (.exe)",
+                heroDownload: "Descargar Setup v1.15.5 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Apoyar vía LivePix",
                 demoTitle: "Mira el Mod en Acción",
@@ -1300,24 +1300,33 @@
 
         const changelogTimelineData = [
             {
-                version: "v1.15.2",
+                version: "v1.15.5",
                 date: {
-                    pt: "02 de Julho de 2026",
-                    en: "July 02, 2026",
-                    es: "02 de Julio de 2026"
+                    pt: "03 de Julho de 2026",
+                    en: "July 03, 2026",
+                    es: "03 de Julio de 2026"
                 },
                 changes: {
                     pt: [
                         "Correções críticas de sincronização e concorrência ao manter múltiplas salas abertas simultaneamente.",
-                        "Resolvido vazamento de filtros de busca e atualizações de botões de controle de chat ao trocar de abas."
+                        "Resolvido vazamento de filtros de busca e atualizações de botões de controle de chat ao trocar de abas.",
+                        "Correção do bug de reciclagem de Virtual DOM do Vue.js que ocultava mensagens enviadas no chat.",
+                        "Ajuste no algoritmo de auto-scroll do chat para evitar mensagens cortadas no rodapé e adição de espaçamento padrão de 20px.",
+                        "Otimização de desempenho convertendo seletores de ID duplicados em classes CSS e reduzindo escritas redundantes no DOM."
                     ],
                     en: [
                         "Critical sync and concurrency fixes when keeping multiple rooms open simultaneously.",
-                        "Resolved sidebar search leakage and chat control button updates when switching room tabs."
+                        "Resolved sidebar search leakage and chat control button updates when switching room tabs.",
+                        "Fixed Vue.js Virtual DOM recycling bug that caused sent messages to become hidden in the chat.",
+                        "Adjusted chat auto-scroll algorithm to prevent cut-off messages and added standard 20px bottom spacing.",
+                        "Performance optimizations including converting duplicate ID selectors to CSS classes and reducing redundant DOM writes."
                     ],
                     es: [
                         "Correcciones críticas de sincronización y concurrencia al mantener múltiples salas abiertas simultáneamente.",
-                        "Se resolvió la filtración de la búsqueda lateral y las actualizaciones del botón de control de chat al cambiar de pestaña."
+                        "Se resolvió la filtración de la búsqueda lateral y las actualizaciones del botón de control de chat al cambiar de pestaña.",
+                        "Se corrigió el error de reciclaje de DOM virtual de Vue.js que ocultaba los mensajes enviados en el chat.",
+                        "Ajuste del algoritmo de auto-scroll del chat para evitar mensajes cortados y adición de espacio inferior estándar de 20px.",
+                        "Optimización de rendimiento convirtiendo selectores de ID duplicados a clases CSS y reduciendo escritas redundantes en el DOM."
                     ]
                 }
             },
@@ -1543,9 +1552,19 @@
             });
         });
 
-        // Load Initial Language (default to Portuguese or stored preference)
+        // Load Initial Language (detect browser language or use stored preference)
         document.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('fcplus_lang') || 'pt';
+            let savedLang = localStorage.getItem('fcplus_lang');
+            if (!savedLang) {
+                const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+                if (browserLang.startsWith('pt')) {
+                    savedLang = 'pt';
+                } else if (browserLang.startsWith('es')) {
+                    savedLang = 'es';
+                } else {
+                    savedLang = 'en'; // International default fallback
+                }
+            }
             setLanguage(savedLang);
         });
 

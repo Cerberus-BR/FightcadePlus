@@ -43,13 +43,13 @@ function injectStyles() {
         #settingsTab textarea::-moz-selection, #settingsTab input::-moz-selection { background: rgba(100, 149, 237, 0.5); color: #fff; }
         @keyframes cerbSpin { 100% { transform: rotate(360deg); } }
         @keyframes cerbPulseGlow { 0%, 100% { box-shadow: 0 0 4px rgba(255, 215, 0, 0.15); } 50% { box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); } }
-        #cerberusSyncBtn { transition: width 0.3s ease, border-radius 0.3s ease, background 0.2s ease, padding 0.3s ease; margin-left: 8px; }
-        #cerberusSyncBtn.syncing { width: auto !important; min-width: 28px; border-radius: 14px !important; background: rgba(255, 215, 0, 0.08) !important; border: 1px solid rgba(255, 215, 0, 0.25) !important; padding: 0 10px !important; cursor: pointer !important; opacity: 1 !important; animation: cerbPulseGlow 2.5s ease-in-out infinite; gap: 5px; }
-        #cerberusSyncBtn.syncing .cerb-spin-icon { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255, 215, 0, 0.25); border-top-color: #ffd700; border-radius: 50%; animation: cerbSpin 0.7s linear infinite; vertical-align: middle; flex-shrink: 0; }
-        #cerberusSyncBtn .cerb-sync-progress { font-size: 11px; color: #ffd700; font-weight: 600; vertical-align: middle; letter-spacing: 0.3px; white-space: nowrap; margin-left: 3px; }
-        #cerberusSyncBtn:hover:not(.syncing) { background: rgba(255,255,255,0.1) !important; }
-        #cerberusSyncBtn.syncing:hover { background: rgba(255, 68, 68, 0.12) !important; border-color: rgba(255, 68, 68, 0.4) !important; animation: none; box-shadow: 0 0 8px rgba(255, 68, 68, 0.3); }
-        #cerberusSyncBtn.syncing:hover .cerb-spin-icon { border-top-color: #ff6b6b; border-color: rgba(255, 68, 68, 0.25); }
+        .cerb-sync-btn { transition: width 0.3s ease, border-radius 0.3s ease, background 0.2s ease, padding 0.3s ease; margin-left: 8px; }
+        .cerb-sync-btn.syncing { width: auto !important; min-width: 28px; border-radius: 14px !important; background: rgba(255, 215, 0, 0.08) !important; border: 1px solid rgba(255, 215, 0, 0.25) !important; padding: 0 10px !important; cursor: pointer !important; opacity: 1 !important; animation: cerbPulseGlow 2.5s ease-in-out infinite; gap: 5px; }
+        .cerb-sync-btn.syncing .cerb-spin-icon { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255, 215, 0, 0.25); border-top-color: #ffd700; border-radius: 50%; animation: cerbSpin 0.7s linear infinite; vertical-align: middle; flex-shrink: 0; }
+        .cerb-sync-btn .cerb-sync-progress { font-size: 11px; color: #ffd700; font-weight: 600; vertical-align: middle; letter-spacing: 0.3px; white-space: nowrap; margin-left: 3px; }
+        .cerb-sync-btn:hover:not(.syncing) { background: rgba(255,255,255,0.1) !important; }
+        .cerb-sync-btn.syncing:hover { background: rgba(255, 68, 68, 0.12) !important; border-color: rgba(255, 68, 68, 0.4) !important; animation: none; box-shadow: 0 0 8px rgba(255, 68, 68, 0.3); }
+        .cerb-sync-btn.syncing:hover .cerb-spin-icon { border-top-color: #ff6b6b; border-color: rgba(255, 68, 68, 0.25); }
         @keyframes cerbBlockPulse { 0% { background-color: rgba(255, 68, 68, 0.4); box-shadow: inset 4px 0 0px #ff4444; } 50% { background-color: rgba(255, 68, 68, 0.05); box-shadow: inset 4px 0 0px #ff4444; } 100% { background-color: transparent; box-shadow: none; } }
         .cerberus-anim-block-pulse { animation: cerbBlockPulse 2s ease-in-out 2 forwards !important; }
         
@@ -765,8 +765,8 @@ function injectHeaderButtons(FCADE) {
     if (!headerTitle) return;
     headerTitle.style.display = 'flex'; headerTitle.style.alignItems = 'center';
 
-    if (!headerTitle.querySelector('#cerberusBtn')) {
-        const btn = document.createElement('span'); btn.id = 'cerberusBtn'; btn.textContent = '⚙️'; btn.title = t('btnTitle');
+    if (!headerTitle.querySelector('.cerb-settings-btn')) {
+        const btn = document.createElement('span'); btn.className = 'cerb-settings-btn'; btn.textContent = '⚙️'; btn.title = t('btnTitle');
         Object.assign(btn.style, { cursor: 'pointer', fontSize: '16px', marginLeft: 'auto', marginRight: '8px', opacity: '0.8' });
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -784,16 +784,16 @@ function injectHeaderButtons(FCADE) {
 
     const rankingsEnabled = ConfigManager.getSetting('rankings.masterEnabled') !== false;
     const showRankBtn = rankingsEnabled && ConfigManager.getSetting('chatUserInfo.showNumericRanks') === true;
-    const existingSyncBtn = headerTitle.querySelector('#cerberusSyncBtn');
+    const existingSyncBtn = headerTitle.querySelector('.cerb-sync-btn');
     const gameId = getActiveGameId(FCADE); const isLocked = (Date.now() - (RankCache.data[gameId]?.lastUpdate || 0) < 1800000);
 
     if (showRankBtn) {
         if (!existingSyncBtn) {
-            const syncBtn = document.createElement('button'); syncBtn.id = 'cerberusSyncBtn'; syncBtn.textContent = '🔄';
+            const syncBtn = document.createElement('button'); syncBtn.className = 'cerb-sync-btn'; syncBtn.textContent = '🔄';
             Object.assign(syncBtn.style, { cursor: 'pointer', fontSize: '15px', background: 'transparent', border: 'none', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', outline: 'none', padding: '0', marginRight: '5px', transition: 'background 0.2s' });
             setSyncBtnState(syncBtn, isLocked);
             syncBtn.addEventListener('click', (e) => { e.stopPropagation(); if (RankCache.isSyncing) RankCache.cancelSync(); else { const cId = getActiveGameId(FCADE); if (cId) RankCache.syncRankings(cId); } });
-            headerTitle.insertBefore(syncBtn, headerTitle.querySelector('#cerberusBtn'));
+            headerTitle.insertBefore(syncBtn, headerTitle.querySelector('.cerb-settings-btn'));
         } else if (!RankCache.isSyncing) {
             // [CERBERUS] Multi-Room Fix: Always refresh lock state (different rooms have different games)
             setSyncBtnState(existingSyncBtn, isLocked);
@@ -827,15 +827,19 @@ function injectSidebarSearch() {
 function syncMuteFab(btn) {
     const checkbox = document.getElementById('chatMuted');
     const isMuted = checkbox ? checkbox.checked : false;
-    btn.dataset.muted = isMuted ? 'true' : 'false';
-    btn.innerHTML = isMuted ? t('motd.resumeChat') : t('motd.muteChat');
+    const targetMuted = isMuted ? 'true' : 'false';
+    const targetText = isMuted ? t('motd.resumeChat') : t('motd.muteChat');
+    if (btn.dataset.muted !== targetMuted) btn.dataset.muted = targetMuted;
+    if (btn.innerText !== targetText) btn.innerText = targetText;
 }
 
 function syncQueueFab(btn) {
     if (!btn) return;
     const isLive = window.CerberusState && window.CerberusState.liveMasterOn;
-    btn.dataset.live = isLive ? 'true' : 'false';
-    btn.innerHTML = isLive ? t('queue.fabLiveOn') : t('queue.fabLiveOff');
+    const targetLive = isLive ? 'true' : 'false';
+    const targetText = isLive ? t('queue.fabLiveOn') : t('queue.fabLiveOff');
+    if (btn.dataset.live !== targetLive) btn.dataset.live = targetLive;
+    if (btn.innerText !== targetText) btn.innerText = targetText;
 }
 
 function injectMuteChatFab(chatWrapper) {

@@ -39,7 +39,7 @@ const RankCache = {
         const targetCountry = (ConfigManager.getSetting('rankings.country') || '').toUpperCase().trim();
 
         const cw = getActiveChannelWrapper();
-        const btn = cw ? cw.querySelector('#cerberusSyncBtn') : null;
+        const btn = cw ? cw.querySelector('.cerb-sync-btn') : null;
         if (btn) {
             btn.classList.add('syncing');
             btn.innerHTML = '<span class="cerb-spin-icon"></span><span class="cerb-sync-progress">0/' + targetLimit + '</span>';

@@ -110,7 +110,9 @@ The recommended method is downloading the pre-configured **Fightcade Plus** bund
 3. Open the **Cerberus Settings** panel from the main Fightcade title bar to customize your preferences.
 
 > [!NOTE]
-> **Manual Installation**: If you already have a Fightcade client, extract the archive and overwrite the `inject.js` file and the `/plugins/` folder inside the `fc2-electron/resources/app/inject/` directory of your Fightcade client.
+> **Manual Installation**: If you already have a Fightcade client, download "Source code", extract the archive and overwrite the `inject.js` file and the `/plugins/` folder inside the `fc2-electron/resources/app/inject/` directory of your Fightcade client.
+
+📥 **[Download Latest Release](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
 
 ---
 
@@ -249,7 +251,9 @@ A maneira recomendada para utilizar é baixando o pacote pré-configurado do **F
 3. Clique no botão de configurações do **Cerberus Settings** na barra superior da interface para ajustar suas preferências!
 
 > [!NOTE]
-> **Instalação Manual**: Caso prefira instalar na sua versão do Fightcade existente, extraia o arquivo e sobrescreva o arquivo `inject.js` e a pasta `/plugins/` dentro do diretório `fc2-electron/resources/app/inject/` da sua instalação do Fightcade.
+> **Instalação Manual**: Caso prefira instalar na sua versão do Fightcade existente, baixe o "Source code", extraia o arquivo e sobrescreva o arquivo `inject.js` e a pasta `/plugins/` dentro do diretório `fc2-electron/resources/app/inject/` da sua instalação do Fightcade.
+
+📥 **[Baixar a Versão Mais Recente](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
 
 ---
 
@@ -388,7 +392,9 @@ El método recomendado es descargar el paquete integrado de **Fightcade Plus**. 
 3. Haz clic en el botón de **Cerberus Settings** ubicado en la barra de herramientas superior para configurar tus opciones.
 
 > [!NOTE]
-> **Instalación Manual**: Si prefieres usar tu propia instalación de Fightcade, extrae el archivo y sobrescribe el archivo `inject.js` y la carpeta `/plugins/` dentro del directorio `fc2-electron/resources/app/inject/` de tu cliente de Fightcade.
+> **Instalación Manual**: Si prefieres usar tu propia instalación de Fightcade, descargar el "Source code", extrae el archivo y sobrescribe el archivo `inject.js` y la carpeta `/plugins/` dentro del directorio `fc2-electron/resources/app/inject/` de tu cliente de Fightcade.
+
+📥 **[Descargar la Última Versión](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
 
 ---
 

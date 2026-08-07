@@ -65,9 +65,14 @@ async function executeChatMacro(lines) {
     const cw = getActiveChannelWrapper(); 
     const inputEl = cw ? cw.querySelector('.chatInput input.input') : null;
     if (!inputEl || !lines || lines.length === 0) return;
+
+    // [CERBERUS] Safety: Limit bot messages to a maximum of 3 paragraphs / lines
+    const limitedLines = lines.slice(0, 3);
+
     const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
     const currentVal = inputEl.value;
-    for (const line of lines) {
+    for (const line of limitedLines) {
+        if (line === undefined || line === null) continue;
         nativeSetter.call(inputEl, line); 
         inputEl.dispatchEvent(new Event('input', { bubbles: true })); 
         inputEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true }));
@@ -149,12 +154,89 @@ const connectToChannelWhenAvailable = (FCADE, autoJoinConfig) => {
     const checkInterval = setInterval(() => {
         attempts++; 
         if (attempts > 120) { clearInterval(checkInterval); return; }
-        if (FCADE.initializingApp === false) {
-            clearInterval(checkInterval);
-            if (autoJoinConfig?.channelId) FCADE.selectChannel(autoJoinConfig.channelId);
-            else { 
-                const gameChannels = FCADE.channels.filter(ch => 'gameid' in ch); 
-                if (gameChannels.length > 0) FCADE.selectChannel(gameChannels[0].id); 
+
+        const channelEls = document.querySelectorAll('.channelsList .channelItem');
+        if (FCADE && !FCADE.initializingApp) {
+            try {
+                const targetTitle = (autoJoinConfig?.channelId || '').trim();
+                
+                if (targetTitle) {
+                    const searchLower = targetTitle.toLowerCase();
+
+                    // 1. Try to find matching DOM .channelItem element by title, data-channel-id, or text
+                    if (channelEls.length > 0) {
+                        const targetEl = Array.from(channelEls).find(el => {
+                            if (!el) return false;
+                            const titleAttr = (el.getAttribute('title') || el.title || '').trim().toLowerCase();
+                            const dataId = (el.dataset?.channelId || el.getAttribute('data-channel-id') || el.id || '').trim().toLowerCase();
+                            const textContent = (el.textContent || '').trim().toLowerCase();
+
+                            return titleAttr === searchLower ||
+                                   dataId === searchLower ||
+                                   (titleAttr && (titleAttr.includes(searchLower) || searchLower.includes(titleAttr))) ||
+                                   (dataId && (dataId.includes(searchLower) || searchLower.includes(dataId))) ||
+                                   (textContent && textContent === searchLower);
+                        });
+
+                        if (targetEl) {
+                            clearInterval(checkInterval);
+                            targetEl.click();
+                            return;
+                        }
+                    }
+
+                    // 2. Fallback: match channel object in FCADE.channels Vue store
+                    if (Array.isArray(FCADE.channels) && FCADE.channels.length > 0) {
+                        const targetCh = FCADE.channels.find(ch => {
+                            if (!ch) return false;
+                            const idStr = (ch.id || '').trim().toLowerCase();
+                            const gameIdStr = (ch.gameid || ch.gameId || '').trim().toLowerCase();
+                            const nameStr = (ch.name || ch.title || ch.description || '').trim().toLowerCase();
+
+                            return idStr === searchLower ||
+                                   gameIdStr === searchLower ||
+                                   nameStr === searchLower ||
+                                   (nameStr && (nameStr.includes(searchLower) || searchLower.includes(nameStr))) ||
+                                   (idStr && (searchLower.includes(idStr) || idStr.includes(searchLower)));
+                        });
+
+                        if (targetCh && targetCh.id) {
+                            clearInterval(checkInterval);
+                            const domEl = Array.from(channelEls).find(el => {
+                                const t = (el.getAttribute('title') || el.title || '').toLowerCase();
+                                const d = (el.dataset?.channelId || el.id || '').toLowerCase();
+                                return t.includes(targetCh.id.toLowerCase()) || d === targetCh.id.toLowerCase();
+                            });
+                            if (domEl) domEl.click();
+                            else FCADE.selectChannel(targetCh.id);
+                            return;
+                        }
+                    }
+
+                    // Target specified but not found yet -> Keep polling until attempt 30 (15 seconds)
+                    if (attempts < 30) {
+                        return;
+                    }
+                }
+
+                // Fallback: If no target specified or timeout reached (attempt >= 30)
+                if (channelEls.length > 0) {
+                    clearInterval(checkInterval);
+                    const firstGameEl = Array.from(channelEls).find(el => {
+                        const t = (el.getAttribute('title') || el.title || '').toLowerCase();
+                        return t && !t.includes('lobby');
+                    });
+                    if (firstGameEl) {
+                        firstGameEl.click();
+                    } else if (Array.isArray(FCADE.channels)) {
+                        const gameChannels = FCADE.channels.filter(ch => ch && ('gameid' in ch || 'gameId' in ch));
+                        if (gameChannels.length > 0 && gameChannels[0] && gameChannels[0].id) {
+                            FCADE.selectChannel(gameChannels[0].id);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('[Cerberus] AutoJoin safe catch:', err);
             }
         }
     }, 500);
@@ -236,9 +318,80 @@ function silenceRecentAudios() {
     window.cerberusActiveAudios.clear();
 }
 
+function blockAnalyticsAndTagManager() {
+    if (window.cerbAnalyticsBlocked) return;
+    window.cerbAnalyticsBlocked = true;
+
+    // 1. Stub tracking globals
+    window.ga = function() { };
+    window.gtag = function() { };
+    window.dataLayer = window.dataLayer || [];
+    window.google_tag_manager = {};
+
+    const isAnalyticsUrl = (url) => {
+        if (!url || typeof url !== 'string') return false;
+        const lower = url.toLowerCase();
+        return lower.includes('google-analytics.com') ||
+               lower.includes('googletagmanager.com') ||
+               lower.includes('stats.g.doubleclick.net') ||
+               lower.includes('google.com/analytics');
+    };
+
+    // 2. Intercept Fetch API
+    if (window.fetch) {
+        const origFetch = window.fetch;
+        window.fetch = function(input, init) {
+            const url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+            if (isAnalyticsUrl(url)) {
+                return Promise.resolve(new Response('', { status: 200, statusText: 'Blocked by Fightcade Plus' }));
+            }
+            return origFetch.apply(this, arguments);
+        };
+    }
+
+    // 3. Intercept XMLHttpRequest
+    if (window.XMLHttpRequest) {
+        const origOpen = window.XMLHttpRequest.prototype.open;
+        window.XMLHttpRequest.prototype.open = function(method, url) {
+            if (isAnalyticsUrl(url)) {
+                this.__blockedByCerberus = true;
+            }
+            return origOpen.apply(this, arguments);
+        };
+
+        const origSend = window.XMLHttpRequest.prototype.send;
+        window.XMLHttpRequest.prototype.send = function() {
+            if (this.__blockedByCerberus) {
+                return;
+            }
+            return origSend.apply(this, arguments);
+        };
+    }
+
+    // 4. Block dynamic script tag injections
+    const origAppendChild = Element.prototype.appendChild;
+    Element.prototype.appendChild = function(child) {
+        if (child && child.tagName === 'SCRIPT' && child.src && isAnalyticsUrl(child.src)) {
+            console.log('[Cerberus] Blocked Google Analytics / Tag Manager script:', child.src);
+            return child;
+        }
+        return origAppendChild.apply(this, arguments);
+    };
+
+    const origInsertBefore = Element.prototype.insertBefore;
+    Element.prototype.insertBefore = function(newNode, referenceNode) {
+        if (newNode && newNode.tagName === 'SCRIPT' && newNode.src && isAnalyticsUrl(newNode.src)) {
+            console.log('[Cerberus] Blocked Google Analytics / Tag Manager script:', newNode.src);
+            return newNode;
+        }
+        return origInsertBefore.apply(this, arguments);
+    };
+}
+
 module.exports = {
     t, normalizeUsername, isSystemUser, extractMinPing, getMinPing,
     playPopSound, executeChatCommand, executeChatMacro, getActiveChannelWrapper,
     isRankedChannel, getActiveGameId, isNewerVersion, checkForUpdates,
-    connectToChannelWhenAvailable, setupAudioSilencer, silenceRecentAudios
+    connectToChannelWhenAvailable, setupAudioSilencer, silenceRecentAudios,
+    blockAnalyticsAndTagManager
 };

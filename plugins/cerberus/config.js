@@ -44,6 +44,30 @@ const ConfigManager = {
         for (let i = 0; i < keys.length - 1; i++) { if (!current[keys[i]]) current[keys[i]] = {}; current = current[keys[i]]; }
         current[keys[keys.length - 1]] = value; this.saveConfig();
 
+        if (pathStr === 'rankings.limit') {
+            const isRankCategory = (value === 'rankA' || value === 'rankB' || value === 'rankC');
+            if (isRankCategory) {
+                runtimeConfig.rankings.autoSync = false;
+                this.saveConfig();
+            }
+            const autoSyncCheckbox = document.querySelector('input[data-setting="rankings.autoSync"]');
+            if (autoSyncCheckbox) {
+                if (isRankCategory) {
+                    autoSyncCheckbox.checked = false;
+                    autoSyncCheckbox.disabled = true;
+                } else {
+                    autoSyncCheckbox.disabled = false;
+                }
+                const toggleParent = autoSyncCheckbox.closest('.modern-toggle');
+                if (toggleParent) {
+                    toggleParent.style.opacity = isRankCategory ? '0.45' : '1';
+                    toggleParent.style.pointerEvents = isRankCategory ? 'none' : 'auto';
+                    const { t } = require('./utils.js');
+                    toggleParent.title = isRankCategory ? (t('settings.autoSyncDisabledNotice') || 'Sincronização automática desativada para limites por Rank (A, B ou C)') : '';
+                }
+            }
+        }
+
         if ((pathStr.startsWith('chatUserInfo.') && pathStr !== 'chatUserInfo.replacePingBarWithText') || pathStr === 'rankings.masterEnabled') {
             document.querySelectorAll('.messageWrapper').forEach(wrapper => {
                 wrapper.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());

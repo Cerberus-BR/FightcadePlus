@@ -40,11 +40,21 @@ module.exports = {
                 privacy: "Extras",
                 blurMode: "Blur chat (Privacy for Streams)",
                 rankingsApi: "Rankings (Online Sync)",
-                rankLimit: "Player limit (⚠️ >500 is slower to load)",
+                autoSyncRankings: "Automatic Rankings Sync (Daily)",
+                autoSyncDisabledNotice: "Automatic sync is disabled and locked for Rank category limits (Rank A, B, or C). Only manual sync is available.",
+                rankLimit: "Player Sync Limit Target",
+                rankLimitNotice: "⚠️ Note: Deep sync (>900 players or Rank C+) increases CPU usage and takes longer due to anti-block rate limits.",
+                clearRankingsBtn: "🗑️ Clear Cached Rankings Database",
+                confirmClearRankings: "Are you sure you want to clear all cached rankings database?",
+                rankingsClearedNotice: "Rankings database cleared successfully!",
                 rankCountry: "Country Filter (ISO 2-letters)",
                 minRankToAccept: "Filter Challenges by Rank",
                 autoRejectRank: "Auto-Reject filtered rank challenges",
+                pingFilter: "Filter Challenges by Max Ping (ms)",
+                maxPingMs: "Max Allowed Ping (ms)",
+                autoRejectPing: "Auto-Reject High Ping Challenges",
                 rankOptions: { r0: "All (No Filter)", r1: "Rank E or above", r2: "Rank D or above", r3: "Rank C or above", r4: "Rank B or above", r5: "Rank A or above", r6: "Rank S only" },
+                syncLimitOptions: { num100: "100 Players", num300: "300 Players", num500: "500 Players", num900: "900 Players", rankA: "Until Rank A", rankB: "Until Rank B", rankC: "Until Rank C" },
                 extras: "Extras",
                 unlockThemes: "Unlock Color Themes",
                 liveQueue: "Live Queue (Streamers)",
@@ -57,7 +67,7 @@ module.exports = {
                 queuePromo: "Live Promo Msg"
             },
             about: {
-                title: "Fightcade Plus 1.15.5",
+                title: "Fightcade Plus 1.17.0",
                 subtitle: "By Cerberus",
                 projectPage: "Project Page",
                 desc: "Elevate your gaming and streams. Fightcade Plus combines high performance, advanced challenger filtering, and dynamic community interaction in a single mod.",
@@ -97,7 +107,7 @@ module.exports = {
             queue: { title: "Live Queue", addBtn: "Add", clearBtn: "Clear All", empty: "Queue is empty.", inputPh: "Player nickname...", mark: "Toggle Played", remove: "Remove Player", up: "Move Up", down: "Move Down", welcome: "`[Queue]` Welcome:", currentQueue: "*Current queue:*", fabLiveOff: "Bot Off", fabLiveOn: "Bot On" },
             sidebar: { search: "🔍 Search player..." },
             status: { online: "Online", away: "Away", offline: "Offline / Unknown" },
-            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` *ᴄʜᴀʟʟᴇɴɢᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟy ᴅᴇᴄʟɪɴᴇᴅ (ʀᴇɢɪᴏɴ, ʀᴀɴᴋ, ᴏʀ ᴩɪɴɢ ꜰɪʟᴛᴇʀ).*", notifyToggle: "Send chat notice on auto-reject" }
+            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` ᴄʜᴀʟʟᴇɴɢᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟy ᴅᴇᴄʟɪɴᴇᴅ (ʀᴇɢɪᴏɴ, ʀᴀɴᴋ, ᴏʀ ᴩɪɴɢ ꜰɪʟᴛᴇʀ).", notifyToggle: "Send chat notice on auto-reject" }
         },
         pt: {
             btnTitle: "Configurações Fightcade Plus", panelTitle: "Configurações",
@@ -137,11 +147,21 @@ module.exports = {
                 privacy: "Outros",
                 blurMode: "Desfocar chat (Privacidade para Streams)",
                 rankingsApi: "Rankings (Sincronização Online)",
-                rankLimit: "Limite de jogadores para sincronizar",
+                autoSyncRankings: "Sincronização Automática de Rankings (Diária)",
+                autoSyncDisabledNotice: "Sincronização automática desativada e bloqueada para limites por Rank (A, B ou C). Apenas a sincronização manual fica disponível.",
+                rankLimit: "Limite de Sincronização de Jogadores",
+                rankLimitNotice: "⚠️ Atenção: Sincronizações profundas (>900 jogadores ou Rank C+) aumentam o uso de CPU e demoram mais devido aos limites de segurança.",
+                clearRankingsBtn: "🗑️ Limpar Banco de Dados de Rankings",
+                confirmClearRankings: "Tem certeza que deseja apagar todo o banco de dados de rankings em cache?",
+                rankingsClearedNotice: "Banco de dados de rankings limpo com sucesso!",
                 rankCountry: "Filtrar por País (Ex: BR, vazio=Todos)",
                 minRankToAccept: "Filtrar Desafios por Rank",
                 autoRejectRank: "Rejeitar automaticamente desafios filtrados por rank",
+                pingFilter: "Filtrar Desafios por Ping Máximo (ms)",
+                maxPingMs: "Ping Máximo Permitido (ms)",
+                autoRejectPing: "Auto-Recusar Desafios com Ping Alto",
                 rankOptions: { r0: "Todos (Sem Filtro)", r1: "Rank E ou superior", r2: "Rank D ou superior", r3: "Rank C ou superior", r4: "Rank B ou superior", r5: "Rank A ou superior", r6: "Rank S apenas" },
+                syncLimitOptions: { num100: "100 Jogadores", num300: "300 Jogadores", num500: "500 Jogadores", num900: "900 Jogadores", rankA: "Até Rank A", rankB: "Até Rank B", rankC: "Até Rank C" },
                 extras: "Extras",
                 unlockThemes: "Desbloquear Temas de Cor",
                 liveQueue: "BOT e Fila de Live (Streamers)",
@@ -154,7 +174,7 @@ module.exports = {
                 queuePromo: "Mensagem do Bot (a cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.15.5",
+                title: "Fightcade Plus 1.17.0",
                 subtitle: "By Cerberus",
                 projectPage: "Página do Projeto",
                 desc: "Eleve o nível da sua jogatina e transmissões. O Fightcade Plus une alta performance, filtros avançados de desafiantes e interação dinâmica com a comunidade em um único mod.",
@@ -194,7 +214,7 @@ module.exports = {
             queue: { title: "Fila da Live", addBtn: "Adicionar", clearBtn: "Limpar Fila", empty: "A fila está vazia.", inputPh: "Nick do jogador...", mark: "Alternar Jogado", remove: "Remover Jogador", up: "Subir na Fila", down: "Descer na Fila", welcome: "`[Fila]` Bem-vindo(s):", currentQueue: "*Fila atual:*", fabLiveOff: "Bot Desligado", fabLiveOn: "Bot Ligado" },
             sidebar: { search: "🔍 Buscar jogador..." },
             status: { online: "Online", away: "Ausente", offline: "Offline / Desconhecido" },
-            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` *ᴅᴇꜱᴀꜰɪᴏ ʀᴇᴄᴜꜱᴀᴅᴏ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀᴍᴇɴᴛᴇ (ꜰɪʟᴛʀᴏ ᴅᴇ ʀᴇɢɪᴀᴏ, ʀᴀɴᴋ ᴏᴜ ᴄᴏɴᴇxᴀᴏ)*", notifyToggle: "Enviar aviso no chat ao auto-recusar" }
+            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` ᴅᴇꜱᴀꜰɪᴏ ʀᴇᴄᴜꜱᴀᴅᴏ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀᴍᴇɴᴛᴇ (ꜰɪʟᴛʀᴏ ᴅᴇ ʀᴇɢɪᴀᴏ, ʀᴀɴᴋ ᴏᴜ ᴄᴏɴᴇxᴀᴏ)", notifyToggle: "Enviar aviso no chat ao auto-recusar" }
         },
         es: {
             btnTitle: "Configuraciones Fightcade Plus", panelTitle: "Configuraciones",
@@ -234,11 +254,21 @@ module.exports = {
                 privacy: "Otros",
                 blurMode: "Desenfocar chat (Privacidad para Streams)",
                 rankingsApi: "Rankings (Sincronización Online)",
-                rankLimit: "Límite de jugadores para sincronizar",
+                autoSyncRankings: "Sincronización Automática de Rankings (Diaria)",
+                autoSyncDisabledNotice: "La sincronización automática está desactivada y bloqueada para límites por Rango (A, B o C). Solo la sincronización manual está disponible.",
+                rankLimit: "Límite de Sincronización de Jugadores",
+                rankLimitNotice: "⚠️ Atención: La sincronización profunda (>900 jugadores o Rank C+) aumenta el uso de CPU y toma más tiempo debido a los límites de seguridad.",
+                clearRankingsBtn: "🗑️ Borrar Base de Datos de Rankings",
+                confirmClearRankings: "¿Estás seguro de que deseas borrar toda la base de datos de rankings guardados?",
+                rankingsClearedNotice: "¡Base de datos de rankings borrada con éxito!",
                 rankCountry: "Filtrar por País (Ej: BR, vacío=Todos)",
                 minRankToAccept: "Filtrar Desafíos por Rango",
                 autoRejectRank: "Rechazar automáticamente desafíos filtrados por rango",
+                pingFilter: "Filtrar Desafíos por Ping Máximo (ms)",
+                maxPingMs: "Ping Máximo Permitido (ms)",
+                autoRejectPing: "Auto-Rechazar Desafíos con Ping Alto",
                 rankOptions: { r0: "Todos (Sin Filtro)", r1: "Rank E o superior", r2: "Rank D o superior", r3: "Rank C o superior", r4: "Rank B o superior", r5: "Rank A o superior", r6: "Solo Rank S" },
+                syncLimitOptions: { num100: "100 Jugadores", num300: "300 Jugadores", num500: "500 Jugadores", num900: "900 Jugadores", rankA: "Hasta Rank A", rankB: "Hasta Rank B", rankC: "Hasta Rank C" },
                 extras: "Extras",
                 unlockThemes: "Desbloquear Temas de Color",
                 liveQueue: "BOT y Fila de Live (Streamers)",
@@ -251,7 +281,7 @@ module.exports = {
                 queuePromo: "Mensaje del Bot (cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.15.5",
+                title: "Fightcade Plus 1.17.0",
                 subtitle: "By Cerberus",
                 projectPage: "Página del Proyecto",
                 desc: "Eleva el nivel de tu juego y transmisiones. Fightcade Plus combina alto rendimiento, filtros avanzados de retadores e interacción dinámica con la comunidad en un solo mod.",
@@ -285,13 +315,13 @@ module.exports = {
                 upToDate: "✓ ¡El mod está actualizado!",
                 updateError: "Error al verificar las actualizaciones. Inténtelo más tarde."
             },
-            rep: { like: "Destacar (Ignora Filtros)", dislike: "Negativar", clear: "Limpiar Reputación", block: "Bloquear", unblock: "Desbloquear" },
+            rep: { like: "Destacar (Ignora Filtros)", dislike: "Negativar", clear: "Limpar Reputação", block: "Bloquear", unblock: "Desbloquear" },
             motd: { clearChat: "LIMPIAR CHAT", muteChat: "PAUSAR CHAT", resumeChat: "REANUDAR CHAT", queueTitle: "COLA DE JUGADORES", updateAvail: "Actualización Disponible:", moreDetails: "Más detalles" },
             sync: { rankingsBtn: "Sincronizar Rankings", wait30: "Espere 30 minutos", clickCancel: "Clic para cancelar", autoSyncDone: "Rankings sincronizados automáticamente hoy", liveOn: "🟢 BOT ON", liveOff: "🔴 BOT OFF", confirmClear: "¿Está seguro de que desea limpiar toda la cola?" },
             queue: { title: "Cola de Live", addBtn: "Añadir", clearBtn: "Limpiar Cola", empty: "La cola está vacía.", inputPh: "Nick del jugador...", mark: "Alternar Jugado", remove: "Remover Jugador", up: "Subir en la Fila", down: "Bajar en la Fila", welcome: "`[Cola]` Bienvenidos:", currentQueue: "*Cola actual:*", fabLiveOff: "Bot Desactivado", fabLiveOn: "Bot Activado" },
             sidebar: { search: "🔍 Buscar jugador..." },
             status: { online: "Online", away: "Ausente", offline: "Offline / Desconocido" },
-            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` *ᴅᴇsᴀꜰíᴏ ʀᴇᴄʜᴀᴢᴀᴅᴏ ᴀᴜᴛᴏᴍáᴛɪᴄᴀᴍᴇɴᴛᴇ (ʀᴇɢɪóɴ, ʀᴀɴɢᴏ ᴏ ᴩɪɴɢ).*", notifyToggle: "Enviar aviso en el chat al auto-rechazar" }
+            autoReject: { notifyMsg: "`[ᴀᴜᴛᴏ-ʀᴇᴊᴇᴄᴛ]` ᴅᴇsᴀꜰíᴏ ʀᴇᴄʜᴀᴢᴀᴅᴏ ᴀᴜᴛᴏᴍáᴛɪᴄᴀᴍᴇɴᴛᴇ (ʀᴇɢɪóɴ, ʀᴀɴɢᴏ ᴏ ᴩɪɴɢ).", notifyToggle: "Enviar aviso en el chat al auto-rechazar" }
         }
     }
 };

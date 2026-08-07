@@ -159,7 +159,7 @@ function fullChatScanScoped(channelWrapper, FCADE, configFull) {
 }
 
 function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, globalUsers, activeGameId, activeUsersMap) {
-    const { CerberusData, RankCache, normalizeUsername, isSystemUser, getMinPing, playPopSound, silenceRecentAudios, createStatusElement, createFlagElement, createRankElement, createPingElement, createPingTextElement, createRankBadge, applyReputationStyleChat, addReputationControlsToElement, applyDevBadge, ConfigManager, executeChatMacro, t } = _deps();
+    const { CerberusData, RankCache, normalizeUsername, isSystemUser, getMinPing, extractMinPing, playPopSound, silenceRecentAudios, createStatusElement, createFlagElement, createRankElement, createPingElement, createPingTextElement, createRankBadge, applyReputationStyleChat, addReputationControlsToElement, createChatTriggerElement, applyDevBadge, ConfigManager, executeChatMacro, t } = _deps();
 
     const isImmuneSystem = wrapper.querySelector('.endgameMessageWrapper') !== null || wrapper.classList.contains('endgame') || wrapper.classList.contains('challengeRequested') || wrapper.classList.contains('requestChallenge');
     
@@ -189,7 +189,7 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
             wrapper.removeAttribute('data-cerberus-processed'); 
             wrapper.removeAttribute('data-cerberus-hidden'); 
             wrapper.style.display = '';
-            wrapper.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
+            wrapper.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge, .cerb-chat-trigger').forEach(el => el.remove());
             wrapper.dataset.cerbIdentity = identity;
         }
     }
@@ -234,6 +234,20 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                         if (userRankNum < minRank) {
                             shouldFilter = true;
                             if (ConfigManager.getSetting('rankings.autoRejectBelowMin')) shouldReject = true;
+                        }
+                    }
+
+                    const pingCfg = ConfigManager.getSetting('pingFilter');
+                    if (pingCfg?.enabled && !CerberusData.isPositive(chalUserKey)) {
+                        const maxPingMs = pingCfg.maxPingMs || 150;
+                        const pingImg = wrapper.querySelector('.challengeContent .pingWrapper img, .ping img');
+                        const pingTitle = pingImg ? (pingImg.title || pingImg.getAttribute('title') || '') : (wrapper.querySelector('.pingWrapper')?.title || '');
+                        const userFound = activeUsersMap ? activeUsersMap.get(chalUserKey) : null;
+                        const minPing = extractMinPing(pingTitle) || getMinPing(userFound);
+
+                        if (minPing !== null && minPing > maxPingMs) {
+                            shouldFilter = true;
+                            if (pingCfg.autoReject !== false) shouldReject = true;
                         }
                     }
 
@@ -309,7 +323,17 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                         if (cfg.enableReputation && !isSystemUser(userKey)) { 
                             applyReputationStyleChat(author, msg, userKey, false); 
                             wrapper.dataset.currentUser = userKey;
-                            addReputationControlsToElement(wrapper, 'chat'); 
+                            if (!wrapper.querySelector('.cerb-chat-trigger')) {
+                                const chatTrigger = createChatTriggerElement(userKey);
+                                const avatarEl = wrapper.querySelector('.avatar, .avatarWrapper, .userAvatar');
+                                if (avatarEl && avatarEl.nextSibling) {
+                                    avatarEl.parentNode.insertBefore(chatTrigger, avatarEl.nextSibling);
+                                } else if (elements.status) {
+                                    author.parentElement.insertBefore(chatTrigger, elements.status);
+                                } else {
+                                    author.parentElement.insertBefore(chatTrigger, author);
+                                }
+                            }
                         }
                         
                         if (elements.status) author.parentElement.insertBefore(elements.status, author);
@@ -393,9 +417,12 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
             } else { const badge = item.querySelector('.cerb-rank-badge'); if (badge) badge.remove(); }
 
             if (cfg?.enableReputation) { 
-                applyReputationStyleList(playerNameEl, item, userKey); 
+                if (item.dataset.currentUser !== userKey) {
                 item.dataset.currentUser = userKey;
-                addReputationControlsToElement(item, 'list'); 
+                delete item.dataset.cerbRepState;
+            }
+            applyReputationStyleList(playerNameEl, item, userKey); 
+            addReputationControlsToElement(item, 'list'); 
             }
 
             if (masterVisuals && cfg?.replacePingBarWithText) {
@@ -439,18 +466,25 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
             const players = match.querySelectorAll('.playerInfo');
             players.forEach(playerInfo => {
                 const playerNameEl = playerInfo.querySelector('.playerName'); if (!playerNameEl) return;
-                const userKey = normalizeUsername(playerNameEl.textContent); if (!userKey) return;
+                const userKey = normalizeUsername(playerNameEl.textContent);
                 
-                applyDevBadge(playerNameEl, userKey);
-                
-                identity += userKey + '-'; playerInfo.dataset.currentUser = userKey;
-                if (searchTerm === '' || userKey.toLowerCase().includes(searchTerm)) matchesSearch = true;
+                if (playerInfo.dataset.currentUser !== userKey) {
+                    playerInfo.dataset.currentUser = userKey;
+                    delete playerNameEl.dataset.cerbRepState;
+                }
+
+                // Always apply reputation style & controls so recycled <offline> elements clear highlight & buttons
                 if (cfg?.enableReputation) { 
                     applyReputationStyleMatch(playerNameEl, userKey); 
-                    playerInfo.dataset.currentUser = userKey;
                     addReputationControlsToElement(playerInfo, 'match'); 
                 }
-                if (countryFilterEnabled && shouldHideMatch && !isSystemUser(userKey)) {
+
+                if (!userKey || isSystemUser(userKey)) return;
+
+                applyDevBadge(playerNameEl, userKey);
+                identity += userKey + '-';
+                if (searchTerm === '' || userKey.toLowerCase().includes(searchTerm)) matchesSearch = true;
+                if (countryFilterEnabled && shouldHideMatch) {
                     let userCountry = globalUsers[userKey]?.country?.iso_code?.toUpperCase();
                     if (!userCountry) { const flagEl = playerInfo.querySelector('.playerFlag'); if (flagEl && flagEl.title) userCountry = COUNTRY_NAME_TO_CODE[flagEl.title]; }
                     if (CerberusData.isCountryAllowed(userCountry) || CerberusData.isPositive(userKey)) shouldHideMatch = false;
@@ -497,4 +531,38 @@ function reprocessUserMessages(userKey, hideNegative) {
     if (ConfigManager.getRuntimeConfig() && window.CerberusFCADE) { const cw = getActiveChannelWrapper(); if (cw) { fullChatScanScoped(cw, window.CerberusFCADE, ConfigManager.getRuntimeConfig()); updateSidebarScope(cw.querySelector('.usersListWrapper'), window.CerberusFCADE, ConfigManager.getRuntimeConfig()); } }
 }
 
-module.exports = { updateFilterShield, unfilterAllMessages, unfilterAllUsers, invalidateCountryFilterCache, attachMultiObservers, processCollectedWrappers, fullChatScanScoped, checkAndProcessWrapper, updateSidebarScope, reprocessUserMessages };
+function setupChatMessageInterceptor(FCADE) {
+    if (!FCADE || !FCADE.genericCallbacks) return;
+
+    const originalOnChatMessage = FCADE.genericCallbacks.onChatMessage;
+
+    FCADE.genericCallbacks.onChatMessage = function(channelname, username, chat) {
+        try {
+            const { ConfigManager, CerberusData, normalizeUsername, playPopSound } = _deps();
+            const config = ConfigManager.getRuntimeConfig();
+            const queueCfg = config?.liveQueue;
+
+            if (queueCfg?.enabled && queueCfg.keyword && window.CerberusState.liveMasterOn && chat) {
+                const userKey = normalizeUsername(username);
+                const streamerNick = queueCfg.streamerNick || '';
+                const msgText = chat.trim().toLowerCase();
+
+                if (msgText === queueCfg.keyword.toLowerCase() && userKey.toLowerCase() !== streamerNick.toLowerCase()) {
+                    if (CerberusData.addQueue(userKey)) {
+                        playPopSound();
+                        if (!window.CerberusState.replyQueue) window.CerberusState.replyQueue = [];
+                        window.CerberusState.replyQueue.push({ name: userKey, channelId: channelname || FCADE.activeChannelId });
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('[Cerberus] Error in chat message interceptor:', e);
+        }
+
+        if (originalOnChatMessage) {
+            originalOnChatMessage.apply(this, arguments);
+        }
+    };
+}
+
+module.exports = { updateFilterShield, unfilterAllMessages, unfilterAllUsers, invalidateCountryFilterCache, attachMultiObservers, processCollectedWrappers, fullChatScanScoped, checkAndProcessWrapper, updateSidebarScope, reprocessUserMessages, setupChatMessageInterceptor };

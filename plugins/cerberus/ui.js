@@ -28,8 +28,11 @@ function createStatusElement(state) {
 }
 function createRankBadge(numericRank) {
     const badge = document.createElement('span'); badge.className = 'cerb-rank-badge';
+    const icon = numericRank <= 10 ? '👑' : '🏅';
     Object.assign(badge.style, { fontSize: '12px', fontWeight: 'normal', color: '#ffd700', backgroundColor: 'transparent', border: 'none', padding: '0', marginRight: '5px', verticalAlign: 'middle', display: 'inline-block' });
-    badge.textContent = `🏅${numericRank}`; return badge;
+    badge.textContent = `${icon}#${numericRank}`;
+    badge.title = `Fightcade Rank #${numericRank}`;
+    return badge;
 }
 
 function injectStyles() {
@@ -39,8 +42,8 @@ function injectStyles() {
         .cerb-section-children.cerb-disabled { opacity: 0.35; pointer-events: none; user-select: none; }
         @keyframes cerbAntiFlash { 0%, 99% { opacity: 0; max-height: 0px; padding: 0px; margin: 0px; overflow: hidden; } 100% { opacity: 1; max-height: 500px; } }
         .usersListWrapper .userItem:not([data-cerberus-processed="true"]), .matchesList .matchItem:not([data-cerberus-processed="true"]), .chatContent .messageWrapper:not([data-cerberus-processed="true"]) { animation: cerbAntiFlash 0.35s forwards; }
-        #settingsTab textarea::selection, #settingsTab input::selection { background: rgba(100, 149, 237, 0.5); color: #fff; }
-        #settingsTab textarea::-moz-selection, #settingsTab input::-moz-selection { background: rgba(100, 149, 237, 0.5); color: #fff; }
+        #settingsTab textarea::selection, #settingsTab input::selection { background: var(--accentColor, rgba(100, 149, 237, 0.5)); color: var(--mainColor-darker, #fff); }
+        #settingsTab textarea::-moz-selection, #settingsTab input::-moz-selection { background: var(--accentColor, rgba(100, 149, 237, 0.5)); color: var(--mainColor-darker, #fff); }
         @keyframes cerbSpin { 100% { transform: rotate(360deg); } }
         @keyframes cerbPulseGlow { 0%, 100% { box-shadow: 0 0 4px rgba(255, 215, 0, 0.15); } 50% { box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); } }
         .cerb-sync-btn { transition: width 0.3s ease, border-radius 0.3s ease, background 0.2s ease, padding 0.3s ease; margin-left: 8px; }
@@ -53,16 +56,16 @@ function injectStyles() {
         @keyframes cerbBlockPulse { 0% { background-color: rgba(255, 68, 68, 0.4); box-shadow: inset 4px 0 0px #ff4444; } 50% { background-color: rgba(255, 68, 68, 0.05); box-shadow: inset 4px 0 0px #ff4444; } 100% { background-color: transparent; box-shadow: none; } }
         .cerberus-anim-block-pulse { animation: cerbBlockPulse 2s ease-in-out 2 forwards !important; }
         
-        .cerb-clear-chat-fab { position: absolute; right: 15px; bottom: 65px; background: rgba(30, 30, 35, 0.9); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); color: #ccc; }
-        .cerb-clear-chat-fab:hover { background: rgba(50, 50, 60, 0.95); color: #fff; transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.3); }
+        .cerb-clear-chat-fab { position: absolute; right: 15px; bottom: 65px; background: var(--mainColor-dark, rgba(30, 30, 35, 0.75)); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.4); backdrop-filter: blur(8px); border: 1px solid var(--mainColor-light, rgba(255, 255, 255, 0.15)); color: var(--mainColor-lightest, #ccc); opacity: 0.85; }
+        .cerb-clear-chat-fab:hover { background: var(--mainColor-light, rgba(50, 50, 60, 0.9)); color: #fff; transform: translateY(-2px); border-color: var(--accentColor); box-shadow: 0 0 12px var(--accentColor, rgba(102, 126, 234, 0.4)); opacity: 1; backdrop-filter: blur(12px); }
         
-        .cerb-mute-chat-fab { position: absolute; right: 15px; bottom: 100px; background: rgba(30, 30, 35, 0.9); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); color: #ccc; }
-        .cerb-mute-chat-fab:hover { background: rgba(50, 50, 60, 0.95); color: #fff; transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.3); }
-        .cerb-mute-chat-fab[data-muted="true"] { border-color: rgba(251, 191, 36, 0.9); color: #fbbf24; background: rgba(251, 191, 36, 0.18); }
-        .cerb-mute-chat-fab[data-muted="true"]:hover { border-color: rgba(251, 191, 36, 1); color: #fff; background: rgba(251, 191, 36, 0.25); }
+        .cerb-mute-chat-fab { position: absolute; right: 15px; bottom: 100px; background: var(--mainColor-dark, rgba(30, 30, 35, 0.75)); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.4); backdrop-filter: blur(8px); border: 1px solid var(--mainColor-light, rgba(255, 255, 255, 0.15)); color: var(--mainColor-lightest, #ccc); opacity: 0.85; }
+        .cerb-mute-chat-fab:hover { background: var(--mainColor-light, rgba(50, 50, 60, 0.9)); color: #fff; transform: translateY(-2px); border-color: var(--accentColor); box-shadow: 0 0 12px var(--accentColor, rgba(102, 126, 234, 0.4)); opacity: 1; backdrop-filter: blur(12px); }
+        .cerb-mute-chat-fab[data-muted="true"] { border-color: rgba(251, 191, 36, 0.9); color: #fbbf24; background: rgba(251, 191, 36, 0.25); opacity: 0.95; }
+        .cerb-mute-chat-fab[data-muted="true"]:hover { border-color: rgba(251, 191, 36, 1); color: #fff; background: rgba(251, 191, 36, 0.35); opacity: 1; }
         
-        .cerb-queue-fab { position: absolute; right: 15px; bottom: 135px; background: rgba(30, 30, 35, 0.9); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px); border: 1px solid var(--mainColor-light, rgba(102, 126, 234, 0.4)); color: var(--mainColor-lighter, #a3bffa); }
-        .cerb-queue-fab:hover { background: var(--mainColor-light, rgba(102, 126, 234, 0.3)); color: #fff; transform: translateY(-2px); }
+        .cerb-queue-fab { position: absolute; right: 15px; bottom: 135px; background: var(--mainColor-dark, rgba(30, 30, 35, 0.75)); border-radius: 5px; width: 160px; text-align: center; text-transform: uppercase; padding: 6px 14px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.4); backdrop-filter: blur(8px); border: 1px solid var(--accentColor, var(--mainColor-light, rgba(102, 126, 234, 0.4))); color: var(--accentColor, var(--mainColor-lighter, #a3bffa)); opacity: 0.85; }
+        .cerb-queue-fab:hover { background: var(--mainColor-light, rgba(102, 126, 234, 0.3)); color: #fff; transform: translateY(-2px); border-color: var(--accentColor); box-shadow: 0 0 12px var(--accentColor, rgba(102, 126, 234, 0.4)); opacity: 1; backdrop-filter: blur(12px); }
         .cerb-queue-fab[data-live="true"] { border-color: rgba(74, 222, 128, 0.9); color: #4ade80; background: rgba(74, 222, 128, 0.18); }
         .cerb-queue-fab[data-live="true"]:hover { border-color: rgba(74, 222, 128, 1); color: #fff; background: rgba(74, 222, 128, 0.25); }
         
@@ -76,51 +79,105 @@ function injectStyles() {
         .chatContent { padding-bottom: 20px !important; }
         .chatContent.blur-all .message .line .blocksContainer { filter: blur(5px); transition: filter 0.2s ease; user-select: none; }
         .chatContent.blur-all:hover .message .line .blocksContainer { filter: blur(0); user-select: text; }
-        #cerbGlobalMenu { position: fixed; background: rgba(20, 20, 25, 0.95); border: 1px solid var(--mainColor-light, rgba(102, 126, 234, 0.3)); border-radius: 8px; padding: 4px 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); display: flex; align-items: center; gap: 8px; z-index: 100000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; transform: translateY(-50%) translateX(15px) scale(0.95); user-select: none; white-space: nowrap; }
-        #cerbGlobalMenu.visible { opacity: 1; pointer-events: auto; transform: translateY(-50%) translateX(0) scale(1); }
-        #cerbGlobalMenu span { cursor: pointer; font-size: 14px; transition: transform 0.1s; display: inline-block; }
-        #cerbGlobalMenu span:hover { transform: scale(1.3); }
-        .cerb-menu-divider { width: 1px; height: 16px; background: rgba(255, 255, 255, 0.2); margin: 0 2px; }
+        #cerbGlobalMenu { position: fixed; background: var(--mainColor-dark, rgba(18, 18, 26, 0.95)); backdrop-filter: blur(12px); border: 1px solid var(--accentColor, var(--mainColor-light, rgba(102, 126, 234, 0.4))); border-radius: 14px; padding: 6px 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 15px var(--accentColor, rgba(102, 126, 234, 0.25)); display: flex; align-items: center; gap: 8px; z-index: 100000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0.9) translateY(6px); user-select: none; white-space: nowrap; }
+        #cerbGlobalMenu.visible { opacity: 1; pointer-events: auto; transform: scale(1) translateY(0); }
+        #cerbGlobalMenu .cerb-action-icon { cursor: pointer; font-size: 16px; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease; display: inline-block; padding: 3px 5px; line-height: 1; }
+        #cerbGlobalMenu .cerb-action-icon:hover { transform: scale(1.35) translateY(-2px); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6)); }
+        .cerb-menu-divider { width: 1px; height: 18px; background: rgba(255, 255, 255, 0.2); margin: 0 3px; }
+        .userItem, .playerInfo { position: relative; }
+        .userItem .flagWrapper { transition: opacity 0.15s ease, visibility 0.15s ease; }
+        .userItem:hover .flagWrapper { opacity: 0 !important; visibility: hidden !important; }
+        .playerInfo .rank, .playerInfo img.rank, .playerInfo .playerRank, .playerInfo .rankImg, .playerInfo img[src*="rank"], .playerInfo .cerb-rank-badge, .playerInfo .cerberus-injected-rank { transition: opacity 0.15s ease, visibility 0.15s ease; }
+        .playerInfo:hover .rank, .playerInfo:hover img.rank, .playerInfo:hover .playerRank, .playerInfo:hover .rankImg, .playerInfo:hover img[src*="rank"], .playerInfo:hover .cerb-rank-badge, .playerInfo:hover .cerberus-injected-rank { opacity: 0 !important; visibility: hidden !important; }
+
+        .cerb-flag-trigger {
+            display: none;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>') no-repeat center / contain;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>') no-repeat center / contain;
+            background-color: #cccccc;
+            cursor: pointer;
+            z-index: 5;
+            user-select: none;
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+
+        .playerInfo .cerb-flag-trigger { left: 2px; }
+
+        .userItem:hover .cerb-flag-trigger, .playerInfo:hover .cerb-flag-trigger { display: block; }
+        .cerb-flag-trigger:hover {
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>') no-repeat center / contain;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>') no-repeat center / contain;
+            background-color: var(--accentColor, var(--mainColor-light, #667eea));
+            transform: translateY(-50%) scale(1.25);
+        }
+
+        .cerb-chat-trigger {
+            width: 15px;
+            height: 15px;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>') no-repeat center / contain;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>') no-repeat center / contain;
+            background-color: #cccccc;
+            cursor: pointer;
+            margin: 0 4px;
+            display: inline-block;
+            opacity: 0.8;
+            transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+            user-select: none;
+            vertical-align: middle;
+        }
+
+        .cerb-chat-trigger:hover {
+            opacity: 1;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>') no-repeat center / contain;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>') no-repeat center / contain;
+            background-color: var(--accentColor, var(--mainColor-light, #667eea));
+            transform: scale(1.25);
+        }
         
-        .cerb-update-btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background: rgba(0,0,0,0.15); border: 1px solid var(--mainColor-light, rgba(102, 126, 234, 0.4)); border-radius: 8px; color: var(--mainColor-lighter, #a3bffa); text-decoration: none; font-weight: 600; transition: all 0.2s ease; font-size: 14px; }
-        .cerb-update-btn:hover { background: var(--mainColor-light, rgba(102, 126, 234, 0.3)); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0, 0.2); }
+        .cerb-update-btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background: var(--mainColor-darker, rgba(0,0,0,0.25)); border: 1px solid var(--accentColor, var(--mainColor-light, rgba(102, 126, 234, 0.4))); border-radius: 8px; color: var(--accentColor, var(--mainColor-lighter, #a3bffa)); text-decoration: none; font-weight: 600; transition: all 0.2s ease; font-size: 14px; }
+        .cerb-update-btn:hover { background: var(--accentColor, var(--mainColor-light, rgba(102, 126, 234, 0.3))); color: var(--mainColor-darker, #000); transform: translateY(-2px); box-shadow: 0 4px 12px var(--accentColor, rgba(0,0,0, 0.3)); }
         .cerb-donate-btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 13px; text-decoration: none; transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.3); flex: 1; }
         .cerb-donate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
         .cerb-donate-paypal { background: #00457C; color: #fff; border: 1px solid #005A9C; }
         .cerb-donate-livepix { background: #00FF87; color: #000; border: 1px solid #00CC6A; }
 
-        #cerberusPanel { position: fixed; width: 480px; max-height: 85vh; background: rgba(23, 23, 28, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; z-index: 10000; color: #ececec; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7); display: none; overflow: hidden; flex-direction: column; }
+        #cerberusPanel { position: fixed; width: 480px; max-height: 85vh; background: linear-gradient(135deg, var(--mainColor-dark, #260f23), var(--mainColor, #351b30) 65%, var(--mainColor-light, #5e3550)); backdrop-filter: blur(16px); border: 1px solid var(--mainColor-light, rgba(255, 255, 255, 0.25)); border-radius: 12px; z-index: 10000; color: var(--mainColor-lightest, #ececec); font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 25px var(--mainColor-dark, rgba(0,0,0,0.5)); display: none; overflow: hidden; flex-direction: column; }
         @media (max-width: 768px) { #cerberusPanel { width: 95%; max-height: 90vh; } }
-        #cerberusPanel .header, #cerberusQueueWindow .q-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid rgba(255, 255, 255, 0.08); cursor: move; user-select: none; }
-        #cerberusPanel .header .title, #cerberusQueueWindow .q-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: #fff; letter-spacing: 0.5px; }
-        #cerberusPanel .closeBtn, #cerberusQueueWindow .q-close { background: transparent; border: none; color: rgba(255, 255, 255, 0.6); font-size: 24px; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s; }
-        #cerberusPanel .closeBtn:hover, #cerberusQueueWindow .q-close:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
-        #cerberusPanel .tabs { display: flex; background: rgba(0, 0, 0, 0.2); padding: 0 10px; }
-        #cerberusPanel .tab { padding: 14px 20px; background: transparent; border: none; border-bottom: 2px solid transparent; color: rgba(255, 255, 255, 0.6); cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
-        #cerberusPanel .tab:hover { color: #fff; }
-        #cerberusPanel .tab.active { color: var(--mainColor-light, #667eea); border-bottom-color: var(--mainColor-light, #667eea); }
+        #cerberusPanel .header, #cerberusQueueWindow .q-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: linear-gradient(90deg, var(--mainColor-dark, rgba(0, 0, 0, 0.3)), var(--mainColor, rgba(0, 0, 0, 0.1))); border-bottom: 1px solid var(--mainColor-light, rgba(255, 255, 255, 0.15)); cursor: move; user-select: none; }
+        #cerberusPanel .header .title, #cerberusQueueWindow .q-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: var(--accentColor, #fff); letter-spacing: 0.5px; }
+        #cerberusPanel .closeBtn, #cerberusQueueWindow .q-close { background: transparent; border: none; color: var(--mainColor-lightest-trans-hi, rgba(255, 255, 255, 0.7)); font-size: 24px; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s; }
+        #cerberusPanel .closeBtn:hover, #cerberusQueueWindow .q-close:hover { background: var(--mainColor-light, rgba(255, 255, 255, 0.15)); color: #fff; }
+        #cerberusPanel .tabs { display: flex; background: var(--mainColor-dark, rgba(0, 0, 0, 0.25)); padding: 0 10px; border-bottom: 1px solid var(--mainColor-light, rgba(255, 255, 255, 0.15)); }
+        #cerberusPanel .tab { padding: 14px 20px; background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--mainColor-lightest-trans-md, rgba(255, 255, 255, 0.7)); cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
+        #cerberusPanel .tab:hover { color: var(--accentColor, #fff); }
+        #cerberusPanel .tab.active { color: var(--accentColor, var(--mainColor-light, #667eea)); border-bottom-color: var(--accentColor, var(--mainColor-light, #667eea)); font-weight: 700; }
         #cerberusPanel .tab.disabled { opacity: 0.3; cursor: not-allowed; }
         #cerberusPanel .content { flex: 1; overflow-y: auto; padding: 20px; }
-        .modern-toggle { display: flex; justify-content: space-between; align-items: center; padding: 12px; margin-bottom: 8px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; transition: background 0.2s; }
-        .modern-toggle:hover { background: rgba(255, 255, 255, 0.05); }
+        .modern-toggle { display: flex; justify-content: space-between; align-items: center; padding: 12px; margin-bottom: 8px; background: var(--mainColor-dark-trans-lo, rgba(255, 255, 255, 0.05)); border: 1px solid var(--mainColor-light, rgba(255, 255, 255, 0.1)); border-radius: 8px; transition: background 0.2s, border-color 0.2s; }
+        .modern-toggle:hover { background: var(--mainColor-light, rgba(255, 255, 255, 0.1)); border-color: var(--mainColor-lighter, rgba(255, 255, 255, 0.2)); }
         .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .3s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--mainColor-light, #667eea); }
-        input:checked + .slider:before { transform: translateX(20px); }
-        .search-bar { width: 100%; padding: 10px 14px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: white; margin-bottom: 15px; font-size: 14px; outline: none; }
-        .search-bar:focus { border-color: var(--mainColor-light, #667eea); }
-        #cerberusQueueWindow { position: fixed; right: 20px; bottom: 150px; width: 320px; max-height: 400px; background: rgba(23, 23, 28, 0.95); backdrop-filter: blur(12px); border: 1px solid var(--mainColor-light, rgba(102, 126, 234, 0.3)); border-radius: 12px; z-index: 10000; color: #ececec; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); display: flex; flex-direction: column; overflow: hidden; }
-        #cerbQueueCount { color: var(--mainColor-lighter, #a3bffa); margin-left: 5px; font-size: 12px; }
-        .q-add-box { display: flex; padding: 10px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); gap: 8px; }
-        .q-add-box input { flex: 1; padding: 6px 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff; font-size: 12px; outline: none; }
-        .q-add-box input:focus { border-color: var(--mainColor-light, #667eea); }
-        .q-add-box button { background: var(--mainColor-light, #667eea); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: background 0.2s; text-transform: uppercase; }
-        .q-add-box button:hover { background: var(--mainColor, #5a67d8); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--mainColor-dark, #444); transition: .3s; border-radius: 24px; border: 1px solid var(--mainColor-light, rgba(255, 255, 255, 0.15)); }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accentColor, var(--mainColor-light, #667eea)); border-color: var(--accentColor); box-shadow: 0 0 8px var(--accentColor, rgba(102, 126, 234, 0.4)); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: var(--mainColor-darker, #111); }
+        .search-bar { width: 100%; padding: 10px 14px; background: var(--mainColor-dark, rgba(0, 0, 0, 0.25)); border: 1px solid var(--mainColor-light, rgba(255, 255, 255, 0.2)); border-radius: 8px; color: white; margin-bottom: 15px; font-size: 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+        .search-bar:focus { border-color: var(--accentColor, var(--mainColor-light, #667eea)); box-shadow: 0 0 8px var(--accentColor, rgba(102, 126, 234, 0.3)); }
+        #cerberusQueueWindow { position: fixed; right: 20px; bottom: 150px; width: 320px; max-height: 400px; background: linear-gradient(135deg, var(--mainColor-dark, #260f23), var(--mainColor, #351b30)); backdrop-filter: blur(16px); border: 1px solid var(--accentColor, var(--mainColor-light, rgba(102, 126, 234, 0.4))); border-radius: 12px; z-index: 10000; color: #ececec; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; overflow: hidden; }
+        #cerbQueueCount { color: var(--accentColor, var(--mainColor-lighter, #a3bffa)); margin-left: 5px; font-size: 12px; }
+        .q-add-box { display: flex; padding: 10px; background: var(--mainColor-darker, rgba(0,0,0,0.25)); border-bottom: 1px solid var(--mainColor-light, rgba(255,255,255,0.05)); gap: 8px; }
+        .q-add-box input { flex: 1; padding: 6px 10px; background: var(--mainColor-dark, rgba(255,255,255,0.05)); border: 1px solid var(--mainColor-light, rgba(255,255,255,0.1)); border-radius: 4px; color: #fff; font-size: 12px; outline: none; }
+        .q-add-box input:focus { border-color: var(--accentColor, var(--mainColor-light, #667eea)); }
+        .q-add-box button { background: var(--accentColor, var(--mainColor-light, #667eea)); color: var(--mainColor-darker, #000); border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s; text-transform: uppercase; }
+        .q-add-box button:hover { filter: brightness(1.15); box-shadow: 0 0 8px var(--accentColor); }
         .q-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
         .q-empty { text-align: center; color: #888; font-size: 12px; padding: 20px 0; font-style: italic; }
-        .q-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--mainColor-light, #667eea); }
+        .q-item { display: flex; justify-content: space-between; align-items: center; background: var(--mainColor-darker-trans-lo, rgba(255,255,255,0.03)); padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--accentColor, var(--mainColor-light, #667eea)); }
         .q-name { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; }
         .q-name.played { text-decoration: line-through; color: #888; border-left-color: #444; }
         .q-controls { display: flex; gap: 4px; }
@@ -143,7 +200,8 @@ function createControlPanel() {
     if (document.getElementById('cerberusPanel')) return;
     const panel = document.createElement('div'); panel.id = 'cerberusPanel';
     panel.innerHTML = `<div class="header" id="cerberusHeader"><div class="title"><span>🐺</span><span>${t('panelTitle')}</span></div><button class="closeBtn" id="cerbPanelCloseBtn">×</button></div><div class="tabs"><button class="tab" data-tab="countries" id="countriesTabBtn">${t('tabs.countries')}</button><button class="tab active" data-tab="settings">${t('tabs.settings')}</button><button class="tab" data-tab="about">${t('tabs.about')}</button></div><div class="content"><div id="countriesTab" class="tab-content" style="display:none;"></div><div id="settingsTab" class="tab-content" style="display:block;"></div><div id="aboutTab" class="tab-content" style="display:none;"></div></div>`;
-    document.body.appendChild(panel); makeDraggable(panel, 'cerberusHeader');
+    const targetParent = document.getElementById('app') || document.body;
+    targetParent.appendChild(panel); makeDraggable(panel, 'cerberusHeader');
 
     document.getElementById('cerbPanelCloseBtn').addEventListener('click', () => panel.style.display = 'none');
 
@@ -217,7 +275,7 @@ function createModernToggle(checked, onChange) {
 function createSettingsTab() {
     const { ConfigManager } = require('./config.js');
     const tab = document.getElementById('settingsTab');
-    const sectionHeader = (title) => `<h4 style="margin: 0 0 12px 0; font-size: 13px; text-transform: uppercase; color: var(--mainColor-light, #667eea); letter-spacing: 1px; font-weight: 700;">${title}</h4>`;
+    const sectionHeader = (title) => `<h4 style="margin: 0 0 12px 0; font-size: 13px; text-transform: uppercase; color: var(--accentColor, var(--mainColor-lighter, #667eea)); letter-spacing: 1px; font-weight: 700;">${title}</h4>`;
     const createSection = (title, items) => `<div style="margin-bottom: 24px;">${sectionHeader(title)}${items}</div>`;
 
     const createMasterSection = (masterKey, title, childrenId, items) => {
@@ -229,33 +287,33 @@ function createSettingsTab() {
 
     const settingToggle = (key, label) => {
         const val = ConfigManager.getSetting(key) === true;
-        return `<div class="modern-toggle"><span style="font-size: 14px; color: #e0e0e0;">${label}</span><label class="switch"><input type="checkbox" data-setting="${key}" ${val ? 'checked' : ''}><span class="slider"></span></label></div>`;
+        return `<div class="modern-toggle"><span style="font-size: 14px; color: var(--mainColor-lightest, #e0e0e0);">${label}</span><label class="switch"><input type="checkbox" data-setting="${key}" ${val ? 'checked' : ''}><span class="slider"></span></label></div>`;
     };
     const settingInput = (key, label, type = "text") => {
         let val = ConfigManager.getSetting(key) ?? ''; const safeVal = val.toString().replace(/"/g, '&quot;');
-        if (type === 'textarea') { const displayVal = safeVal.replace(/\\n/g, '\n'); return `<div class="modern-toggle" style="flex-wrap: wrap;"><span style="font-size: 14px; color: #e0e0e0; flex: 1; min-width: 150px;">${label}</span><textarea data-setting="${key}" rows="3" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 6px 8px; border-radius: 4px; outline: none; width: 100%; margin-top: 8px; resize: vertical; font-family: inherit; font-size: 13px; line-height: 1.4;">${displayVal}</textarea></div>`; }
-        return `<div class="modern-toggle" style="flex-wrap: wrap;"><span style="font-size: 14px; color: #e0e0e0; flex: 1; min-width: 150px;">${label}</span><input type="${type}" data-setting="${key}" value="${safeVal}" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none; width: ${key === 'liveQueue.promoMessage' ? '100%' : '100px'}; text-align: ${key === 'liveQueue.promoMessage' ? 'left' : 'center'}; margin-top: ${key === 'liveQueue.promoMessage' ? '8px' : '0'};"></div>`;
+        if (type === 'textarea') { const displayVal = safeVal.replace(/\\n/g, '\n'); return `<div class="modern-toggle" style="flex-wrap: wrap;"><span style="font-size: 14px; color: var(--mainColor-lightest, #e0e0e0); flex: 1; min-width: 150px;">${label}</span><textarea data-setting="${key}" rows="3" style="background: var(--mainColor-darker, rgba(0,0,0,0.3)); color: white; border: 1px solid var(--mainColor-light, rgba(255,255,255,0.2)); padding: 6px 8px; border-radius: 4px; outline: none; width: 100%; margin-top: 8px; resize: vertical; font-family: inherit; font-size: 13px; line-height: 1.4;">${displayVal}</textarea></div>`; }
+        return `<div class="modern-toggle" style="flex-wrap: wrap;"><span style="font-size: 14px; color: var(--mainColor-lightest, #e0e0e0); flex: 1; min-width: 150px;">${label}</span><input type="${type}" data-setting="${key}" value="${safeVal}" style="background: var(--mainColor-darker, rgba(0,0,0,0.3)); color: white; border: 1px solid var(--mainColor-light, rgba(255,255,255,0.2)); padding: 4px 8px; border-radius: 4px; outline: none; width: ${key === 'liveQueue.promoMessage' ? '100%' : '100px'}; text-align: ${key === 'liveQueue.promoMessage' ? 'left' : 'center'}; margin-top: ${key === 'liveQueue.promoMessage' ? '8px' : '0'};"></div>`;
     };
     const settingSelect = (key, label, options) => {
         const currentVal = ConfigManager.getSetting(key) || options[0].value;
         const optsHtml = options.map(opt => `<option value="${opt.value}" ${currentVal == opt.value ? 'selected' : ''}>${opt.text}</option>`).join('');
-        return `<div class="modern-toggle"><span style="font-size: 14px; color: #e0e0e0;">${label}</span><select data-setting="${key}" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none;">${optsHtml}</select></div>`;
+        return `<div class="modern-toggle"><span style="font-size: 14px; color: var(--mainColor-lightest, #e0e0e0);">${label}</span><select data-setting="${key}" style="background: var(--mainColor-darker, rgba(0,0,0,0.3)); color: white; border: 1px solid var(--mainColor-light, rgba(255,255,255,0.2)); padding: 4px 8px; border-radius: 4px; outline: none;">${optsHtml}</select></div>`;
     };
     const blurToggle = () => {
         const isAll = ConfigManager.getSetting('chatUserInfo.blurMode') === 'all';
-        return `<div class="modern-toggle"><span style="font-size: 14px; color: #e0e0e0;">${t('settings.blurMode')}</span><label class="switch"><input type="checkbox" data-setting="chatUserInfo.blurMode" data-blur-toggle="true" ${isAll ? 'checked' : ''}><span class="slider"></span></label></div>`;
+        return `<div class="modern-toggle"><span style="font-size: 14px; color: var(--mainColor-lightest, #e0e0e0);">${t('settings.blurMode')}</span><label class="switch"><input type="checkbox" data-setting="chatUserInfo.blurMode" data-blur-toggle="true" ${isAll ? 'checked' : ''}><span class="slider"></span></label></div>`;
     };
 
-    const langSelect = `<div class="modern-toggle" style="margin-bottom: 24px;"><span style="font-size: 14px; color: #e0e0e0; font-weight: bold;">${t('settings.language')}</span><select id="cerbLangSelect" data-setting="language" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 4px; outline: none; font-size: 13px; cursor: pointer;"><option value="en" ${ConfigManager.getSetting('language') === 'en' ? 'selected' : ''}>🇺🇸 English</option><option value="pt" ${ConfigManager.getSetting('language') === 'pt' ? 'selected' : ''}>🇧🇷 Português</option><option value="es" ${ConfigManager.getSetting('language') === 'es' ? 'selected' : ''}>🇪🇸 Español</option></select></div>`;
+    const langSelect = `<div class="modern-toggle" style="margin-bottom: 24px;"><span style="font-size: 14px; color: var(--mainColor-lightest, #e0e0e0); font-weight: bold;">${t('settings.language')}</span><select id="cerbLangSelect" data-setting="language" style="background: var(--mainColor-darker, rgba(0,0,0,0.3)); color: white; border: 1px solid var(--mainColor-light, rgba(255,255,255,0.2)); padding: 6px 10px; border-radius: 4px; outline: none; font-size: 13px; cursor: pointer;"><option value="en" ${ConfigManager.getSetting('language') === 'en' ? 'selected' : ''}>🇺🇸 English</option><option value="pt" ${ConfigManager.getSetting('language') === 'pt' ? 'selected' : ''}>🇧🇷 Português</option><option value="es" ${ConfigManager.getSetting('language') === 'es' ? 'selected' : ''}>🇪🇸 Español</option></select></div>`;
 
     // [CERBERUS] Custom Audio Block with Test Player
     const soundPref = ConfigManager.getSetting('chatUserInfo.challengeSound') || 'native';
     const isAudioDisabled = soundPref === 'native' || soundPref === 'silent';
     const customAudioSelect = `
         <div class="modern-toggle" style="flex-wrap: wrap;">
-            <span style="font-size: 14px; color: #e0e0e0; flex: 1; min-width: 150px;">${t('settings.challengeSound')}</span>
+            <span style="font-size: 14px; color: var(--mainColor-lightest, #e0e0e0); flex: 1; min-width: 150px;">${t('settings.challengeSound')}</span>
             <div style="display: flex; gap: 5px; width: 100%; margin-top: 8px;">
-                <select id="cerbAudioSelect" data-setting="chatUserInfo.challengeSound" style="flex: 1; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; outline: none;">
+                <select id="cerbAudioSelect" data-setting="chatUserInfo.challengeSound" style="flex: 1; background: var(--mainColor-darker, rgba(0,0,0,0.3)); color: white; border: 1px solid var(--mainColor-light, rgba(255,255,255,0.2)); padding: 4px 8px; border-radius: 4px; outline: none;">
                     <option value="native" ${soundPref === 'native' ? 'selected' : ''}>${t('settings.soundNative')}</option>
                     <option value="custom1" ${soundPref === 'custom1' ? 'selected' : ''}>${t('settings.soundCustom1')}</option>
                     <option value="custom2" ${soundPref === 'custom2' ? 'selected' : ''}>${t('settings.soundCustom2')}</option>
@@ -274,8 +332,8 @@ function createSettingsTab() {
 
     const autoJoinBlock = createMasterSection('autoJoin.enabled', t('settings.autoJoin'), 'cerbAutoJoinChildren',
         `<div style="display: flex; gap: 5px; width: 100%;">
-            <input type="text" data-setting="autoJoin.channelId" value="${(ConfigManager.getSetting('autoJoin.channelId') || '').replace(/"/g, '&quot;')}" placeholder="e.g. The King of Fighters 2002 (NGM-2650)" style="flex: 1; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 6px 8px; border-radius: 4px; outline: none; font-size: 12px;">
-            <button id="cerbCaptureRoomBtn" style="background: var(--mainColor-light, #667eea); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: background 0.2s;">${t('settings.autoJoinCapture')}</button>
+            <input type="text" data-setting="autoJoin.channelId" value="${(ConfigManager.getSetting('autoJoin.channelId') || '').replace(/"/g, '&quot;')}" placeholder="e.g. The King of Fighters 2002 (NGM-2650)" style="flex: 1; background: var(--mainColor-darker, rgba(0,0,0,0.3)); color: white; border: 1px solid var(--mainColor-light, rgba(255,255,255,0.2)); padding: 6px 8px; border-radius: 4px; outline: none; font-size: 12px;">
+            <button id="cerbCaptureRoomBtn" style="background: var(--accentColor, var(--mainColor-light, #667eea)); color: var(--mainColor-darker, #000); border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s;">${t('settings.autoJoinCapture')}</button>
         </div>`
     );
 
@@ -289,7 +347,17 @@ function createSettingsTab() {
             settingToggle('liveQueue.promoEnabled', t('settings.queuePromoEnable')) +
             settingInput('liveQueue.promoMessage', t('settings.queuePromo'), 'textarea')) +
         createMasterSection('rankings.masterEnabled', t('settings.rankingsApi'), 'cerbRankingsChildren',
-            settingSelect('rankings.limit', t('settings.rankLimit'), [{ value: 100, text: "100" }, { value: 200, text: "200" }, { value: 400, text: "400" }, { value: 500, text: "500" }, { value: 800, text: "800" }, { value: 999, text: "999" }]) +
+            settingToggle('rankings.autoSync', t('settings.autoSyncRankings')) +
+            settingSelect('rankings.limit', t('settings.rankLimit'), [
+                { value: "100", text: t('settings.syncLimitOptions.num100') },
+                { value: "300", text: t('settings.syncLimitOptions.num300') },
+                { value: "500", text: t('settings.syncLimitOptions.num500') },
+                { value: "900", text: t('settings.syncLimitOptions.num900') },
+                { value: "rankA", text: t('settings.syncLimitOptions.rankA') },
+                { value: "rankB", text: t('settings.syncLimitOptions.rankB') },
+                { value: "rankC", text: t('settings.syncLimitOptions.rankC') }
+            ]) +
+            `<div style="font-size: 11px; color: #ffca28; opacity: 0.85; margin-top: -6px; margin-bottom: 12px; line-height: 1.35; padding: 2px 0;">${t('settings.rankLimitNotice')}</div>` +
             settingInput('rankings.country', t('settings.rankCountry')) +
             settingToggle('chatUserInfo.showNumericRanks', t('settings.showNumericRanks')) +
             settingSelect('rankings.minRankToAccept', t('settings.minRankToAccept'), [
@@ -301,10 +369,14 @@ function createSettingsTab() {
                 { value: 5, text: t('settings.rankOptions.r5') },
                 { value: 6, text: t('settings.rankOptions.r6') }
             ]) +
-            settingToggle('rankings.autoRejectBelowMin', t('settings.autoRejectRank'))) +
+            settingToggle('rankings.autoRejectBelowMin', t('settings.autoRejectRank')) +
+            `<button id="cerbClearRankingsBtn" style="margin-top: 12px; width: 100%; padding: 8px 12px; font-size: 12px; font-weight: bold; background: rgba(255, 68, 68, 0.15); border: 1px solid rgba(255, 68, 68, 0.4); color: #ff8888; border-radius: 6px; cursor: pointer; transition: all 0.2s;">${t('settings.clearRankingsBtn')}</button>`) +
         createSection(t('settings.filters'),
             settingToggle('countryFilter.enabled', t('settings.enableFilter')) +
             settingToggle('countryFilter.autoReject', t('settings.autoRejectCountry')) +
+            settingToggle('pingFilter.enabled', t('settings.pingFilter')) +
+            settingInput('pingFilter.maxPingMs', t('settings.maxPingMs'), 'number') +
+            settingToggle('pingFilter.autoReject', t('settings.autoRejectPing')) +
             settingToggle('countryFilter.autoRejectNotify', t('autoReject.notifyToggle'))) +
         createMasterSection('chatUserInfo.masterEnabled', t('settings.chatVisual'), 'cerbChatVisualChildren',
             settingToggle('chatUserInfo.enableStatus', t('settings.showStatus')) +
@@ -324,9 +396,10 @@ function createSettingsTab() {
             const key = e.target.getAttribute('data-setting'); let val = e.target.value;
             if (e.target.dataset.blurToggle) val = e.target.checked ? 'all' : 'none';
             else if (e.target.type === 'checkbox') val = e.target.checked;
-            else if (e.target.type === 'number' || key === 'rankings.limit' || key === 'rankings.minRankToAccept') val = parseInt(e.target.value);
+            else if (key === 'rankings.limit') val = isNaN(Number(e.target.value)) ? e.target.value : parseInt(e.target.value);
+            else if (e.target.type === 'number' || key === 'rankings.minRankToAccept') val = parseInt(e.target.value);
             else if (key === 'rankings.country') val = e.target.value.toUpperCase().trim();
-            else if (e.target.tagName === 'TEXTAREA') val = e.target.value.split(String.fromCharCode(10)).join(String.fromCharCode(92) + 'n');
+            else if (e.target.tagName === 'TEXTAREA') val = e.target.value.split(String.fromCharCode(10)).slice(0, 3).join(String.fromCharCode(92) + 'n');
 
             if (key === 'language') {
                 ConfigManager.updateSetting('language', val);
@@ -353,8 +426,47 @@ function createSettingsTab() {
             if (masterFor) { const children = document.getElementById(masterFor); if (children) children.classList.toggle('cerb-disabled', !e.target.checked); }
         };
         input.addEventListener('change', handleSettingChange);
-        if (input.type === 'text' || input.type === 'number') { let inputDebounce = null; input.addEventListener('input', (e) => { clearTimeout(inputDebounce); inputDebounce = setTimeout(() => handleSettingChange(e), 500); }); }
+        if (input.type === 'text' || input.type === 'number' || input.tagName === 'TEXTAREA') {
+            let inputDebounce = null;
+            input.addEventListener('input', (e) => {
+                clearTimeout(inputDebounce);
+                inputDebounce = setTimeout(() => handleSettingChange(e), 500);
+            });
+        }
     });
+
+    tab.querySelectorAll('textarea[data-setting]').forEach(textarea => {
+        textarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const lines = textarea.value.split('\n');
+                if (lines.length >= 3) {
+                    e.preventDefault();
+                }
+            }
+        });
+        textarea.addEventListener('input', (e) => {
+            const lines = e.target.value.split('\n');
+            if (lines.length > 3) {
+                e.target.value = lines.slice(0, 3).join('\n');
+            }
+        });
+    });
+
+    // Initial sync for AutoSync Rankings disabled/locked state if Rank A, B, or C is selected
+    const currentRankLimit = ConfigManager.getSetting('rankings.limit');
+    if (currentRankLimit === 'rankA' || currentRankLimit === 'rankB' || currentRankLimit === 'rankC') {
+        const autoSyncCheckbox = tab.querySelector('input[data-setting="rankings.autoSync"]');
+        if (autoSyncCheckbox) {
+            autoSyncCheckbox.checked = false;
+            autoSyncCheckbox.disabled = true;
+            const toggleParent = autoSyncCheckbox.closest('.modern-toggle');
+            if (toggleParent) {
+                toggleParent.style.opacity = '0.45';
+                toggleParent.style.pointerEvents = 'none';
+                toggleParent.title = t('settings.autoSyncDisabledNotice') || 'Sincronização automática desativada para limites por Rank (A, B ou C)';
+            }
+        }
+    }
 
     // [CERBERUS] Preventative Audio Play/Pause Logic
     const audioSelect = document.getElementById('cerbAudioSelect');
@@ -396,14 +508,34 @@ function createSettingsTab() {
         });
     }
 
+    const clearRankingsBtn = document.getElementById('cerbClearRankingsBtn');
+    if (clearRankingsBtn) {
+        clearRankingsBtn.addEventListener('click', () => {
+            const { RankCache } = require('./api.js');
+            const { getActiveChannelWrapper } = require('./utils.js');
+            const { fullChatScanScoped, updateSidebarScope } = require('./chat.js');
+            if (confirm(t('settings.confirmClearRankings'))) {
+                RankCache.clearRankings();
+                alert(t('settings.rankingsClearedNotice'));
+                const cw = getActiveChannelWrapper();
+                if (cw && window.CerberusFCADE && ConfigManager.getRuntimeConfig()) {
+                    fullChatScanScoped(cw, window.CerberusFCADE, ConfigManager.getRuntimeConfig());
+                    updateSidebarScope(cw.querySelector('.usersListWrapper'), window.CerberusFCADE, ConfigManager.getRuntimeConfig());
+                }
+            }
+        });
+    }
+
     const captureBtn = document.getElementById('cerbCaptureRoomBtn');
     if (captureBtn) {
         captureBtn.addEventListener('click', () => {
+            const activeId = window.CerberusFCADE?.activeChannelId;
             const activeEl = document.querySelector('.channelItem.active');
-            if (activeEl && activeEl.title) {
+            const valToSave = activeId || activeEl?.title || '';
+            if (valToSave) {
                 const input = document.querySelector('input[data-setting="autoJoin.channelId"]');
                 if (input) {
-                    input.value = activeEl.title;
+                    input.value = valToSave;
                     input.dispatchEvent(new Event('change'));
                 }
             }
@@ -477,11 +609,11 @@ function createAboutTab() {
         const btn = document.getElementById('cerbManualUpdateBtn');
         btn.disabled = true;
         btn.textContent = '⏳ ...';
-        
+
         const success = await checkForUpdates(true);
         btn.disabled = false;
         btn.textContent = t('about.updateBtn');
-        
+
         const updateContainer = document.getElementById('cerbUpdateContainer');
         if (success) {
             if (isNewerVersion(CerberusData.latestVersion, CURRENT_VERSION)) {
@@ -501,7 +633,8 @@ function createQueuePanel() {
     if (document.getElementById('cerberusQueueWindow')) return;
     const panel = document.createElement('div'); panel.id = 'cerberusQueueWindow'; panel.style.display = 'none';
     panel.innerHTML = `<div class="q-header" id="cerberusQueueHeader"><span class="q-title">📝 ${t('queue.title')} <small id="cerbQueueCount">(0)</small></span><button class="q-close" id="cerbQueueCloseBtn">×</button></div><div class="q-add-box"><input type="text" id="cerbQueueInput" placeholder="${t('queue.inputPh')}"><button id="cerbQueueAddBtn">${t('queue.addBtn')}</button></div><div class="q-list" id="cerbQueueList"></div><div class="q-footer" style="display:flex; justify-content:space-between;"><button id="cerbLiveMasterBtn" class="q-live-btn off">${t('sync.liveOff')}</button><button id="cerbQueueClearBtn" class="q-clear-btn">🧹 ${t('queue.clearBtn')}</button></div>`;
-    document.body.appendChild(panel); makeDraggable(panel, 'cerberusQueueHeader');
+    const targetParent = document.getElementById('app') || document.body;
+    targetParent.appendChild(panel); makeDraggable(panel, 'cerberusQueueHeader');
 
     document.getElementById('cerbQueueCloseBtn').addEventListener('click', () => panel.style.display = 'none');
 
@@ -566,6 +699,110 @@ function renderQueueList() {
     });
 }
 
+function positionReputationMenu(menu, anchorEl, contextType) {
+    if (!menu || !anchorEl) return;
+    try {
+        let rect = anchorEl.getBoundingClientRect();
+
+        // Safety Fallback: If anchor element is hidden/detached (0x0 rect), fallback to parent or playerName
+        if (rect.width === 0 && rect.height === 0 && rect.top === 0 && rect.left === 0) {
+            const parent = anchorEl.closest('.playerInfo, .userItem, .messageWrapper') || anchorEl.parentElement;
+            if (parent) {
+                const nameEl = parent.querySelector('.playerName, span.author');
+                rect = nameEl ? nameEl.getBoundingClientRect() : parent.getBoundingClientRect();
+            }
+        }
+
+        // Final guard: If rect is still zero (completely unrendered node), abort to avoid top-left window clamping
+        if (rect.width === 0 && rect.height === 0 && rect.top === 0 && rect.left === 0) return;
+
+        const menuWidth = menu.offsetWidth || 230;
+        const menuHeight = menu.offsetHeight || 38;
+
+        let leftPos, topPos;
+
+        if (contextType === 'sidebar') {
+            // Sidebar: Align left edge directly above the flag position
+            leftPos = rect.left;
+            topPos = rect.top - menuHeight - 6;
+        } else if (contextType === 'chat') {
+            // Chat: Position directly above the chat trigger icon
+            leftPos = rect.left + (rect.width / 2) - (menuWidth / 2);
+            topPos = rect.top - menuHeight - 6;
+        } else if (contextType === 'match') {
+            // Playing: Centered above player name / flag
+            leftPos = rect.left + (rect.width / 2) - (menuWidth / 2);
+            topPos = rect.top - menuHeight - 6;
+        } else {
+            leftPos = rect.left + (rect.width / 2) - (menuWidth / 2);
+            topPos = rect.top - menuHeight - 6;
+        }
+
+        if (leftPos + menuWidth > window.innerWidth - 12) leftPos = window.innerWidth - menuWidth - 12;
+        if (leftPos < 12) leftPos = 12;
+        if (topPos < 10) topPos = rect.bottom + 6;
+
+        menu.style.left = leftPos + 'px';
+        menu.style.top = topPos + 'px';
+    } catch (e) { }
+}
+
+function openReputationMenuForUser(userKey, type, anchorEl) {
+    const { CerberusData, ConfigManager, isSystemUser } = _getUiDeps();
+    if (!userKey || isSystemUser(userKey)) return;
+
+    const menu = document.getElementById('cerbGlobalMenu'); if (!menu) return;
+
+    const isNativeBlocked = Array.from(document.querySelectorAll('.usersIgnoredList .userItem')).some(el => el.dataset.currentUser === userKey);
+    const isPos = CerberusData.isPositive(userKey); const isNeg = CerberusData.isNegative(userKey);
+
+    const btnLike = document.getElementById('cerbBtnLike');
+    const btnDislike = document.getElementById('cerbBtnDislike');
+    const btnClear = document.getElementById('cerbBtnClear');
+    const btnBlock = document.getElementById('cerbBtnBlock');
+    const btnUnblock = document.getElementById('cerbBtnUnblock');
+    const divQueue = document.getElementById('cerbDivQueue');
+    const btnQueue = document.getElementById('cerbBtnQueueAdd');
+    const qEnabled = ConfigManager.getSetting('liveQueue.enabled') === true;
+
+    if (btnQueue) btnQueue.style.display = qEnabled ? 'inline-block' : 'none';
+    if (divQueue) divQueue.style.display = qEnabled ? 'block' : 'none';
+    if (btnLike) btnLike.style.display = isPos ? 'none' : 'inline-block';
+    if (btnDislike) btnDislike.style.display = isNeg ? 'none' : 'inline-block';
+    if (btnClear) btnClear.style.display = (isPos || isNeg) ? 'inline-block' : 'none';
+    if (btnBlock) btnBlock.style.display = isNativeBlocked ? 'none' : 'inline-block';
+    if (btnUnblock) btnUnblock.style.display = isNativeBlocked ? 'inline-block' : 'none';
+
+    menu.dataset.user = userKey;
+    menu.dataset.type = type;
+    menu.dataset.hideNegative = ConfigManager.getSetting('chatUserInfo.hideNegativeMessages') === true;
+
+    positionReputationMenu(menu, anchorEl, type);
+    menu.classList.add('visible');
+}
+
+function createChatTriggerElement(userKey) {
+    const el = document.createElement('span');
+    el.className = 'cerb-chat-trigger';
+    el.title = t('rep.like') || 'Reputação / Opções';
+    el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openReputationMenuForUser(userKey, 'chat', el);
+    });
+    return el;
+}
+
+if (typeof document !== 'undefined') {
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('cerbGlobalMenu');
+        if (menu && menu.classList.contains('visible')) {
+            if (!menu.contains(e.target) && !e.target.closest('.cerb-flag-trigger, .cerb-chat-trigger')) {
+                menu.classList.remove('visible');
+            }
+        }
+    });
+}
+
 function injectGlobalMenu() {
     const { CerberusData } = require('./state.js');
     const { isSystemUser, executeChatCommand, normalizeUsername } = require('./utils.js');
@@ -574,19 +811,42 @@ function injectGlobalMenu() {
 
     if (document.getElementById('cerbGlobalMenu')) return;
     const menu = document.createElement('div'); menu.id = 'cerbGlobalMenu';
-    menu.innerHTML = `<span id="cerbBtnQueueAdd" title="${t('queue.addBtn')}" style="font-size:16px;">➕</span><div class="cerb-menu-divider" id="cerbDivQueue"></div><span id="cerbBtnLike" title="${t('rep.like')}">👍</span><span id="cerbBtnDislike" title="${t('rep.dislike')}">👎</span><span id="cerbBtnClear" title="${t('rep.clear')}">🧹</span><div class="cerb-menu-divider"></div><span id="cerbBtnBlock" title="${t('rep.block')}">🚫</span><span id="cerbBtnUnblock" title="${t('rep.unblock')}">🟢</span>`;
-    document.body.appendChild(menu);
-    menu.addEventListener('mouseenter', () => { window.CerberusState.menuIsHovered = true; clearTimeout(window.CerberusState.menuHideTimeout); clearTimeout(window.CerberusState.menuShowTimeout); });
-    menu.addEventListener('mouseleave', () => { window.CerberusState.menuIsHovered = false; window.CerberusState.menuHideTimeout = setTimeout(() => menu.classList.remove('visible'), 200); });
+    menu.innerHTML = `
+        <span id="cerbBtnLike" class="cerb-action-icon" title="${t('rep.like')}">👍</span>
+        <span id="cerbBtnDislike" class="cerb-action-icon" title="${t('rep.dislike')}">👎</span>
+        <span id="cerbBtnClear" class="cerb-action-icon" title="${t('rep.clear')}">🧹</span>
+        <div class="cerb-menu-divider"></div>
+        <span id="cerbBtnBlock" class="cerb-action-icon" title="${t('rep.block')}">🚫</span>
+        <span id="cerbBtnUnblock" class="cerb-action-icon" title="${t('rep.unblock')}">🟢</span>
+        <div class="cerb-menu-divider" id="cerbDivQueue"></div>
+        <span id="cerbBtnQueueAdd" class="cerb-action-icon" title="${t('queue.addBtn')}">➕</span>`;
+    const targetParent = document.getElementById('app') || document.body;
+    targetParent.appendChild(menu);
+
+    menu.addEventListener('mouseenter', () => {
+        window.CerberusState.menuIsHovered = true;
+        clearTimeout(window.CerberusState.menuHideTimeout);
+        clearTimeout(window.CerberusState.menuShowTimeout);
+    });
+
+    menu.addEventListener('mouseleave', () => {
+        window.CerberusState.menuIsHovered = false;
+        window.CerberusState.menuHideTimeout = setTimeout(() => {
+            menu.classList.remove('visible');
+        }, 250);
+    });
 
     const action = (fn) => {
         const userKey = menu.dataset.user; if (isSystemUser(userKey)) return; fn(userKey);
         if (menu.dataset.type === 'match') document.querySelectorAll('.playerName').forEach(el => { if (normalizeUsername(el.textContent) === userKey) applyReputationStyleMatch(el, userKey); });
         reprocessUserMessages(userKey, menu.dataset.hideNegative === 'true');
+        menu.classList.remove('visible');
     };
 
     document.getElementById('cerbBtnQueueAdd').addEventListener('click', () => { const userKey = menu.dataset.user; if (!isSystemUser(userKey)) { CerberusData.addQueue(userKey); menu.classList.remove('visible'); } });
-    document.getElementById('cerbBtnLike').addEventListener('click', () => action(k => CerberusData.markPositive(k))); document.getElementById('cerbBtnDislike').addEventListener('click', () => action(k => CerberusData.markNegative(k))); document.getElementById('cerbBtnClear').addEventListener('click', () => action(k => CerberusData.clearReputation(k)));
+    document.getElementById('cerbBtnLike').addEventListener('click', () => action(k => CerberusData.markPositive(k)));
+    document.getElementById('cerbBtnDislike').addEventListener('click', () => action(k => CerberusData.markNegative(k)));
+    document.getElementById('cerbBtnClear').addEventListener('click', () => action(k => CerberusData.clearReputation(k)));
 
     document.getElementById('cerbBtnBlock').addEventListener('click', () => {
         const userKey = menu.dataset.user;
@@ -609,68 +869,65 @@ function injectGlobalMenu() {
 
 function applyReputationStyleChat(author, msg, userKey, hideNegative) {
     const { CerberusData } = require('./state.js');
-    if (userKey === '<offline>' || userKey.startsWith('<')) return;
+    if (author) { author.style.color = ''; author.style.fontWeight = ''; author.style.textShadow = ''; author.style.textDecoration = ''; }
+    if (msg) { msg.style.backgroundColor = ''; msg.style.borderLeft = ''; msg.style.paddingLeft = ''; msg.style.opacity = ''; delete msg.dataset.cerbRepState; }
+    if (!userKey || userKey === '<offline>' || userKey.startsWith('<')) return;
 
-    // [CERBERUS] CPU Guard: Early return if reputation state did not change
     const isPos = CerberusData.isPositive(userKey);
     const isNeg = CerberusData.isNegative(userKey);
     const repState = isPos ? 'pos' : (isNeg ? 'neg' : 'neutral');
     if (msg.dataset.cerbRepState === repState) return;
     msg.dataset.cerbRepState = repState;
 
-    author.style.color = ''; author.style.fontWeight = ''; author.style.textShadow = ''; author.style.textDecoration = '';
-    msg.style.backgroundColor = ''; msg.style.borderLeft = ''; msg.style.paddingLeft = ''; msg.style.opacity = '';
     if (isPos) {
-        author.style.color = '#00aa00'; author.style.fontWeight = 'bold'; author.style.textShadow = '0 0 3px rgba(0, 170, 0, 0.5)';
-        msg.style.backgroundColor = 'rgba(0, 255, 0, 0.08)'; msg.style.borderLeft = '3px solid #00aa00'; msg.style.paddingLeft = '5px';
+        if (author) { author.style.color = '#00aa00'; author.style.fontWeight = 'bold'; author.style.textShadow = '0 0 3px rgba(0, 170, 0, 0.5)'; }
+        if (msg) { msg.style.backgroundColor = 'rgba(0, 255, 0, 0.08)'; msg.style.borderLeft = '3px solid #00aa00'; msg.style.paddingLeft = '5px'; }
     }
     else if (isNeg) {
-        author.style.color = '#888'; author.style.textDecoration = 'line-through';
-        msg.style.opacity = '0.35';
+        if (author) { author.style.color = '#888'; author.style.textDecoration = 'line-through'; }
+        if (msg) msg.style.opacity = '0.35';
     }
 }
 
 function applyReputationStyleList(playerName, userItem, userKey) {
     const { CerberusData } = require('./state.js');
-    if (userKey === '<offline>' || userKey.startsWith('<')) return;
+    if (playerName) { playerName.style.color = ''; playerName.style.fontWeight = ''; playerName.style.textDecoration = ''; playerName.style.textShadow = ''; delete playerName.dataset.cerbRepState; }
+    if (userItem) { userItem.style.opacity = ''; userItem.style.backgroundColor = ''; userItem.style.borderLeft = ''; delete userItem.dataset.cerbRepState; }
+    if (!userKey || userKey === '<offline>' || userKey.startsWith('<')) return;
 
-    // [CERBERUS] CPU Guard: Early return if reputation state did not change
     const isPos = CerberusData.isPositive(userKey);
     const isNeg = CerberusData.isNegative(userKey);
     const repState = isPos ? 'pos' : (isNeg ? 'neg' : 'neutral');
     if (userItem.dataset.cerbRepState === repState) return;
     userItem.dataset.cerbRepState = repState;
 
-    playerName.style.color = ''; playerName.style.fontWeight = ''; playerName.style.textDecoration = ''; playerName.style.textShadow = '';
-    userItem.style.opacity = ''; userItem.style.backgroundColor = ''; userItem.style.borderLeft = '';
     if (isPos) {
-        playerName.style.color = '#00aa00'; playerName.style.fontWeight = 'bold'; playerName.style.textShadow = '0 0 5px rgba(0, 255, 0, 0.6)';
-        userItem.style.backgroundColor = 'rgba(0, 255, 0, 0.12)'; userItem.style.borderLeft = '4px solid #00aa00';
+        if (playerName) { playerName.style.color = '#00aa00'; playerName.style.fontWeight = 'bold'; playerName.style.textShadow = '0 0 5px rgba(0, 255, 0, 0.6)'; }
+        if (userItem) { userItem.style.backgroundColor = 'rgba(0, 255, 0, 0.12)'; userItem.style.borderLeft = '4px solid #00aa00'; }
     } else if (isNeg) {
-        playerName.style.color = '#888'; playerName.style.textDecoration = 'line-through'; userItem.style.opacity = '0.35';
+        if (playerName) { playerName.style.color = '#888'; playerName.style.textDecoration = 'line-through'; }
+        if (userItem) userItem.style.opacity = '0.35';
     }
 }
 
 function applyReputationStyleMatch(playerName, userKey) {
     const { CerberusData } = require('./state.js');
-    if (userKey === '<offline>' || userKey.startsWith('<')) return;
+    const playerInfo = playerName ? playerName.closest('.playerInfo') : null;
 
-    // [CERBERUS] CPU Guard: Early return if reputation state did not change
+    if (playerName) { playerName.style.color = ''; playerName.style.fontWeight = ''; playerName.style.textShadow = ''; playerName.style.textDecoration = ''; delete playerName.dataset.cerbRepState; }
+    if (playerInfo) playerInfo.style.opacity = '';
+    if (!userKey || userKey === '<offline>' || userKey.startsWith('<')) return;
+
     const isPos = CerberusData.isPositive(userKey);
     const isNeg = CerberusData.isNegative(userKey);
     const repState = isPos ? 'pos' : (isNeg ? 'neg' : 'neutral');
     if (playerName.dataset.cerbRepState === repState) return;
     playerName.dataset.cerbRepState = repState;
 
-    const playerInfo = playerName.closest('.playerInfo');
-
-    playerName.style.color = ''; playerName.style.fontWeight = ''; playerName.style.textShadow = ''; playerName.style.textDecoration = '';
-    if (playerInfo) playerInfo.style.opacity = '';
-    
     if (isPos) {
-        playerName.style.color = '#00aa00'; playerName.style.fontWeight = 'bold'; playerName.style.textShadow = '0 0 5px rgba(0, 255, 0, 0.6)';
+        if (playerName) { playerName.style.color = '#00aa00'; playerName.style.fontWeight = 'bold'; playerName.style.textShadow = '0 0 5px rgba(0, 255, 0, 0.6)'; }
     } else if (isNeg) {
-        playerName.style.color = '#888'; playerName.style.textDecoration = 'line-through';
+        if (playerName) { playerName.style.color = '#888'; playerName.style.textDecoration = 'line-through'; }
         if (playerInfo) playerInfo.style.opacity = '0.35';
     }
 }
@@ -686,52 +943,61 @@ function applyDevBadge(element, username) {
     }
 }
 
+let _uiDeps = null;
+function _getUiDeps() {
+    if (_uiDeps) return _uiDeps;
+    return (_uiDeps = {
+        CerberusData: require('./state.js').CerberusData,
+        ConfigManager: require('./config.js').ConfigManager,
+        isSystemUser: require('./utils.js').isSystemUser
+    });
+}
+
 function addReputationControlsToElement(hoverContainer, type) {
+    if (!hoverContainer) return;
+    const activeUserKey = hoverContainer.dataset.currentUser;
+    const triggerBtn = hoverContainer.querySelector('.cerb-flag-trigger');
+
+    if (!activeUserKey || _getUiDeps().isSystemUser(activeUserKey)) {
+        if (triggerBtn) triggerBtn.remove();
+        delete hoverContainer.dataset.cerbHoverAdded;
+        return;
+    }
+
     if (hoverContainer.dataset.cerbHoverAdded === "true") return;
     hoverContainer.dataset.cerbHoverAdded = "true";
 
-    hoverContainer.addEventListener('mouseenter', () => {
-        const { CerberusData } = require('./state.js');
-        const { ConfigManager } = require('./config.js');
-        const { isSystemUser } = require('./utils.js');
-
-        if (window.CerberusState.menuIsHovered) return;
-        clearTimeout(window.CerberusState.menuHideTimeout);
-        window.CerberusState.menuShowTimeout = setTimeout(() => {
-            if (window.CerberusState.menuIsHovered) return;
-            const menu = document.getElementById('cerbGlobalMenu'); if (!menu) return;
-
-            const activeUserKey = hoverContainer.dataset.currentUser;
-            if (!activeUserKey || isSystemUser(activeUserKey)) return;
-
-            let anchorEl = hoverContainer;
-            if (type === 'chat') anchorEl = hoverContainer.querySelector('.time') || hoverContainer.querySelector('span.author') || hoverContainer;
-            else anchorEl = hoverContainer.querySelector('.playerName') || hoverContainer;
-
-            const isNativeBlocked = Array.from(document.querySelectorAll('.usersIgnoredList .userItem')).some(el => el.dataset.currentUser === activeUserKey);
-            const isPos = CerberusData.isPositive(activeUserKey); const isNeg = CerberusData.isNegative(activeUserKey);
-
-            const btnLike = document.getElementById('cerbBtnLike'); const btnDislike = document.getElementById('cerbBtnDislike'); const btnClear = document.getElementById('cerbBtnClear'); const btnBlock = document.getElementById('cerbBtnBlock'); const btnUnblock = document.getElementById('cerbBtnUnblock'); const divQueue = document.getElementById('cerbDivQueue'); const btnQueue = document.getElementById('cerbBtnQueueAdd');
-            const qEnabled = ConfigManager.getSetting('liveQueue.enabled') === true;
-
-            if (btnQueue) btnQueue.style.display = qEnabled ? 'inline-block' : 'none'; if (divQueue) divQueue.style.display = qEnabled ? 'block' : 'none';
-            if (btnLike) btnLike.style.display = isPos ? 'none' : 'inline-block'; if (btnDislike) btnDislike.style.display = isNeg ? 'none' : 'inline-block';
-            if (btnClear) btnClear.style.display = (isPos || isNeg) ? 'inline-block' : 'none';
-            if (btnBlock) btnBlock.style.display = isNativeBlocked ? 'none' : 'inline-block'; if (btnUnblock) btnUnblock.style.display = isNativeBlocked ? 'inline-block' : 'none';
-
-            menu.dataset.user = activeUserKey; menu.dataset.type = type;
-            menu.dataset.hideNegative = ConfigManager.getSetting('chatUserInfo.hideNegativeMessages') === true;
-
-            const range = document.createRange(); range.selectNodeContents(anchorEl); const rect = range.getBoundingClientRect();
-            const menuWidth = menu.offsetWidth || 150; let leftPos = rect.right + 12; if (leftPos + menuWidth > window.innerWidth - 10) leftPos = window.innerWidth - menuWidth - 10;
-            menu.style.left = leftPos + 'px'; menu.style.top = (rect.top + rect.height / 2) + 'px'; menu.classList.add('visible');
-        }, 300);
-    });
-
-    hoverContainer.addEventListener('mouseleave', () => {
-        clearTimeout(window.CerberusState.menuShowTimeout);
-        window.CerberusState.menuHideTimeout = setTimeout(() => { const menu = document.getElementById('cerbGlobalMenu'); if (menu) menu.classList.remove('visible'); }, 200);
-    });
+    if (type === 'sidebar' || type === 'list') {
+        const flagEl = hoverContainer.querySelector('.flagWrapper');
+        if (flagEl && !triggerBtn) {
+            const btn = document.createElement('span');
+            btn.className = 'cerb-flag-trigger';
+            btn.title = t('rep.like') || 'Reputação / Opções';
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const currentKey = hoverContainer.dataset.currentUser;
+                if (currentKey && !_getUiDeps().isSystemUser(currentKey)) {
+                    openReputationMenuForUser(currentKey, type, flagEl);
+                }
+            });
+            hoverContainer.appendChild(btn);
+        }
+    } else if (type === 'match') {
+        const rankEl = hoverContainer.querySelector('.rank, img.rank, .playerRank, .rankImg, img[src*="rank"], .cerb-rank-badge, .cerberus-injected-rank') || hoverContainer.querySelector('.playerName');
+        if (rankEl && !triggerBtn) {
+            const btn = document.createElement('span');
+            btn.className = 'cerb-flag-trigger';
+            btn.title = t('rep.like') || 'Reputação / Opções';
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const currentKey = hoverContainer.dataset.currentUser;
+                if (currentKey && !_getUiDeps().isSystemUser(currentKey)) {
+                    openReputationMenuForUser(currentKey, type, btn);
+                }
+            });
+            hoverContainer.appendChild(btn);
+        }
+    }
 }
 
 function unlockColorThemes() {
@@ -803,6 +1069,7 @@ function injectHeaderButtons(FCADE) {
 }
 
 function injectSidebarSearch() {
+    if (document.getElementById('cerbPlayerSearchInput')) return;
     const { getActiveChannelWrapper } = require('./utils.js');
     const { updateFilterShield, updateSidebarScope } = require('./chat.js');
     const { ConfigManager } = require('./config.js');
@@ -894,6 +1161,10 @@ function onChannelSwitch(FCADE) {
     const { ConfigManager } = require('./config.js');
     const { fullChatScanScoped, updateSidebarScope, updateFilterShield } = require('./chat.js');
 
+    // Hide any open reputation popover from the previous channel
+    const menu = document.getElementById('cerbGlobalMenu');
+    if (menu) menu.classList.remove('visible');
+
     // Reset sidebar search to avoid cross-room filter leaking
     window.CerberusState.sidebarSearchTerm = '';
     const searchInput = document.getElementById('cerbPlayerSearchInput');
@@ -924,5 +1195,5 @@ module.exports = {
     addReputationControlsToElement, unlockColorThemes, applyTheme, setSyncBtnState,
     injectHeaderButtons, injectSidebarSearch, injectUIEnhancements, onChannelSwitch, createFlagElement,
     createPingElement, createRankElement, createPingTextElement, createStatusElement, createRankBadge,
-    applyDevBadge
+    applyDevBadge, createChatTriggerElement, openReputationMenuForUser
 };

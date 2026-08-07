@@ -5,7 +5,7 @@
 <h1 align="center">Plugin FightcadePlus</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.15.5-blue?style=for-the-badge" alt="Plugin Version" />
+  <img src="https://img.shields.io/badge/Version-1.17.0-blue?style=for-the-badge" alt="Plugin Version" />
   <img src="https://img.shields.io/badge/Plugin-Fightcade_Plus-red?style=for-the-badge" alt="Fightcade Inject" />
   <img src="https://img.shields.io/badge/Languages-EN%20%7C%20PT%20%7C%20ES-green?style=for-the-badge" alt="Languages" />
 </p>
@@ -162,7 +162,7 @@ Settings are stored in `cerberus_config.json` inside the parent plugins director
     "streamerNick": "", // Streamer nick (ignores self-join)
     "autoReply": false, // Chat notification for new queue entries
     "promoEnabled": false, // Send promotional messages
-    "promoMessage": "[LIVE] Enter queue by typing !join!" // Custom message (supports markdown)
+    "promoMessage": "[LIVE] Enter queue by typing !join!" // Custom message
   }
 }
 ```
@@ -303,7 +303,7 @@ Os ajustes são salvos em `cerberus_config.json` no diretório de plugins. Usuá
     "streamerNick": "", // Nick do streamer para ignorar auto-entrada
     "autoReply": false, // Enviar aviso no chat sobre novas entradas
     "promoEnabled": false, // Enviar mensagens de divulgação periódicas
-    "promoMessage": "[LIVE] Entre na fila digitando !join!" // Mensagem de divulgação (suporta markdown)
+    "promoMessage": "[LIVE] Entre na fila digitando !join!" // Mensagem de divulgação
   }
 }
 ```
@@ -444,7 +444,7 @@ Los ajustes se almacenan en `cerberus_config.json` en el directorio de plugins. 
     "streamerNick": "", // Nickname del streamer para ignorarse a sí mismo
     "autoReply": false, // Anunciar nuevos integrantes en el chat
     "promoEnabled": false, // Activar bot promocional
-    "promoMessage": "[LIVE] ¡Entra a la cola escribiendo !join!" // Mensaje promocional (admite markdown)
+    "promoMessage": "[LIVE] ¡Entra a la cola escribiendo !join!" // Mensaje promocional
   }
 }
 ```

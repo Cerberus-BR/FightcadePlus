@@ -943,7 +943,7 @@
                     <a href="#changelog" data-i18n="navChangelog">Changelog</a>
                     <a href="#support" data-i18n="navSupport">Apoiar</a>
                     <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">GitHub</a>
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.5/Setup-FightcadePlus-1.15.5.exe" class="btn-header" data-i18n="downloadBtn">Download v1.15.5</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.17.0/Setup-FightcadePlus-1.17.0.exe" class="btn-header" data-i18n="downloadBtn">Download v1.17.0</a>
                 </nav>
                 <div class="lang-selector">
                     <button class="lang-btn active" data-lang="pt" title="Português">🇧🇷</button>
@@ -957,7 +957,7 @@
     <!-- Hero Section -->
     <section class="container hero">
         <div class="hero-content">
-            <span class="hero-tag" data-i18n="heroTag">v1.15.5 — Novo Update</span>
+            <span class="hero-tag" data-i18n="heroTag">v1.17.0 — Novo Update</span>
             <h1 data-i18n="heroTitle">Melhore sua experiência no Fightcade</h1>
             <p data-i18n="heroDesc">
                 O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, 
@@ -965,7 +965,7 @@
             </p>
             <div class="hero-actions">
                 <div class="hero-actions-row-top">
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.15.5/Setup-FightcadePlus-1.15.5.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v1.15.5 (.exe)</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.17.0/Setup-FightcadePlus-1.17.0.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v1.17.0 (.exe)</a>
                 </div>
                 <div class="hero-actions-row-bottom">
                     <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal" data-i18n="heroPaypal">Donate via PayPal</a>
@@ -1160,11 +1160,11 @@
                 navGallery: "Galeria",
                 navChangelog: "Changelog",
                 navSupport: "Apoiar",
-                downloadBtn: "Download v1.15.5",
-                heroTag: "v1.15.5 — Novo Update",
+                downloadBtn: "Download v1.17.0",
+                heroTag: "v1.17.0 — Novo Update",
                 heroTitle: "Melhore sua experiência no Fightcade",
                 heroDesc: "O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.",
-                heroDownload: "Download Setup v1.15.5 (.exe)",
+                heroDownload: "Download Setup v1.17.0 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Apoiar via LivePix",
                 demoTitle: "Veja o Mod em Ação",
@@ -1207,11 +1207,11 @@
                 navGallery: "Gallery",
                 navChangelog: "Changelog",
                 navSupport: "Support",
-                downloadBtn: "Download v1.15.5",
-                heroTag: "v1.15.5 — New Update",
+                downloadBtn: "Download v1.17.0",
+                heroTag: "v1.17.0 — New Update",
                 heroTitle: "Elevate your Fightcade experience",
                 heroDesc: "Fightcade Plus is a full modular mod adding stability enhancements, automatic ping/country filters, integrated player reputation, and live stream queues to your native Fightcade client.",
-                heroDownload: "Download Setup v1.15.5 (.exe)",
+                heroDownload: "Download Setup v1.17.0 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Support via LivePix",
                 demoTitle: "See the Mod in Action",
@@ -1254,11 +1254,11 @@
                 navGallery: "Galería",
                 navChangelog: "Changelog",
                 navSupport: "Soporte",
-                downloadBtn: "Descargar v1.15.5",
-                heroTag: "v1.15.5 — Nueva Actualización",
+                downloadBtn: "Descargar v1.17.0",
+                heroTag: "v1.17.0 — Nueva Actualización",
                 heroTitle: "Mejora tu experiencia en Fightcade",
                 heroDesc: "Fightcade Plus es un mod modular completo que añade mejoras de estabilidad, filtros automáticos de ping/país, reputación de jugadores y cola de streaming en vivo a tu cliente nativo de Fightcade.",
-                heroDownload: "Descargar Setup v1.15.5 (.exe)",
+                heroDownload: "Descargar Setup v1.17.0 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Apoyar vía LivePix",
                 demoTitle: "Mira el Mod en Acción",
@@ -1299,6 +1299,37 @@
         };
 
         const changelogTimelineData = [
+            {
+                version: "v1.17.0",
+                date: {
+                    pt: "06 de Agosto de 2026",
+                    en: "August 06, 2026",
+                    es: "06 de Agosto de 2026"
+                },
+                changes: {
+                    pt: [
+                        "Filtro de Desafios por Ping Máximo (ms) com rejeição automática configurável.",
+                        "Sincronização de rankings por meta de Rank (A+, B+, C+) e controle de sincronização automática.",
+                        "Adaptação dinâmica dos menus e botões flutuantes para combinar com as cores do tema do Fightcade.",
+                        "Escudo de Privacidade integrado com bloqueio automático de scripts de rastreamento (Google Analytics / Tag Manager).",
+                        "Melhorias no AutoJoin de salas, correção de reciclagem no chat e limite de 3 parágrafos para o bot."
+                    ],
+                    en: [
+                        "Challenge filter by Max Ping (ms) with configurable auto-rejection.",
+                        "Rankings sync target options by Rank (A+, B+, C+) with automatic sync control.",
+                        "Dynamic styling for settings panel and floating buttons matching active Fightcade theme colors.",
+                        "Integrated Privacy Shield blocking tracking and telemetry scripts (Google Analytics / Tag Manager).",
+                        "Room AutoJoin stability improvements, chat recycling fixes, and 3-paragraph bot message limit."
+                    ],
+                    es: [
+                        "Filtro de desafíos por Ping Máximo (ms) con rechazo automático configurable.",
+                        "Sincronización de rankings por meta de Rango (A+, B+, C+) y control de sincronización automática.",
+                        "Estilo dinámico para el panel de ajustes y botones flotantes según los colores del tema de Fightcade.",
+                        "Escudo de Privacidad integrado bloqueando scripts de seguimiento (Google Analytics / Tag Manager).",
+                        "Mejoras en el AutoJoin de salas, corrección de reciclaje en el chat y límite de 3 párrafos para el bot."
+                    ]
+                }
+            },
             {
                 version: "v1.15.5",
                 date: {

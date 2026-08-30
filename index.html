@@ -863,25 +863,75 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* Floating Tally Contact Button */
-        .tally-contact-btn {
+        /* Floating Tally Contact Button & Label Wrapper */
+        .tally-contact-wrapper {
             position: fixed;
             bottom: 24px;
             right: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            animation: contactAttentionBounce 6s infinite ease-in-out;
+        }
+
+        .tally-contact-label {
+            background: linear-gradient(135deg, rgba(20, 15, 35, 0.95), rgba(40, 20, 55, 0.98));
+            border: 1px solid rgba(255, 0, 122, 0.5);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 9px 16px;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 0, 122, 0.25);
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .tally-contact-wrapper:hover .tally-contact-label {
+            transform: translateX(-4px) scale(1.03);
+            border-color: var(--fc-pink);
+            box-shadow: 0 10px 25px rgba(255, 0, 122, 0.5), 0 0 20px var(--fc-pink-glow);
+            color: #ffffff;
+        }
+
+        .tally-contact-btn {
+            position: relative;
             width: 60px;
             height: 60px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--fc-pink) 0%, var(--fc-purple) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            box-shadow: 0 8px 24px rgba(255, 0, 122, 0.4);
+            box-shadow: 0 8px 24px rgba(255, 0, 122, 0.45);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            flex-shrink: 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             outline: none;
+        }
+
+        .tally-badge-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border: 2px solid #1a1025;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00ff88;
+            animation: dotPulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
         }
 
         .tally-contact-btn svg {
@@ -889,37 +939,50 @@
             transition: transform 0.3s ease;
         }
 
-        .tally-contact-btn:hover {
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 12px 28px rgba(255, 0, 122, 0.6), 0 0 15px var(--fc-pink-glow);
+        .tally-contact-wrapper:hover .tally-contact-btn {
+            transform: scale(1.08) rotate(-5deg);
+            box-shadow: 0 12px 30px rgba(255, 0, 122, 0.65), 0 0 20px var(--fc-pink-glow);
         }
 
-        .tally-contact-btn:hover svg {
-            transform: rotate(5deg) scale(1.05);
+        .tally-contact-wrapper:hover .tally-contact-btn svg {
+            transform: scale(1.1) rotate(10deg);
         }
 
         .tally-contact-btn::after {
             content: "";
             position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            top: -3px; left: -3px; right: -3px; bottom: -3px;
             border-radius: 50%;
             border: 2px solid var(--fc-pink);
             opacity: 0;
-            transition: all 0.6s ease;
             animation: tallyPulse 2s infinite;
         }
 
         @keyframes tallyPulse {
-            0% { transform: scale(1); opacity: 0.6; }
-            100% { transform: scale(1.3); opacity: 0; }
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        @keyframes contactAttentionBounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            85% { transform: translateY(-8px) scale(1.03); }
+            90% { transform: translateY(0) scale(1.01); }
+            95% { transform: translateY(-4px); }
         }
 
         @media (max-width: 768px) {
-            .tally-contact-btn {
+            .tally-contact-wrapper {
                 bottom: 16px;
                 right: 16px;
-                width: 52px;
-                height: 52px;
+                gap: 8px;
+            }
+            .tally-contact-label {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+            .tally-contact-btn {
+                width: 50px;
+                height: 50px;
             }
         }
     </style>
@@ -942,8 +1005,9 @@
                     <a href="#gallery" data-i18n="navGallery">Galeria</a>
                     <a href="#changelog" data-i18n="navChangelog">Changelog</a>
                     <a href="#support" data-i18n="navSupport">Apoiar</a>
+                    <a href="#contact" data-action="open-contact" data-i18n="navContact">Contato</a>
                     <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">GitHub</a>
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.17.0/Setup-FightcadePlus-1.17.0.exe" class="btn-header" data-i18n="downloadBtn">Download v1.17.0</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.18.0/Setup-FightcadePlus-1.18.0.exe" class="btn-header" data-i18n="downloadBtn">Download v1.18.0</a>
                 </nav>
                 <div class="lang-selector">
                     <button class="lang-btn active" data-lang="pt" title="Português">🇧🇷</button>
@@ -957,7 +1021,7 @@
     <!-- Hero Section -->
     <section class="container hero">
         <div class="hero-content">
-            <span class="hero-tag" data-i18n="heroTag">v1.17.0 — Novo Update</span>
+            <span class="hero-tag" data-i18n="heroTag">v1.18.0 — Novo Update</span>
             <h1 data-i18n="heroTitle">Melhore sua experiência no Fightcade</h1>
             <p data-i18n="heroDesc">
                 O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, 
@@ -965,7 +1029,7 @@
             </p>
             <div class="hero-actions">
                 <div class="hero-actions-row-top">
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.17.0/Setup-FightcadePlus-1.17.0.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v1.17.0 (.exe)</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/1.18.0/Setup-FightcadePlus-1.18.0.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v1.18.0 (.exe)</a>
                 </div>
                 <div class="hero-actions-row-bottom">
                     <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal" data-i18n="heroPaypal">Donate via PayPal</a>
@@ -1145,12 +1209,16 @@
         </div>
     </footer>
 
-    <!-- Floating Contact Button -->
-    <button id="tallyContactBtn" class="tally-contact-btn" aria-label="Contact">
-        <svg viewBox="0 0 24 24" width="26" height="26">
-            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
-        </svg>
-    </button>
+    <!-- Floating Contact Button with Attention Label -->
+    <div class="tally-contact-wrapper" id="tallyContactWrapper">
+        <span class="tally-contact-label" data-action="open-contact" data-i18n="contactLabel">💬 Dúvidas ou Sugestões? Fale Conosco</span>
+        <button id="tallyContactBtn" class="tally-contact-btn" aria-label="Contact" data-action="open-contact">
+            <svg viewBox="0 0 24 24" width="26" height="26">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+            </svg>
+            <span class="tally-badge-dot"></span>
+        </button>
+    </div>
 
     <!-- Multilingual Dictionary & Interactive Scripts -->
     <script>
@@ -1160,11 +1228,13 @@
                 navGallery: "Galeria",
                 navChangelog: "Changelog",
                 navSupport: "Apoiar",
-                downloadBtn: "Download v1.17.0",
-                heroTag: "v1.17.0 — Novo Update",
+                navContact: "Contato",
+                contactLabel: "💬 Dúvidas ou Sugestões? Fale Conosco",
+                downloadBtn: "Download v1.18.0",
+                heroTag: "v1.18.0 — Novo Update",
                 heroTitle: "Melhore sua experiência no Fightcade",
                 heroDesc: "O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.",
-                heroDownload: "Download Setup v1.17.0 (.exe)",
+                heroDownload: "Download Setup v1.18.0 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Apoiar via LivePix",
                 demoTitle: "Veja o Mod em Ação",
@@ -1207,11 +1277,13 @@
                 navGallery: "Gallery",
                 navChangelog: "Changelog",
                 navSupport: "Support",
-                downloadBtn: "Download v1.17.0",
-                heroTag: "v1.17.0 — New Update",
+                navContact: "Contact",
+                contactLabel: "💬 Questions or Feedback? Contact Us",
+                downloadBtn: "Download v1.18.0",
+                heroTag: "v1.18.0 — New Update",
                 heroTitle: "Elevate your Fightcade experience",
                 heroDesc: "Fightcade Plus is a full modular mod adding stability enhancements, automatic ping/country filters, integrated player reputation, and live stream queues to your native Fightcade client.",
-                heroDownload: "Download Setup v1.17.0 (.exe)",
+                heroDownload: "Download Setup v1.18.0 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Support via LivePix",
                 demoTitle: "See the Mod in Action",
@@ -1254,11 +1326,13 @@
                 navGallery: "Galería",
                 navChangelog: "Changelog",
                 navSupport: "Soporte",
-                downloadBtn: "Descargar v1.17.0",
-                heroTag: "v1.17.0 — Nueva Actualización",
+                navContact: "Contacto",
+                contactLabel: "💬 ¿Preguntas o Sugerencias? Contáctanos",
+                downloadBtn: "Descargar v1.18.0",
+                heroTag: "v1.18.0 — Nueva Actualización",
                 heroTitle: "Mejora tu experiencia en Fightcade",
                 heroDesc: "Fightcade Plus es un mod modular completo que añade mejoras de estabilidad, filtros automáticos de ping/país, reputación de jugadores y cola de streaming en vivo a tu cliente nativo de Fightcade.",
-                heroDownload: "Descargar Setup v1.17.0 (.exe)",
+                heroDownload: "Descargar Setup v1.18.0 (.exe)",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Apoyar vía LivePix",
                 demoTitle: "Mira el Mod en Acción",
@@ -1282,7 +1356,7 @@
                 galleryDesc: "Mira imágenes demostrativas de la extensión funcionando directamente integrada al cliente de escritorio de Fightcade.",
                 gallerySlide1Title: "Panel de Configuración Nativo",
                 gallerySlide1Desc: "Integración de interfaz impecable, preservando el diseño clásico con nuevos interruptores para el control modular de las funciones.",
-                gallerySlide2Title: "Lista de Jugadores Avanzada",
+                gallerySlide2Title: "Lista de Jogadores Avanzada",
                 gallerySlide2Desc: "Identificación instantánea de ping exacto y ubicación regional en una lista compacta para garantizar partidas estables.",
                 gallerySlide3Title: "Gestión de Fila de Transmisión",
                 gallerySlide3Desc: "Control visual de la cola de jugadores, integrando comandos automáticos de chat y control de partidas jugadas.",
@@ -1299,6 +1373,34 @@
         };
 
         const changelogTimelineData = [
+            {
+                version: "v1.18.0",
+                date: {
+                    pt: "29 de Agosto de 2026",
+                    en: "August 29, 2026",
+                    es: "29 de Agosto de 2026"
+                },
+                changes: {
+                    pt: [
+                        "Indicadores de tipo de conexão (Cabo, Wi-Fi e VPN) com ícones customizados e cores inteligentes.",
+                        "Opção para ocultar jogadores com ping alto na lista e no chat, mantendo favoritos imunes.",
+                        "Melhorias de UX no botão de reputação e preservação de tooltips de país ao passar o mouse.",
+                        "Ajustes de espaçamento para eliminar cortes de texto e patch de estabilidade contra erros no console."
+                    ],
+                    en: [
+                        "Connection type indicators (Cable, Wi-Fi, and VPN) with custom icons and smart ping colors.",
+                        "Option to hide high-ping players in user list and chat while keeping favorited players immune.",
+                        "UX improvements for reputation trigger button and country tooltips on flag hover.",
+                        "Padding adjustments to prevent ping text clipping and runtime stability patch for console errors."
+                    ],
+                    es: [
+                        "Indicadores de tipo de conexión (Cable, Wi-Fi y VPN) con iconos y colores dinámicos de ping.",
+                        "Opción para ocultar jugadores con ping alto en lista y chat, manteniendo favoritos inmunes.",
+                        "Mejoras de UX en el botón de reputación y conservación de tooltips de país en las banderas.",
+                        "Ajustes de padding para evitar recortes de texto y parche de estabilidad contra errores en consola."
+                    ]
+                }
+            },
             {
                 version: "v1.17.0",
                 date: {
@@ -1599,8 +1701,9 @@
             setLanguage(savedLang);
         });
 
-        // Initialize Tally Popup Click Listener
-        document.getElementById('tallyContactBtn').addEventListener('click', () => {
+        // Initialize Tally Popup Click Listener for floating button & menu links
+        function openContactModal(e) {
+            if (e) e.preventDefault();
             const langForms = {
                 pt: 'Gxg8GQ',
                 en: 'eqpkOo',
@@ -1616,6 +1719,10 @@
             } else {
                 window.open(`https://tally.so/r/${formId}`, '_blank');
             }
+        }
+
+        document.querySelectorAll('[data-action="open-contact"], .tally-contact-label, #tallyContactBtn').forEach(el => {
+            el.addEventListener('click', openContactModal);
         });
     </script>
 </body>

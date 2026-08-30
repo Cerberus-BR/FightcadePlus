@@ -5,7 +5,7 @@
 <h1 align="center">Plugin FightcadePlus</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.17.0-blue?style=for-the-badge" alt="Plugin Version" />
+  <img src="https://img.shields.io/badge/Version-1.18.0-blue?style=for-the-badge" alt="Plugin Version" />
   <img src="https://img.shields.io/badge/Plugin-Fightcade_Plus-red?style=for-the-badge" alt="Fightcade Inject" />
   <img src="https://img.shields.io/badge/Languages-EN%20%7C%20PT%20%7C%20ES-green?style=for-the-badge" alt="Languages" />
 </p>
@@ -38,7 +38,7 @@ A powerful, high-performance plugin injected directly into your Fightcade client
 
 ## 🇺🇸 English
 
-### Welcome to Fightcade Plus (by Cerberus)
+### Welcome to Fightcade Plus 
 
 **Fightcade Plus** enhances your Fightcade experience by adding quality-of-life additions, robust tools for streamers, custom ranking integrations, reputation-based filtering, and real-time interface enhancements.
 
@@ -179,7 +179,7 @@ Developing and maintaining Fightcade Plus requires substantial time and effort. 
 
 ## 🇧🇷 Português
 
-### Bem-vindo ao Fightcade Plus (por Cerberus)
+### Bem-vindo ao Fightcade Plus
 
 O **Fightcade Plus** eleva sua experiência no Fightcade adicionando melhorias de qualidade de vida, utilitários completos para streamers, rankings atualizados em tempo real, filtros de reputação e modificações na interface.
 
@@ -320,7 +320,7 @@ Manter o projeto atualizado e adicionar novas melhorias requer tempo e dedicaç�
 
 ## 🇪🇸 Español
 
-### Bienvenido a Fightcade Plus (por Cerberus)
+### Bienvenido a Fightcade Plus
 
 **Fightcade Plus** mejora significativamente tu experiencia en Fightcade integrando herramientas de calidad de vida, un completo panel para creadores de contenido (streamers), sincronización de clasificaciones en vivo, filtros avanzados de reputación y personalización de la interfaz.
 

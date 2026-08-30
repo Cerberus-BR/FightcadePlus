@@ -22,6 +22,7 @@ module.exports = {
                 showPingBars: "Show Ping Bars",
                 showPingText: "Show Ping as Text",
                 replacePingBar: "Replace ping bars with text (Sidebar)",
+                connectionTypes: { cable: "Cable", wifi: "Wi-Fi", vpn: "VPN / Relay" },
                 challengeSound: "Challenge Notification Sound",
                 soundNative: "Native (Game Default)",
                 soundCustom1: "#1 Go, new challenger!",
@@ -53,6 +54,7 @@ module.exports = {
                 pingFilter: "Filter Challenges by Max Ping (ms)",
                 maxPingMs: "Max Allowed Ping (ms)",
                 autoRejectPing: "Auto-Reject High Ping Challenges",
+                hideHighPing: "Hide High Ping Players in List & Chat",
                 rankOptions: { r0: "All (No Filter)", r1: "Rank E or above", r2: "Rank D or above", r3: "Rank C or above", r4: "Rank B or above", r5: "Rank A or above", r6: "Rank S only" },
                 syncLimitOptions: { num100: "100 Players", num300: "300 Players", num500: "500 Players", num900: "900 Players", rankA: "Until Rank A", rankB: "Until Rank B", rankC: "Until Rank C" },
                 extras: "Extras",
@@ -67,7 +69,7 @@ module.exports = {
                 queuePromo: "Live Promo Msg"
             },
             about: {
-                title: "Fightcade Plus 1.17.0",
+                title: "Fightcade Plus 1.18.0",
                 subtitle: "By Cerberus",
                 projectPage: "Project Page",
                 desc: "Elevate your gaming and streams. Fightcade Plus combines high performance, advanced challenger filtering, and dynamic community interaction in a single mod.",
@@ -129,6 +131,7 @@ module.exports = {
                 showPingBars: "Mostrar Barras de Ping",
                 showPingText: "Mostrar Ping em Texto",
                 replacePingBar: "Trocar barras de ping por texto (Lateral)",
+                connectionTypes: { cable: "Cabo", wifi: "Wi-Fi", vpn: "VPN / Relay" },
                 challengeSound: "Som de Desafio",
                 soundNative: "Padrão",
                 soundCustom1: "#1 Go, new challenger!",
@@ -160,6 +163,7 @@ module.exports = {
                 pingFilter: "Filtrar Desafios por Ping Máximo (ms)",
                 maxPingMs: "Ping Máximo Permitido (ms)",
                 autoRejectPing: "Auto-Recusar Desafios com Ping Alto",
+                hideHighPing: "Ocultar Jogadores com Ping Alto na Lista e Chat",
                 rankOptions: { r0: "Todos (Sem Filtro)", r1: "Rank E ou superior", r2: "Rank D ou superior", r3: "Rank C ou superior", r4: "Rank B ou superior", r5: "Rank A ou superior", r6: "Rank S apenas" },
                 syncLimitOptions: { num100: "100 Jogadores", num300: "300 Jogadores", num500: "500 Jogadores", num900: "900 Jogadores", rankA: "Até Rank A", rankB: "Até Rank B", rankC: "Até Rank C" },
                 extras: "Extras",
@@ -174,7 +178,7 @@ module.exports = {
                 queuePromo: "Mensagem do Bot (a cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.17.0",
+                title: "Fightcade Plus 1.18.0",
                 subtitle: "By Cerberus",
                 projectPage: "Página do Projeto",
                 desc: "Eleve o nível da sua jogatina e transmissões. O Fightcade Plus une alta performance, filtros avançados de desafiantes e interação dinâmica com a comunidade em um único mod.",
@@ -236,6 +240,7 @@ module.exports = {
                 showPingBars: "Mostrar Barras de Ping",
                 showPingText: "Mostrar Ping en Texto",
                 replacePingBar: "Cambiar barras de ping por texto (Lateral)",
+                connectionTypes: { cable: "Cable", wifi: "Wi-Fi", vpn: "VPN / Relay" },
                 challengeSound: "Sonido de Desafío",
                 soundNative: "Predeterminado",
                 soundCustom1: "#1 Go, new challenger!",
@@ -267,6 +272,7 @@ module.exports = {
                 pingFilter: "Filtrar Desafíos por Ping Máximo (ms)",
                 maxPingMs: "Ping Máximo Permitido (ms)",
                 autoRejectPing: "Auto-Rechazar Desafíos con Ping Alto",
+                hideHighPing: "Ocultar Jugadores con Ping Alto en Lista y Chat",
                 rankOptions: { r0: "Todos (Sin Filtro)", r1: "Rank E o superior", r2: "Rank D o superior", r3: "Rank C o superior", r4: "Rank B o superior", r5: "Rank A o superior", r6: "Solo Rank S" },
                 syncLimitOptions: { num100: "100 Jugadores", num300: "300 Jugadores", num500: "500 Jugadores", num900: "900 Jugadores", rankA: "Hasta Rank A", rankB: "Hasta Rank B", rankC: "Hasta Rank C" },
                 extras: "Extras",
@@ -281,7 +287,7 @@ module.exports = {
                 queuePromo: "Mensaje del Bot (cada 10min)"
             },
             about: {
-                title: "Fightcade Plus 1.17.0",
+                title: "Fightcade Plus 1.18.0",
                 subtitle: "By Cerberus",
                 projectPage: "Página del Proyecto",
                 desc: "Eleva el nivel de tu juego y transmisiones. Fightcade Plus combina alto rendimiento, filtros avanzados de retadores e interacción dinámica con la comunidad en un solo mod.",

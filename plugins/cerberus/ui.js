@@ -76,6 +76,30 @@ function injectStyles() {
         .q-live-btn.off:hover { background: rgba(170, 0, 0, 0.5); }
         .cerb-motd-update-notice { background: rgba(255, 165, 0, 0.15); border-left: 4px solid #ffaa00; padding: 10px 15px; margin-top: 15px; border-radius: 4px; color: #ffdca5; font-size: 13px; display: inline-block; width: calc(100% - 10px); box-sizing: border-box; line-height: 1.4; }
         body.cerb-hide-sidebar-ping .usersListToolbar .userItem .pingWrapper img.ping { display: none !important; }
+        
+        .cerb-net-icon {
+            display: inline-block;
+            vertical-align: middle;
+            width: 12px;
+            height: 12px;
+            margin-right: 3px;
+            flex-shrink: 0;
+        }
+        .cerb-net-cable {
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="6" y="14" width="12" height="8" rx="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="10" y1="6" x2="10.01" y2="6"></line><line x1="12" y1="10" x2="12" y2="14"></line></svg>') no-repeat center / contain;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="6" y="14" width="12" height="8" rx="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="10" y1="6" x2="10.01" y2="6"></line><line x1="12" y1="10" x2="12" y2="14"></line></svg>') no-repeat center / contain;
+            background-color: #cccccc;
+        }
+        .cerb-net-wifi {
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>') no-repeat center / contain;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>') no-repeat center / contain;
+            background-color: #fbbf24;
+        }
+        .cerb-net-vpn {
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>') no-repeat center / contain;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>') no-repeat center / contain;
+            background-color: #ff4444;
+        }
         .chatContent { padding-bottom: 20px !important; }
         .chatContent.blur-all .message .line .blocksContainer { filter: blur(5px); transition: filter 0.2s ease; user-select: none; }
         .chatContent.blur-all:hover .message .line .blocksContainer { filter: blur(0); user-select: text; }
@@ -84,7 +108,8 @@ function injectStyles() {
         #cerbGlobalMenu .cerb-action-icon { cursor: pointer; font-size: 16px; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease; display: inline-block; padding: 3px 5px; line-height: 1; }
         #cerbGlobalMenu .cerb-action-icon:hover { transform: scale(1.35) translateY(-2px); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6)); }
         .cerb-menu-divider { width: 1px; height: 18px; background: rgba(255, 255, 255, 0.2); margin: 0 3px; }
-        .userItem, .playerInfo { position: relative; }
+        .userItem { position: relative; padding-right: 2em !important; }
+        .playerInfo { position: relative; }
         .userItem .flagWrapper { transition: opacity 0.15s ease, visibility 0.15s ease; }
         .userItem:hover .flagWrapper { opacity: 0 !important; visibility: hidden !important; }
         .playerInfo .rank, .playerInfo img.rank, .playerInfo .playerRank, .playerInfo .rankImg, .playerInfo img[src*="rank"], .playerInfo .cerb-rank-badge, .playerInfo .cerberus-injected-rank { transition: opacity 0.15s ease, visibility 0.15s ease; }
@@ -377,6 +402,7 @@ function createSettingsTab() {
             settingToggle('pingFilter.enabled', t('settings.pingFilter')) +
             settingInput('pingFilter.maxPingMs', t('settings.maxPingMs'), 'number') +
             settingToggle('pingFilter.autoReject', t('settings.autoRejectPing')) +
+            settingToggle('pingFilter.hideHighPing', t('settings.hideHighPing')) +
             settingToggle('countryFilter.autoRejectNotify', t('autoReject.notifyToggle'))) +
         createMasterSection('chatUserInfo.masterEnabled', t('settings.chatVisual'), 'cerbChatVisualChildren',
             settingToggle('chatUserInfo.enableStatus', t('settings.showStatus')) +
@@ -969,18 +995,28 @@ function addReputationControlsToElement(hoverContainer, type) {
 
     if (type === 'sidebar' || type === 'list') {
         const flagEl = hoverContainer.querySelector('.flagWrapper');
-        if (flagEl && !triggerBtn) {
-            const btn = document.createElement('span');
-            btn.className = 'cerb-flag-trigger';
-            btn.title = t('rep.like') || 'Reputação / Opções';
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const currentKey = hoverContainer.dataset.currentUser;
-                if (currentKey && !_getUiDeps().isSystemUser(currentKey)) {
-                    openReputationMenuForUser(currentKey, type, flagEl);
-                }
-            });
-            hoverContainer.appendChild(btn);
+        if (flagEl) {
+            const countryTitle = flagEl.title || flagEl.querySelector('img')?.title || (window.CerberusFCADE?.globalUsers?.[activeUserKey]?.country?.name) || '';
+            if (triggerBtn) {
+                if (countryTitle) triggerBtn.title = countryTitle;
+            } else {
+                const btn = document.createElement('span');
+                btn.className = 'cerb-flag-trigger';
+                btn.title = countryTitle || t('rep.like') || 'Reputação / Opções';
+                btn.addEventListener('mouseenter', () => {
+                    const currentKey = hoverContainer.dataset.currentUser;
+                    const cTitle = flagEl.title || flagEl.querySelector('img')?.title || (window.CerberusFCADE?.globalUsers?.[currentKey]?.country?.name) || '';
+                    if (cTitle) btn.title = cTitle;
+                });
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const currentKey = hoverContainer.dataset.currentUser;
+                    if (currentKey && !_getUiDeps().isSystemUser(currentKey)) {
+                        openReputationMenuForUser(currentKey, type, flagEl);
+                    }
+                });
+                hoverContainer.appendChild(btn);
+            }
         }
     } else if (type === 'match') {
         const rankEl = hoverContainer.querySelector('.rank, img.rank, .playerRank, .rankImg, img[src*="rank"], .cerb-rank-badge, .cerberus-injected-rank') || hoverContainer.querySelector('.playerName');

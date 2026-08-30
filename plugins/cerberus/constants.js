@@ -21,7 +21,7 @@ const defaultConfig = {
     language: 'en',
     autoJoin: { enabled: true, channelId: '' },
     countryFilter: { enabled: false, autoReject: false, autoRejectNotify: true },
-    pingFilter: { enabled: false, maxPingMs: 150, autoReject: true },
+    pingFilter: { enabled: false, maxPingMs: 150, autoReject: true, hideHighPing: false },
     rankings: { masterEnabled: true, autoSync: true, limit: 500, country: '', minRankToAccept: 0, autoRejectBelowMin: false },
     chatUserInfo: {
         masterEnabled: true, enableStatus: true, enableFlag: true, enableRank: true,
@@ -37,7 +37,7 @@ const defaultConfig = {
 };
 
 module.exports = {
-    CURRENT_VERSION: "1.17.0",
+    CURRENT_VERSION: "1.18.0",
     AVAILABLE_COUNTRIES,
     COUNTRY_NAME_TO_CODE,
     defaultConfig

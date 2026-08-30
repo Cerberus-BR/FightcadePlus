@@ -18,9 +18,10 @@ function _deps() {
 function updateFilterShield() {
     const { ConfigManager } = _deps();
     const isCountryActive = ConfigManager.getSetting('countryFilter.enabled') === true;
+    const isPingActive = ConfigManager.getSetting('pingFilter.enabled') === true && ConfigManager.getSetting('pingFilter.hideHighPing') === true;
     const isHideNegActive = ConfigManager.getSetting('chatUserInfo.hideNegativeMessages') === true;
     const isSearchActive = (window.CerberusState.sidebarSearchTerm || '') !== '';
-    if (isCountryActive || isHideNegActive || isSearchActive) document.body.classList.add('cerb-filters-active');
+    if (isCountryActive || isPingActive || isHideNegActive || isSearchActive) document.body.classList.add('cerb-filters-active');
     else document.body.classList.remove('cerb-filters-active');
 }
 
@@ -343,7 +344,9 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                         if (elements.pingText) author.appendChild(elements.pingText);
                         if (cfg.blurMode === 'individual') msg.classList.add('blur-individual');
                         
-                        wrapper.dataset.cerberusUser = userKey; if (userCountry) wrapper.dataset.cerberusCountry = userCountry;
+                        wrapper.dataset.cerberusUser = userKey; 
+                        if (userCountry) wrapper.dataset.cerberusCountry = userCountry;
+                        if (minPingVal !== null) wrapper.dataset.cerberusPing = String(minPingVal);
                     }
                 }
             } else { wrapper.dataset.cerberusHidden = "false"; wrapper.style.display = ''; }
@@ -351,14 +354,32 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
         wrapper.dataset.cerberusProcessed = "true";
     }
 
-    const countryFilterEnabled = filterCfg?.enabled === true; const hideNeg = cfg?.hideNegativeMessages;
-    if (isImmuneSystem || (!countryFilterEnabled && !hideNeg)) { if (wrapper.dataset.cerberusHidden === "true") { wrapper.style.display = ''; wrapper.dataset.cerberusHidden = "false"; } return; }
+    const countryFilterEnabled = filterCfg?.enabled === true; 
+    const hideNeg = cfg?.hideNegativeMessages;
+    const pingCfg = ConfigManager.getSetting('pingFilter');
+    const pingFilterActive = pingCfg?.enabled === true && pingCfg?.hideHighPing === true;
+    const maxPing = pingCfg?.maxPingMs || 150;
+
+    if (isImmuneSystem || (!countryFilterEnabled && !hideNeg && !pingFilterActive)) { 
+        if (wrapper.dataset.cerberusHidden === "true") { wrapper.style.display = ''; wrapper.dataset.cerberusHidden = "false"; } 
+        return; 
+    }
 
     const msgNode = wrapper.querySelector('.message.chat');
-    if (!msgNode || isSystemUser(wrapper.dataset.cerberusUser)) { if (wrapper.dataset.cerberusHidden === "true") { wrapper.style.display = ''; wrapper.dataset.cerberusHidden = "false"; } return; }
+    if (!msgNode || isSystemUser(wrapper.dataset.cerberusUser)) { 
+        if (wrapper.dataset.cerberusHidden === "true") { wrapper.style.display = ''; wrapper.dataset.cerberusHidden = "false"; } 
+        return; 
+    }
 
-    const userKey = wrapper.dataset.cerberusUser; const userCountry = wrapper.dataset.cerberusCountry;
-    let shouldHide = (hideNeg && CerberusData.isNegative(userKey)) || (countryFilterEnabled && !CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(userKey));
+    const userKey = wrapper.dataset.cerberusUser; 
+    const userCountry = wrapper.dataset.cerberusCountry;
+    const userPing = wrapper.dataset.cerberusPing ? parseInt(wrapper.dataset.cerberusPing) : null;
+
+    let isBlockedByCountry = countryFilterEnabled && !CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(userKey);
+    let isBlockedByPing = pingFilterActive && userPing !== null && userPing > maxPing && !CerberusData.isPositive(userKey);
+    let isBlockedByRep = hideNeg && CerberusData.isNegative(userKey);
+
+    let shouldHide = isBlockedByRep || isBlockedByCountry || isBlockedByPing;
 
     if (shouldHide && wrapper.dataset.cerberusHidden !== "true") { wrapper.style.display = 'none'; wrapper.dataset.cerberusHidden = "true"; }
     else if (!shouldHide && wrapper.dataset.cerberusHidden !== "false") { wrapper.style.display = ''; wrapper.dataset.cerberusHidden = "false"; }
@@ -374,7 +395,12 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
 
     const globalUsers = FCADE.globalUsers; if (!globalUsers) return;
 
-    const cfg = configFull.chatUserInfo; const countryFilterEnabled = configFull.countryFilter?.enabled === true;
+    const cfg = configFull.chatUserInfo; 
+    const countryFilterEnabled = configFull.countryFilter?.enabled === true;
+    const pingCfg = configFull.pingFilter;
+    const pingFilterActive = pingCfg?.enabled === true && pingCfg?.hideHighPing === true;
+    const maxPing = pingCfg?.maxPingMs || 150;
+
     const activeGameId = getActiveGameId(FCADE, cw);
     const searchTerm = window.CerberusState.sidebarSearchTerm || '';
 
@@ -425,34 +451,80 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
             addReputationControlsToElement(item, 'list'); 
             }
 
-            if (masterVisuals && cfg?.replacePingBarWithText) {
-                const pingWrapper = item.querySelector('.pingWrapper');
-                if (pingWrapper) {
-                    const img = pingWrapper.querySelector('img.ping'); const minPing = extractMinPing(img ? img.title : pingWrapper.title);
-                    if (minPing !== null) {
-                        let color = minPing < 60 ? '#00ff00' : (minPing > 90 ? '#ff4444' : '#aaa');
-                        let txt = pingWrapper.querySelector('.cerberus-ping-text');
-                        const newText = `${minPing}ms`;
-                        if (!txt) { txt = document.createElement('span'); txt.className = 'cerberus-ping-text'; Object.assign(txt.style, { fontSize: '11px', fontWeight: 'bold', marginLeft: 'auto', verticalAlign: 'middle' }); pingWrapper.appendChild(txt); }
-                        // [CERBERUS] CPU Guard: Only updates DOM if the value has changed
-                        if (txt.innerText !== newText) txt.innerText = newText;
-                        if (txt.style.color !== color) txt.style.color = color;
+            let minPingVal = null;
+            const pingWrapper = item.querySelector('.pingWrapper');
+            if (pingWrapper) {
+                const img = pingWrapper.querySelector('img.ping'); 
+                minPingVal = extractMinPing(img ? img.title : pingWrapper.title);
+                if (masterVisuals && cfg?.replacePingBarWithText && minPingVal !== null) {
+                    const imgSrc = (img ? (img.src || img.getAttribute('src') || '') : '').toLowerCase();
+                    const imgTitle = ((img ? img.title : '') || pingWrapper.title || '').toLowerCase();
+
+                    let netType = 'cable';
+                    if (imgSrc.includes('wifi') || imgTitle.includes('wifi') || imgTitle.includes('wireless') || img?.classList?.contains('wifi')) {
+                        netType = 'wifi';
+                    } else if (imgSrc.includes('relay') || imgSrc.includes('vpn') || imgSrc.includes('turn') || imgTitle.includes('relay') || imgTitle.includes('vpn') || imgTitle.includes('proxy')) {
+                        netType = 'vpn';
                     }
+
+                    let color = '#aaa';
+                    if (netType === 'vpn') {
+                        color = '#ff4444'; // [CERBERUS] VPN is always red
+                    } else if (netType === 'wifi') {
+                        color = minPingVal > 90 ? '#ff4444' : '#fbbf24'; // [CERBERUS] Wi-Fi: green/neutral become yellow
+                    } else {
+                        if (minPingVal < 60) color = '#00ff00';
+                        else if (minPingVal > 90) color = '#ff4444';
+                        else color = '#aaa';
+                    }
+
+                    let txt = pingWrapper.querySelector('.cerberus-ping-text');
+                    const newText = `${minPingVal}ms`;
+                    if (!txt) { 
+                        txt = document.createElement('span'); 
+                        txt.className = 'cerberus-ping-text'; 
+                        Object.assign(txt.style, { fontSize: '11px', fontWeight: 'bold', marginLeft: 'auto', verticalAlign: 'middle', display: 'inline-flex', alignItems: 'center' }); 
+                        pingWrapper.appendChild(txt); 
+                    }
+
+                    let netIcon = txt.querySelector('.cerb-net-icon');
+                    if (!netIcon) {
+                        netIcon = document.createElement('span');
+                        txt.insertBefore(netIcon, txt.firstChild);
+                    }
+                    const netClass = `cerb-net-icon cerb-net-${netType}`;
+                    if (netIcon.className !== netClass) netIcon.className = netClass;
+
+                    let numSpan = txt.querySelector('.cerb-ping-num');
+                    if (!numSpan) {
+                        numSpan = document.createElement('span');
+                        numSpan.className = 'cerb-ping-num';
+                        txt.appendChild(numSpan);
+                    }
+                    if (numSpan.innerText !== newText) numSpan.innerText = newText;
+                    if (txt.style.color !== color) txt.style.color = color;
+                    const { t } = _deps();
+                    const netLabel = (typeof t === 'function' ? t(`settings.connectionTypes.${netType}`) : null) || (netType === 'cable' ? 'Cable' : (netType === 'wifi' ? 'Wi-Fi' : 'VPN'));
+                    const tooltipText = `${netLabel} (${minPingVal}ms)`;
+                    if (txt.title !== tooltipText) txt.title = tooltipText;
                 }
-            } else { 
-                const pingWrapper = item.querySelector('.pingWrapper'); 
-                if (pingWrapper) { const txt = pingWrapper.querySelector('.cerberus-ping-text'); if (txt) txt.remove(); } 
+            }
+            if (!masterVisuals || !cfg?.replacePingBarWithText) {
+                if (pingWrapper) { const txt = pingWrapper.querySelector('.cerberus-ping-text'); if (txt) txt.remove(); }
             }
 
             let userCountry = globalUsers[userKey]?.country?.iso_code?.toUpperCase();
             if (!userCountry) { const flagEl = item.querySelector('.flagWrapper'); if (flagEl && flagEl.title) userCountry = COUNTRY_NAME_TO_CODE[flagEl.title]; }
 
             let isBlockedByCountry = countryFilterEnabled && !CerberusData.isCountryAllowed(userCountry) && !CerberusData.isPositive(userKey);
+            let isBlockedByPing = pingFilterActive && minPingVal !== null && minPingVal > maxPing && !CerberusData.isPositive(userKey);
+            let isBlocked = isBlockedByCountry || isBlockedByPing;
 
             // [CERBERUS] CPU Guard: Only updates display if target style differs from current
-            const targetDisplay = (!matchesSearch || isBlockedByCountry) ? 'none' : '';
+            const targetDisplay = (!matchesSearch || isBlocked) ? 'none' : '';
             if (item.style.display !== targetDisplay) item.style.display = targetDisplay;
-            item.dataset.cerbSearchHidden = !matchesSearch ? "true" : "false"; item.dataset.countryBlocked = isBlockedByCountry ? "true" : "false";
+            item.dataset.cerbSearchHidden = !matchesSearch ? "true" : "false"; 
+            item.dataset.countryBlocked = isBlocked ? "true" : "false";
             item.dataset.cerberusProcessed = "true";
         } catch (e) { }
     });

@@ -10,10 +10,17 @@ function init(FCADE) {
     const { updateFilterShield, attachMultiObservers, setupChatMessageInterceptor } = require('./chat.js');
     const { setupChallengeInterceptor } = require('./challenge.js');
     
-    // 0. Privacy Shield: Block Google Analytics & Tag Manager
+    // 0. Privacy Shield & Safety Patch
     blockAnalyticsAndTagManager();
-
-    // 1. Data Loading (RAM)
+    const VueConstructor = FCADE?.constructor || window.Vue;
+    if (VueConstructor && typeof VueConstructor.set === 'function' && !VueConstructor._cerbSetPatched) {
+        const origSet = VueConstructor.set;
+        VueConstructor.set = function(target, key, val) {
+            if (!target || typeof target !== 'object') return val;
+            return origSet.call(this, target, key, val);
+        };
+        VueConstructor._cerbSetPatched = true;
+    }
     CerberusData.load();
     ConfigManager.loadConfig();
     RankCache.load();

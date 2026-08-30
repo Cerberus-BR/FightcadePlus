@@ -89,7 +89,7 @@ const ConfigManager = {
             }
         }
         
-        if (pathStr === 'countryFilter.enabled' || pathStr === 'chatUserInfo.hideNegativeMessages') { 
+        if (pathStr === 'countryFilter.enabled' || pathStr === 'chatUserInfo.hideNegativeMessages' || pathStr.startsWith('pingFilter.')) { 
             updateFilterShield(); 
             invalidateCountryFilterCache(); 
         }

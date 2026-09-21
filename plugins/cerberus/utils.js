@@ -2,7 +2,7 @@
 
 const { Locales } = require('./locales.js');
 
-function t(keyPath) {
+function t(keyPath, params) {
     const { ConfigManager } = require('./config.js');
     const lang = ConfigManager.getSetting('language') || 'en';
     const keys = keyPath.split('.');
@@ -12,7 +12,20 @@ function t(keyPath) {
         if (result === undefined) break; 
         result = result[k]; 
     }
-    return result || keyPath;
+    if (result === undefined && lang !== 'en' && Locales.en) {
+        result = Locales.en;
+        for (let k of keys) {
+            if (result === undefined) break;
+            result = result[k];
+        }
+    }
+    let str = result !== undefined ? result : keyPath;
+    if (params && typeof str === 'string') {
+        for (const [pKey, pVal] of Object.entries(params)) {
+            str = str.replace(new RegExp(`\\{${pKey}\\}`, 'g'), String(pVal));
+        }
+    }
+    return str;
 }
 
 function normalizeUsername(username) { 
@@ -21,6 +34,28 @@ function normalizeUsername(username) {
 
 function isSystemUser(username) { 
     return !username || username === '<offline>' || username.startsWith('<'); 
+}
+
+function getLocalUsername(FCADE) {
+    let username = '';
+    const inst = FCADE || (typeof window !== 'undefined' ? window.CerberusFCADE : null);
+    if (inst) {
+        username = inst.localUser?.name || inst.user?.username || inst.user?.name || inst.username || inst.my_user?.username || inst.profile?.username || '';
+    }
+    if (!username && typeof document !== 'undefined') {
+        const userEl = document.querySelector('.userIdWrapper .userName, .settingsWrapper .userName, .settingsSection .userName, .mainToolbar .userName');
+        if (userEl) username = userEl.textContent?.trim() || '';
+    }
+    if (!username && typeof localStorage !== 'undefined') {
+        try {
+            const raw = localStorage.getItem('user') || localStorage.getItem('userData') || localStorage.getItem('profile');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                username = parsed?.username || parsed?.name || '';
+            }
+        } catch (e) { }
+    }
+    return username ? username.trim() : '';
 }
 
 function extractMinPing(title) {
@@ -135,9 +170,10 @@ async function checkForUpdates(force = false) {
             const response = await fetch('https://cerberus-br.github.io/FightcadePlus/version.json');
             if (response.ok) {
                 const data = await response.json();
-                if (data && data.latestVersion) { 
-                    CerberusData.latestVersion = data.latestVersion; 
+                if (data && (data.latestVersion || Array.isArray(data.notices))) { 
+                    if (data.latestVersion) CerberusData.latestVersion = data.latestVersion; 
                     CerberusData.downloadUrl = data.downloadUrl || null;
+                    CerberusData.remoteNotices = Array.isArray(data.notices) ? data.notices : [];
                     CerberusData.lastUpdateCheck = now; 
                     CerberusData.save(); 
                     return true;
@@ -147,6 +183,40 @@ async function checkForUpdates(force = false) {
         return false;
     }
     return true; // Already verified recently, treated as success
+}
+
+function resolveNoticeLocale(notice, currentLang = 'pt') {
+    if (!notice) return null;
+    const lang = String(currentLang || 'pt').toLowerCase();
+
+    // If notice is restricted to a single specific language
+    if (notice.lang && String(notice.lang).toLowerCase() !== lang) {
+        return null;
+    }
+
+    let text = '';
+    if (typeof notice.text === 'object' && notice.text !== null) {
+        text = notice.text[lang] || notice.text['en'] || notice.text['pt'] || Object.values(notice.text)[0] || '';
+    } else if (typeof notice.text === 'string') {
+        text = notice.text;
+    }
+
+    if (!text) return null;
+
+    let linkLabel = '';
+    if (typeof notice.linkLabel === 'object' && notice.linkLabel !== null) {
+        linkLabel = notice.linkLabel[lang] || notice.linkLabel['en'] || notice.linkLabel['pt'] || Object.values(notice.linkLabel)[0] || '';
+    } else if (typeof notice.linkLabel === 'string') {
+        linkLabel = notice.linkLabel;
+    }
+
+    return {
+        id: notice.id || '',
+        text,
+        link: notice.link || null,
+        linkLabel: linkLabel || (lang === 'pt' ? 'Mais detalhes' : (lang === 'es' ? 'Más detalles' : 'More details')),
+        style: notice.style || 'info'
+    };
 }
 
 const connectToChannelWhenAvailable = (FCADE, autoJoinConfig) => {
@@ -388,10 +458,24 @@ function blockAnalyticsAndTagManager() {
     };
 }
 
+function formatAllowedFts(ftCfg) {
+    let list = [];
+    if (ftCfg?.allowFt2 !== false) list.push('`ꜰᴛ2`');
+    if (ftCfg?.allowFt3 !== false) list.push('`ꜰᴛ3`');
+    if (ftCfg?.allowFt5 !== false) list.push('`ꜰᴛ5`');
+    if (ftCfg?.allowFt10 !== false) list.push('`ꜰᴛ10`');
+    if (ftCfg?.allowFt20 !== false) list.push('`ꜰᴛ20`');
+    if (ftCfg?.allowCasual !== false) list.push('`ᴄᴀꜱᴜᴀʟ`');
+    if (list.length === 0) {
+        list = ['`ꜰᴛ2`', '`ꜰᴛ3`', '`ꜰᴛ5`', '`ꜰᴛ10`', '`ꜰᴛ20`', '`ᴄᴀꜱᴜᴀʟ`'];
+    }
+    return list.join(', ');
+}
+
 module.exports = {
-    t, normalizeUsername, isSystemUser, extractMinPing, getMinPing,
+    t, normalizeUsername, isSystemUser, getLocalUsername, extractMinPing, getMinPing,
     playPopSound, executeChatCommand, executeChatMacro, getActiveChannelWrapper,
     isRankedChannel, getActiveGameId, isNewerVersion, checkForUpdates,
-    connectToChannelWhenAvailable, setupAudioSilencer, silenceRecentAudios,
-    blockAnalyticsAndTagManager
+    resolveNoticeLocale, connectToChannelWhenAvailable, setupAudioSilencer,
+    silenceRecentAudios, blockAnalyticsAndTagManager, formatAllowedFts
 };

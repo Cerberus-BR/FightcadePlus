@@ -19,8 +19,11 @@ const ConfigManager = {
             fullConfigCache = fullConfig; runtimeConfig = { ...defaultConfig, ...(fullConfig.cerberus || {}) };
             runtimeConfig.chatUserInfo = { ...defaultConfig.chatUserInfo, ...(runtimeConfig.chatUserInfo || {}) };
             runtimeConfig.liveQueue = { ...defaultConfig.liveQueue, ...(runtimeConfig.liveQueue || {}) };
-            runtimeConfig.rankings = { ...defaultConfig.rankings, ...(runtimeConfig.rankings || {}) };
+            runtimeConfig.rankings = { enableElo: false, enableSimulator: false, defaultFt: 5, ...defaultConfig.rankings, ...(runtimeConfig.rankings || {}) };
+            if (!runtimeConfig.rankings.defaultFt) runtimeConfig.rankings.defaultFt = 5;
             runtimeConfig.countryFilter = { ...defaultConfig.countryFilter, ...(runtimeConfig.countryFilter || {}) };
+            runtimeConfig.ftFilter = { ...defaultConfig.ftFilter, ...(runtimeConfig.ftFilter || {}) };
+            runtimeConfig.performance = { ...defaultConfig.performance, ...(runtimeConfig.performance || {}) };
         } else { 
             runtimeConfig = JSON.parse(JSON.stringify(defaultConfig)); 
             fullConfigCache = { cerberus: runtimeConfig }; 
@@ -37,7 +40,7 @@ const ConfigManager = {
         }, 500);
     },
     updateSetting(pathStr, value) {
-        const { updateFilterShield, invalidateCountryFilterCache, fullChatScanScoped } = require('./chat.js');
+        const { updateFilterShield, invalidateCountryFilterCache, fullChatScanScoped, updateSidebarScope } = require('./chat.js');
         const { getActiveChannelWrapper } = require('./utils.js');
 
         const keys = pathStr.split('.'); let current = runtimeConfig;
@@ -68,14 +71,18 @@ const ConfigManager = {
             }
         }
 
-        if ((pathStr.startsWith('chatUserInfo.') && pathStr !== 'chatUserInfo.replacePingBarWithText') || pathStr === 'rankings.masterEnabled') {
+        if ((pathStr.startsWith('chatUserInfo.') && pathStr !== 'chatUserInfo.replacePingBarWithText') || pathStr === 'rankings.masterEnabled' || pathStr === 'rankings.enableElo') {
             document.querySelectorAll('.messageWrapper').forEach(wrapper => {
-                wrapper.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge').forEach(el => el.remove());
+                wrapper.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge, .cerb-challenge-elo-hint, .cerb-endgame-elo-box').forEach(el => el.remove());
                 wrapper.removeAttribute('data-cerberus-processed'); wrapper.removeAttribute('data-cerb-identity');
             });
             if (window.CerberusFCADE) {
                 const cw = getActiveChannelWrapper();
-                if (cw) fullChatScanScoped(cw, window.CerberusFCADE, runtimeConfig);
+                if (cw) {
+                    fullChatScanScoped(cw, window.CerberusFCADE, runtimeConfig);
+                    const usersListWrapper = cw.querySelector('.usersListWrapper');
+                    if (usersListWrapper) updateSidebarScope(usersListWrapper, window.CerberusFCADE, runtimeConfig);
+                }
             }
         }
         
@@ -92,6 +99,19 @@ const ConfigManager = {
         if (pathStr === 'countryFilter.enabled' || pathStr === 'chatUserInfo.hideNegativeMessages' || pathStr.startsWith('pingFilter.')) { 
             updateFilterShield(); 
             invalidateCountryFilterCache(); 
+        }
+
+        if (pathStr === 'rankings.enableSimulator' || pathStr === 'liveQueue.enabled') {
+            const { injectUIEnhancements } = require('./ui.js');
+            injectUIEnhancements();
+        }
+
+        if (pathStr === 'performance.lowPowerOnBlur') {
+            if (value === false) {
+                document.body.classList.remove('cerb-eco-mode');
+            } else if (!document.hasFocus() || document.hidden) {
+                document.body.classList.add('cerb-eco-mode');
+            }
         }
     },
     getSetting(pathStr) {

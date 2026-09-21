@@ -5,7 +5,7 @@ function init(FCADE) {
     const { CerberusData } = require('./state.js');
     const { ConfigManager } = require('./config.js');
     const { RankCache } = require('./api.js');
-    const { injectStyles, createControlPanel, createQueuePanel, applyTheme, injectGlobalMenu, injectHeaderButtons, injectSidebarSearch, injectUIEnhancements, onChannelSwitch, unlockColorThemes } = require('./ui.js');
+    const { injectStyles, createControlPanel, createQueuePanel, createSimulatorPanel, applyTheme, injectGlobalMenu, injectHeaderButtons, injectSidebarSearch, injectUIEnhancements, onChannelSwitch, unlockColorThemes } = require('./ui.js');
     const { connectToChannelWhenAvailable, setupAudioSilencer, checkForUpdates, executeChatMacro, blockAnalyticsAndTagManager, t } = require('./utils.js');
     const { updateFilterShield, attachMultiObservers, setupChatMessageInterceptor } = require('./chat.js');
     const { setupChallengeInterceptor } = require('./challenge.js');
@@ -44,11 +44,17 @@ function init(FCADE) {
     }
 
     if (runtimeConfig.liveQueue?.enabled === true) createQueuePanel();
+    if (runtimeConfig.rankings?.enableSimulator === true) createSimulatorPanel();
 
     if (window.cerbMainLoopInterval) clearInterval(window.cerbMainLoopInterval);
     
     // [CERBERUS] Performance: Watchdog interval relaxed to 10s (Event-driven UI healing handles channel switches)
     window.cerbMainLoopInterval = setInterval(() => {
+        // [CERBERUS] Eco Mode: Skip heavy DOM watchdog passes while window is unfocused
+        if (document.body.classList.contains('cerb-eco-mode')) {
+            return;
+        }
+
         updateFilterShield(); 
         attachMultiObservers(FCADE, runtimeConfig);
 
@@ -100,6 +106,7 @@ function init(FCADE) {
     scheduleAutoSync(FCADE);
     observeChannelSwitches(FCADE);
     checkForUpdates();
+    setupPowerSaver(FCADE);
 }
 
 function scheduleAutoSync(FCADE) {
@@ -161,6 +168,52 @@ function observeChannelSwitches(FCADE) {
         attributes: true,
         attributeFilter: ['class']
     });
+}
+
+// [CERBERUS] Eco Mode: Throttle animations and DOM watchdog passes when window is unfocused
+function setupPowerSaver(FCADE) {
+    if (window._cerbPowerSaverInitialized) return;
+    window._cerbPowerSaverInitialized = true;
+
+    const { ConfigManager } = require('./config.js');
+
+    const updatePowerState = (isUnfocused) => {
+        const isEnabled = ConfigManager.getSetting('performance.lowPowerOnBlur') !== false;
+        if (!isEnabled) {
+            document.body.classList.remove('cerb-eco-mode');
+            return;
+        }
+
+        if (isUnfocused) {
+            document.body.classList.add('cerb-eco-mode');
+        } else {
+            const wasInEco = document.body.classList.contains('cerb-eco-mode');
+            document.body.classList.remove('cerb-eco-mode');
+            if (wasInEco) {
+                try {
+                    const { injectHeaderButtons, injectSidebarSearch, injectUIEnhancements } = require('./ui.js');
+                    const { updateFilterShield, attachMultiObservers } = require('./chat.js');
+                    const rtCfg = ConfigManager.getRuntimeConfig();
+                    updateFilterShield();
+                    attachMultiObservers(FCADE, rtCfg);
+                    injectHeaderButtons(FCADE);
+                    injectSidebarSearch();
+                    injectUIEnhancements();
+                } catch (e) {}
+            }
+        }
+    };
+
+    window.addEventListener('blur', () => updatePowerState(true));
+    window.addEventListener('focus', () => updatePowerState(false));
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) updatePowerState(true);
+        else updatePowerState(!document.hasFocus());
+    });
+
+    if (!document.hasFocus() || document.hidden) {
+        updatePowerState(true);
+    }
 }
 
 module.exports = { init };

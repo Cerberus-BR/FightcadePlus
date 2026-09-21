@@ -21,23 +21,37 @@ const defaultConfig = {
     language: 'en',
     autoJoin: { enabled: true, channelId: '' },
     countryFilter: { enabled: false, autoReject: false, autoRejectNotify: true },
+    ftFilter: {
+        enabled: false,
+        autoReject: true,
+        allowFt2: true,
+        allowFt3: true,
+        allowFt5: true,
+        allowFt10: true,
+        allowFt20: true,
+        allowCasual: true
+    },
     pingFilter: { enabled: false, maxPingMs: 150, autoReject: true, hideHighPing: false },
-    rankings: { masterEnabled: true, autoSync: true, limit: 500, country: '', minRankToAccept: 0, autoRejectBelowMin: false },
+    rankings: { masterEnabled: true, autoSync: true, limit: 900, minRankToAccept: 0, autoRejectBelowMin: false, enableElo: false, enableSimulator: false, defaultFt: 5 },
     chatUserInfo: {
         masterEnabled: true, enableStatus: true, enableFlag: true, enableRank: true,
         showNumericRanks: true, enablePingText: true, enablePingBars: true,
         replacePingBarWithText: true, enableReputation: true, hideNegativeMessages: false,
-        autoRejectNegative: true, unlockColorThemes: true, blurMode: 'none', challengeSound: 'native'
+        autoRejectNegative: true, unlockColorThemes: true, blurMode: 'none', challengeSound: 'native',
+        chatMuted: false
     },
     liveQueue: {
         enabled: false, keyword: '!join', limit: 10, streamerNick: '',
         autoReply: false, promoEnabled: false,
         promoMessage: '`[AO VIVO]` *Venham jogar e participar da live!*\nDigite: `!join` no chat para entrar na fila.\nAssista em: `https://www.youtube.com/channel/UCHLOCrvPfeS8J4T8k5qpYwQ`'
+    },
+    performance: {
+        lowPowerOnBlur: true
     }
 };
 
 module.exports = {
-    CURRENT_VERSION: "1.18.0",
+    CURRENT_VERSION: "2.0.0",
     AVAILABLE_COUNTRIES,
     COUNTRY_NAME_TO_CODE,
     defaultConfig

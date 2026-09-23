@@ -5,7 +5,7 @@
 <h1 align="center">FightcadePlus (Plugin)</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-2.0.0-blue?style=for-the-badge" alt="Plugin Version" />
+  <img src="https://img.shields.io/badge/Version-2.0.1-blue?style=for-the-badge" alt="Plugin Version" />
   <img src="https://img.shields.io/badge/Plugin-Fightcade_Plus-red?style=for-the-badge" alt="Fightcade Inject" />
   <img src="https://img.shields.io/badge/Languages-EN%20%7C%20PT%20%7C%20ES-green?style=for-the-badge" alt="Languages" />
 </p>
@@ -52,7 +52,10 @@ A powerful, high-performance plugin injected directly into your Fightcade client
 ### 🚀 Features
 
 #### 🏆 Elo Radar & Pre-Match Goals
-- **Continuous Elo Estimation**: Calculates player ratings by blending official Fightcade data with a competitive quadratic pyramid curve (`p = 2.0`) across rank tiers.
+- **Hybrid Elo Engine (Exact vs Estimated)**:
+  - 👑 **Patreon Subscribers ("Ranked Warrior" tier or higher)**: Fightcade officially provides raw numeric ratings in the backend API and post-match chat results. The plugin detects these payloads and reports the **100% exact real Elo** (`source: 'reported'`).
+  - 🎮 **Free Users (Non-subscribers)**: Because Fightcade hides numeric Elo for free accounts (displaying only letter ranks E through S and leaderboard position), Cerberus calculates a **continuous high-precision estimate** using a competitive quadratic pyramid curve (`p = 2.0`) over rank boundaries (E: 400–699, D: 700–999, C: 1000–1299, B: 1300–1599, A: 1600–1899, S: 1900–2400).
+  - ⚖️ **Partial Coverage Fallback**: Players outside the synced leaderboard range use the static tier midpoint (`source: 'partial'`).
 - **Dynamic Hover Metas**: Hovering over players in the sidebar or challenge cards reveals target point gains and contextual goals based on the selected FT format.
 - **FGC Contextual Insight**: Identifies high-value close matches where even a tight loss awards positive net Elo ("heroic loss").
 
@@ -135,15 +138,27 @@ Replace the default Fightcade challenge bell with one of **20 custom high-qualit
 
 The recommended method is downloading the pre-configured **Fightcade Plus** installer, featuring **automatic ROM installation** when entering game channels!
 
-📥 **[Download Latest Release (Setup-FightcadePlus-2.0.0.exe)](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
+- 📥 **[Download Installer (Setup-FightcadePlus-2.0.1.exe)](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
+- 📦 **[Download Portable (.zip)](https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.1/FightcadePlus-2.0.1.zip)**
 
 #### Setup Steps:
-1. Download and run `Setup-FightcadePlus-2.0.0.exe` with Fightcade closed.
+1. Download and run `Setup-FightcadePlus-2.0.1.exe` with Fightcade closed (or extract `FightcadePlus-2.0.1.zip` to any folder).
 2. Launch Fightcade.
 3. Click the gear icon (**⚙️**) in the user list header to open Cerberus Settings.
 
+> [!TIP]
+> **Portable Version & ROMs**: The compressed `.zip` package does not include game ROMs to keep the download size compact. If you already have game channels open upon logging in, simply **leave the channel and rejoin it** to download the ROMs automatically!
+
 > [!NOTE]
 > **Manual Installation**: If updating an existing standalone installation, extract the release archive and overwrite `inject.js` and the `/plugins/` folder inside `fc2-electron/resources/app/inject/`.
+
+#### 🛡️ Windows SmartScreen Notice ("Windows protected your PC")
+
+If Windows Defender SmartScreen shows a blue warning window, this is normal for open-source community installers without costly commercial certificates:
+
+- **Quick Run (10 seconds - Recommended):** Click **"More info"** on the blue SmartScreen prompt, then click **"Run anyway"**.
+- **Unblock via File Properties:** Right-click `Setup-FightcadePlus-2.0.1.exe` > **Properties** > check **"Unblock"** at the bottom > click **Apply** > **OK**.
+- **Disable SmartScreen in Windows Settings (Optional):** Start Menu > search **Windows Security** > **App & browser control** > **Reputation-based protection settings** > toggle off **"Check apps and files"**.
 
 ---
 
@@ -243,7 +258,10 @@ O **Fightcade Plus** eleva sua experiência no Fightcade adicionando melhorias d
 ### 🚀 Funcionalidades
 
 #### 🏆 Radar de Elo e Recomendações Pré-Jogo
-- **Estimativa Contínua de Elo**: Mapeia a pontuação dos jogadores combinando dados oficiais do Fightcade com uma curva competitiva piramidal quadrática (`p = 2.0`).
+- **Motor Híbrido de Elo (Exato vs Estimado)**:
+  - 👑 **Assinantes Patreon ("Ranked Warrior" ou superior)**: O Fightcade envia a pontuação numérica oficial diretamente na API e no chat pós-partida. O plugin detecta esses dados e exibe o **Elo real 100% exato** (`source: 'reported'`).
+  - 🎮 **Usuários Gratuitos (Não-assinantes)**: Como o Fightcade oculta o número bruto para contas free (exibindo apenas a letra do rank e a posição no ranking), o Cerberus calcula uma **estimativa contínua de alta precisão** aplicando uma curva piramidal quadrática competitiva (`p = 2.0`) sobre os limites da patente (E: 400–699, D: 700–999, C: 1000–1299, B: 1300–1599, A: 1600–1899, S: 1900–2400).
+  - ⚖️ **Fallback de Cobertura Parcial**: Jogadores fora da varredura da leaderboard utilizam o ponto médio estático da faixa da letra (`source: 'partial'`).
 - **Metas Dinâmicas no Hover**: Ao passar o mouse sobre jogadores na lista lateral ou nos desafios recebidos/enviados, exibe as metas de pontuação baseadas no formato FT escolhido.
 - **Análise Contextual FGC**: Identifica confrontos acirrados em que até uma derrota apertada concede ganho de Elo ("vitória heroica").
 
@@ -326,15 +344,27 @@ Substitua o som de sino padrão por **20 falas e efeitos sonoros exclusivos de a
 
 A maneira recomendada é baixando o instalador integrado do **Fightcade Plus**, que já inclui **instalador automático de ROMs** ao entrar nas salas!
 
-📥 **[Baixar Instalador Oficial (Setup-FightcadePlus-2.0.0.exe)](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
+- 📥 **[Baixar Instalador Oficial (Setup-FightcadePlus-2.0.1.exe)](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
+- 📦 **[Baixar Versão Portátil (.zip)](https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.1/FightcadePlus-2.0.1.zip)**
 
 #### Passo a Passo:
-1. Baixe e execute o `Setup-FightcadePlus-2.0.0.exe` com o Fightcade fechado.
+1. Baixe e execute o `Setup-FightcadePlus-2.0.1.exe` com o Fightcade fechado (ou descompacte o arquivo `FightcadePlus-2.0.1.zip` em qualquer pasta).
 2. Inicie o Fightcade normalmente.
 3. Clique no ícone de engrenagem (**⚙️**) no topo da lista de usuários para abrir o Cerberus Settings!
 
+> [!TIP]
+> **Versão Portátil e ROMs**: O pacote compactado `.zip` não inclui as ROMs dos jogos para manter o download leve. Caso você já tenha salas de jogos abertas ao logar, basta **sair da sala e entrar novamente** para que as ROMs sejam baixadas automaticamente!
+
 > [!NOTE]
 > **Instalação Manual**: Caso prefira atualizar sua instalação avulsa do Fightcade, baixe o arquivo de release e sobrescreva o `inject.js` e a pasta `/plugins/` em `fc2-electron/resources/app/inject/`.
+
+#### 🛡️ Aviso do Windows SmartScreen ("O Windows protegeu o seu computador")
+
+Se o Windows Defender SmartScreen exibir um aviso azul, isso é normal para executáveis independentes de código aberto que não possuem certificados comerciais pagos:
+
+- **Executar na Hora (10 segundos - Recomendado):** Na tela azul do SmartScreen, clique no link **"Mais informações"** e depois no botão **"Executar assim mesmo"**.
+- **Desbloquear pelas Propriedades:** Clique com o botão direito no `Setup-FightcadePlus-2.0.1.exe` > **Propriedades** > marque a caixa **"Desbloquear"** no rodapé > clique em **Aplicar** > **OK**.
+- **Desativar nas Configurações do Windows (Opcional):** Iniciar > busque por **Segurança do Windows** > **Controle de aplicativos e navegador** > **Configurações de proteção baseada em reputação** > desative **"Verificar aplicativos e arquivos"**.
 
 ---
 
@@ -434,7 +464,10 @@ Os parâmetros ficam salvos em `cerberus_config.json` no diretório de plugins:
 ### 🚀 Características
 
 #### 🏆 Radar de Elo y Metas Pre-Partida
-- **Estimación Continua de Elo**: Mapea la puntuación de los jugadores combinando datos oficiales de Fightcade con una curva piramidal cuadrática (`p = 2.0`).
+- **Motor Híbrido de Elo (Exacto vs Estimado)**:
+  - 👑 **Suscriptores de Patreon ("Ranked Warrior" o superior)**: Fightcade proporciona la puntuación numérica oficial directamente en la API y en el chat tras la partida. El plugin detecta estos datos y muestra el **Elo real 100% exacto** (`source: 'reported'`).
+  - 🎮 **Usuarios Gratuitos (No suscriptores)**: Como Fightcade oculta la puntuación exacta a cuentas gratuitas (mostrando únicamente la letra de rango y la posición en la tabla), Cerberus calcula una **estimación continua de alta precisión** aplicando una curva piramidal cuadrática competitiva (`p = 2.0`) sobre los límites del rango (E: 400–699, D: 700–999, C: 1000–1299, B: 1300–1599, A: 1600–1899, S: 1900–2400).
+  - ⚖️ **Fallback de Cobertura Parcial**: Los jugadores fuera del límite de sincronización de la tabla utilizan el punto medio estático de su rango (`source: 'partial'`).
 - **Metas Dinámicas al Pasar el Cursor**: Al pasar el ratón sobre jugadores o retos, visualiza las metas de puntos según el formato FT seleccionado.
 - **Lectura Contextual FGC**: Reconoce partidas reñidas donde incluso una derrota ajustada otorga puntos positivos netos de Elo ("derrota heroica").
 
@@ -517,15 +550,27 @@ Remplaza el timbre predeterminado por **20 voces y efectos exclusivos de alta ca
 
 El método recomendado es descargar el instalador integrado de **Fightcade Plus**, ¡el cual incluye **instalación automática de ROMs** al unirte a cualquier sala de juego!
 
-📥 **[Descargar Instalador Oficial (Setup-FightcadePlus-2.0.0.exe)](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
+- 📥 **[Descargar Instalador Oficial (Setup-FightcadePlus-2.0.1.exe)](https://github.com/Cerberus-BR/FightcadePlus/releases/latest)**
+- 📦 **[Descargar Versión Portátil (.zip)](https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.1/FightcadePlus-2.0.1.zip)**
 
 #### Pasos para la Configuración:
-1. Descarga y ejecuta `Setup-FightcadePlus-2.0.0.exe` con Fightcade cerrado.
+1. Descarga y ejecuta `Setup-FightcadePlus-2.0.1.exe` con Fightcade cerrado (o descomprime el archivo `FightcadePlus-2.0.1.zip` en cualquier carpeta).
 2. Abre Fightcade con normalidad.
 3. Pulsa el icono de engranaje (**⚙️**) en la cabecera de la lista para configurar tus preferencias en Cerberus Settings.
 
+> [!TIP]
+> **Versión Portátil y ROMs**: El paquete comprimido `.zip` no incluye las ROMs para mantener la descarga ligera. Si ya tienes salas de juegos abiertas al iniciar sesión, ¡solo debes **salir de la sala y volver a entrar** para que las ROMs se descarguen automáticamente!
+
 > [!NOTE]
 > **Instalación Manual**: Si prefieres actualizar manualmente tu versión existente, descarga el paquete de la release y sobrescribe el archivo `inject.js` y la carpeta `/plugins/` en `fc2-electron/resources/app/inject/`.
+
+#### 🛡️ Aviso de Windows SmartScreen ("Windows protegió su PC")
+
+Si Windows Defender SmartScreen muestra un aviso azul, esto es habitual en instaladores independientes de código abierto sin certificados comerciales de pago:
+
+- **Ejecución Rápida (10 segundos - Recomendado):** En la pantalla azul de SmartScreen, haz clic en **"Más información"** y luego en el botón **"Ejecutar de todas formas"**.
+- **Desbloquear en Propiedades:** Clic derecho sobre `Setup-FightcadePlus-2.0.1.exe` > **Propiedades** > marca la casilla **"Desbloquear"** en la parte inferior > pulsa **Aplicar** > **Aceptar**.
+- **Desactivar en Ajustes de Windows (Opcional):** Menú Inicio > busca **Seguridad de Windows** > **Control de aplicaciones y navegador** > **Configuración de protección basada en reputación** > desactiva **"Comprobar aplicaciones y archivos"**.
 
 ---
 

@@ -148,7 +148,7 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             font-family: var(--font-display);
             font-size: 24px;
             font-weight: 700;
@@ -157,15 +157,20 @@
             letter-spacing: -0.5px;
         }
 
-        .logo span {
+        .logo-title {
+            display: inline-flex;
+            align-items: baseline;
+            white-space: nowrap;
+        }
+
+        .logo-title span {
             color: var(--fc-pink);
             text-shadow: 0 0 10px var(--fc-pink-glow);
         }
 
-        .logo span.plus {
+        .logo-title span.plus {
             color: var(--fc-teal);
             text-shadow: 0 0 10px var(--fc-teal-glow);
-            margin-left: 2px;
         }
 
         nav {
@@ -347,6 +352,20 @@
         .btn-download:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(51, 241, 229, 0.45);
+        }
+
+        .btn-zip {
+            background: linear-gradient(135deg, rgba(255, 0, 122, 0.15) 0%, rgba(157, 44, 179, 0.25) 100%);
+            color: var(--fc-text);
+            border: 1px solid rgba(255, 0, 122, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 0, 122, 0.15);
+        }
+
+        .btn-zip:hover {
+            background: linear-gradient(135deg, rgba(255, 0, 122, 0.3) 0%, rgba(157, 44, 179, 0.4) 100%);
+            border-color: var(--fc-pink);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 0, 122, 0.35);
         }
 
         .btn-paypal {
@@ -698,15 +717,49 @@
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 40px;
+            gap: 14px;
         }
 
         .changelog-item {
             background: var(--fc-bg-panel);
             border: 1px solid var(--fc-border);
             border-radius: 12px;
-            padding: 36px;
-            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .changelog-item:hover {
+            border-color: rgba(51, 241, 229, 0.3);
+        }
+
+        .changelog-item.active {
+            border-color: var(--fc-teal);
+            box-shadow: 0 0 20px rgba(51, 241, 229, 0.1);
+        }
+
+        .changelog-header {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 18px 24px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            gap: 16px;
+            transition: background 0.2s ease;
+        }
+
+        .changelog-header:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .changelog-header-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
         }
 
         .changelog-version {
@@ -719,15 +772,49 @@
             font-size: 13px;
             font-weight: 700;
             font-family: var(--font-display);
-            margin-bottom: 20px;
             text-shadow: 0 0 10px rgba(51, 241, 229, 0.15);
         }
 
+        .changelog-badge-latest {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--fc-pink), #ff559f);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
         .changelog-date {
-            float: right;
             color: var(--fc-text-mute);
             font-size: 14px;
-            margin-top: 4px;
+        }
+
+        .changelog-icon {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--fc-teal);
+            transition: transform 0.3s ease;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .changelog-item.active .changelog-icon {
+            transform: rotate(45deg);
+        }
+
+        .changelog-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.35s ease;
+            padding: 0 24px;
+        }
+
+        .changelog-item.active .changelog-body {
+            max-height: 800px;
+            padding: 0 24px 22px 24px;
         }
 
         .changelog-changes {
@@ -735,7 +822,8 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 16px;
         }
 
         .changelog-changes li {
@@ -743,6 +831,7 @@
             gap: 12px;
             font-size: 15px;
             color: var(--fc-text);
+            line-height: 1.5;
         }
 
         .changelog-changes li::before {
@@ -985,6 +1074,257 @@
                 height: 50px;
             }
         }
+
+        /* SmartScreen & Installation Guide Section */
+        .smartscreen-section {
+            padding: 90px 0;
+            background: linear-gradient(180deg, rgba(21, 10, 20, 0.4) 0%, rgba(32, 17, 31, 0.6) 100%);
+            border-top: 1px solid var(--fc-border);
+            border-bottom: 1px solid var(--fc-border);
+        }
+
+        .smartscreen-why-box {
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+            background: rgba(51, 241, 229, 0.04);
+            border: 1px solid rgba(51, 241, 229, 0.25);
+            border-radius: 14px;
+            padding: 24px 28px;
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .smartscreen-why-icon {
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        .smartscreen-why-content h4 {
+            font-family: var(--font-display);
+            color: var(--fc-teal);
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .smartscreen-why-content p {
+            color: var(--fc-text-mute);
+            font-size: 15px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .smartscreen-zip-box {
+            max-width: 900px;
+            margin: 32px auto 0 auto;
+            background: rgba(157, 44, 179, 0.08);
+            border: 1px solid rgba(157, 44, 179, 0.3);
+            border-radius: 14px;
+            padding: 24px 28px;
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .smartscreen-zip-box h4 {
+            font-family: var(--font-display);
+            color: #d880f0;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .smartscreen-zip-box p {
+            color: var(--fc-text-mute);
+            font-size: 15px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .smartscreen-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 868px) {
+            .smartscreen-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .smartscreen-card {
+            background: var(--fc-bg-panel);
+            border: 1px solid var(--fc-border);
+            border-radius: 12px;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .smartscreen-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--fc-pink-glow);
+            box-shadow: 0 12px 30px rgba(255, 0, 122, 0.15);
+        }
+
+        .smartscreen-badge {
+            align-self: flex-start;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .smartscreen-badge.recommended {
+            background: rgba(51, 241, 229, 0.12);
+            color: var(--fc-teal);
+            border: 1px solid rgba(51, 241, 229, 0.3);
+        }
+
+        .smartscreen-badge.alt {
+            background: rgba(245, 181, 14, 0.12);
+            color: var(--fc-yellow);
+            border: 1px solid rgba(245, 181, 14, 0.3);
+        }
+
+        .smartscreen-badge.settings {
+            background: rgba(157, 44, 179, 0.15);
+            color: #d880f0;
+            border: 1px solid rgba(157, 44, 179, 0.3);
+        }
+
+        .smartscreen-card h3 {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--fc-text);
+        }
+
+        .smartscreen-card p {
+            color: var(--fc-text-mute);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .smartscreen-hero-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            color: var(--fc-text-mute);
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .smartscreen-hero-hint:hover {
+            color: var(--fc-teal);
+            text-decoration: underline;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 100px 0;
+            background: rgba(32, 17, 31, 0.2);
+            border-top: 1px solid var(--fc-border);
+        }
+
+        .faq-accordion {
+            max-width: 850px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .faq-item {
+            background: var(--fc-bg-panel);
+            border: 1px solid var(--fc-border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .faq-item:hover {
+            border-color: rgba(51, 241, 229, 0.3);
+        }
+
+        .faq-item.active {
+            border-color: var(--fc-teal);
+            box-shadow: 0 8px 24px rgba(51, 241, 229, 0.12);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 22px 28px;
+            background: transparent;
+            border: none;
+            color: var(--fc-text);
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--fc-teal);
+        }
+
+        .faq-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+            font-size: 18px;
+            color: var(--fc-teal);
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+            background: rgba(255, 0, 122, 0.15);
+            color: var(--fc-pink);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s ease;
+            padding: 0 28px;
+            color: var(--fc-text-mute);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 350px;
+            padding: 0 28px 24px 28px;
+        }
+
+        .faq-answer strong {
+            color: var(--fc-text);
+        }
     </style>
 </head>
 <body>
@@ -996,18 +1336,19 @@
     <header>
         <div class="container nav-wrapper">
             <a href="#" class="logo">
-                <img src="assets/logo.png" alt="Fightcade Plus Logo" style="height: 36px; width: 36px; margin-right: 8px; border-radius: 50%;">
-                Fightcade<span>Plus</span>
+                <img src="assets/logo.png" alt="FightcadePlus Logo" style="height: 36px; width: 36px; border-radius: 50%;">
+                <span class="logo-title">Fightcade<span>Plus</span></span>
             </a>
             <div style="display: flex; align-items: center; gap: 20px;">
                 <nav>
                     <a href="#features" data-i18n="navFeatures">Funcionalidades</a>
-                    <a href="#gallery" data-i18n="navGallery">Galeria</a>
+                    <a href="#smartscreen" data-i18n="navInstallation">Instalação</a>
                     <a href="#changelog" data-i18n="navChangelog">Changelog</a>
+                    <a href="#faq" data-i18n="navFaq">FAQ</a>
                     <a href="#support" data-i18n="navSupport">Apoiar</a>
                     <a href="#contact" data-action="open-contact" data-i18n="navContact">Contato</a>
                     <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">GitHub</a>
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.0/Setup-FightcadePlus-2.0.0.exe" class="btn-header" data-i18n="downloadBtn">Download v2.0.0</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.1/Setup-FightcadePlus-2.0.1.exe" class="btn-header" data-i18n="downloadBtn">Download</a>
                 </nav>
                 <div class="lang-selector">
                     <button class="lang-btn active" data-lang="pt" title="Português">🇧🇷</button>
@@ -1021,20 +1362,22 @@
     <!-- Hero Section -->
     <section class="container hero">
         <div class="hero-content">
-            <span class="hero-tag" data-i18n="heroTag">v2.0.0 — Novo Update</span>
+            <span class="hero-tag" data-i18n="heroTag">v2.0.1 — Novo Update</span>
             <h1 data-i18n="heroTitle">Melhore sua experiência no Fightcade</h1>
             <p data-i18n="heroDesc">
                 O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, 
                 filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.
             </p>
             <div class="hero-actions">
-                <div class="hero-actions-row-top">
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.0/Setup-FightcadePlus-2.0.0.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v2.0.0 (.exe)</a>
+                <div class="hero-actions-row-top" style="display: flex; gap: 12px;">
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.1/Setup-FightcadePlus-2.0.1.exe" class="btn btn-download" style="flex: 1.2;" data-i18n="heroDownload">Download Setup v2.0.1 (.exe)</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.1/FightcadePlus-2.0.1.zip" class="btn btn-zip" style="flex: 0.8;" data-i18n="heroDownloadZip">Portátil (.zip)</a>
                 </div>
                 <div class="hero-actions-row-bottom">
                     <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal" data-i18n="heroPaypal">Donate via PayPal</a>
                     <a href="https://livepix.gg/cerberusbr" target="_blank" class="btn btn-livepix" data-i18n="heroLivepix">Apoiar via LivePix</a>
                 </div>
+                <a href="#smartscreen" class="smartscreen-hero-hint" data-i18n="heroSmartscreenHint">🛡️ Aviso do Windows Defender? Veja como instalar com segurança</a>
             </div>
         </div>
         
@@ -1044,22 +1387,6 @@
         </div>
     </section>
 
-    <!-- Demo Video Section -->
-    <section class="container demo-video-section">
-        <div class="section-header">
-            <h2 data-i18n="demoTitle">Veja o Mod em Ação</h2>
-            <p data-i18n="demoDesc">Um preview rápido de como os componentes injetados aparecem direto na interface original do Fightcade.</p>
-        </div>
-        <div class="video-container">
-            <div class="video-placeholder">
-                <div class="play-btn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Features Section -->
     <section id="features" class="features">
@@ -1070,34 +1397,64 @@
             </div>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon-wrapper">🌍</div>
-                    <h3 data-i18n="featCountryTitle">Filtro por Países</h3>
-                    <p data-i18n="featCountryDesc">Filtre e elimine oponentes indesejados em tempo real na lista lateral e chat. Reduza o lag focando em conexões locais.</p>
-                </div>
-                <div class="feature-card">
                     <div class="feature-icon-wrapper">🏆</div>
-                    <h3 data-i18n="featRankTitle">Badges de Ranking</h3>
-                    <p data-i18n="featRankDesc">Injeta badges de classificação e pontuação ELO ao lado dos nicks para você identificar a habilidade do oponente imediatamente.</p>
+                    <h3 data-i18n="featEloTitle">Radar de Elo & Metas</h3>
+                    <p data-i18n="featEloDesc">Estimativa contínua de pontuação por curva piramidal quadrática. Mostra metas pré-jogo no hover para saber se uma partida vale muitos pontos.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon-wrapper">💬</div>
-                    <h3 data-i18n="featPingTitle">Bandeiras & Ping</h3>
-                    <p data-i18n="featPingDesc">Substitui as barras nativas de ping por ping exato em milissegundos e inclui a bandeira real do país do jogador no chat.</p>
+                    <div class="feature-icon-wrapper">⚔️</div>
+                    <h3 data-i18n="featSimulatorTitle">Simulador de Séries FT</h3>
+                    <p data-i18n="featSimulatorDesc">Ferramenta flutuante interativa (⚔️) para simular placares de FT2 até FT20 e calcular com exatidão os saldos de Elo antes de jogar.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper">🛡️</div>
-                    <h3 data-i18n="featRepTitle">Reputação de Usuários</h3>
-                    <p data-i18n="featRepDesc">Favorite jogadores amigáveis ou classifique trolls e usuários nocivos com dislikes para silenciá-los automaticamente.</p>
+                    <h3 data-i18n="featFtFilterTitle">Filtro de Formato FT</h3>
+                    <p data-i18n="featFtFilterDesc">Aceite apenas os formatos que você deseja jogar (FT2, FT3, FT5, FT10, FT20 ou Casuais) com auto-reject inteligente no socket e aviso no chat.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">📶</div>
+                    <h3 data-i18n="featConnTitle">Identificação de Conexão</h3>
+                    <p data-i18n="featConnDesc">Detecta e exibe badges em tempo real para Cabo (Ethernet), Wi-Fi (destaque amarelo) e conexões instáveis de VPN ou Relay.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🏁</div>
+                    <h3 data-i18n="featEndgameTitle">Fim de Partida & Rage Quit</h3>
+                    <p data-i18n="featEndgameDesc">Card elegante com o saldo final de pontos após a disputa e alerta instantâneo no chat se o adversário puxar o cabo ou fechar o jogo.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🌍</div>
+                    <h3 data-i18n="featCountryTitle">Filtro por Países</h3>
+                    <p data-i18n="featCountryDesc">Filtre oponentes indesejados em tempo real na lista lateral e chat. Reduza o lag e encontre conexões locais muito mais rápido.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">💬</div>
+                    <h3 data-i18n="featPingTitle">Ping em ms & Bandeiras</h3>
+                    <p data-i18n="featPingDesc">Substitui as barras genéricas por ping numérico exato em milissegundos e exibe a bandeira do país real de cada jogador no chat.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🥇</div>
+                    <h3 data-i18n="featRankTitle">Badges de Ranking & Nível</h3>
+                    <p data-i18n="featRankDesc">Injeta badges de classificação oficial e pontuação aproximada ao lado dos nicks para você identificar o nível do oponente na hora.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🔊</div>
+                    <h3 data-i18n="featAudiosTitle">20 Áudios Customizados</h3>
+                    <p data-i18n="featAudiosDesc">Substitua o toque tradicional de sino por 20 locuções e efeitos clássicos (Arcade, MK, Counter-Strike, Rock n' Roll Racing, Mario e mais).</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">👍</div>
+                    <h3 data-i18n="featRepTitle">Reputação & Chat Limpo</h3>
+                    <p data-i18n="featRepDesc">Favorite rivais amigáveis ou classifique jogadores nocivos com dislike para silenciar mensagens e recusar desafios automaticamente.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper">🤖</div>
-                    <h3 data-i18n="featQueueTitle">Fila Automática (Streamer)</h3>
-                    <p data-i18n="featQueueDesc">Gerencie filas em live sem esforço com comandos rápidos (`!join`). O bot envia atualizações periódicas no chat.</p>
+                    <h3 data-i18n="featQueueTitle">Fila de Lives (Streamer)</h3>
+                    <p data-i18n="featQueueDesc">Organize filas de desafio com comandos rápidos no chat (`!join`). O bot gerencia a ordem e posta mensagens promocionais a cada 10 min.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon-wrapper">🎨</div>
-                    <h3 data-i18n="featThemesTitle">Estilos Desbloqueados</h3>
-                    <p data-i18n="featThemesDesc">Acesse novos temas e gradientes de cores da interface sem a necessidade de licenças premium ou custos extras.</p>
+                    <div class="feature-icon-wrapper">⚡</div>
+                    <h3 data-i18n="featEcoTitle">Modo Eco & Obsidian Glass</h3>
+                    <p data-i18n="featEcoDesc">Interface dark premium em Obsidian Glass com Modo Eco: reduz drasticamente o consumo de CPU/GPU do Electron quando a janela perde o foco.</p>
                 </div>
             </div>
         </div>
@@ -1165,6 +1522,52 @@
         </div>
     </section>
 
+    <!-- Installation & Windows SmartScreen Guide Section -->
+    <section id="smartscreen" class="smartscreen-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-i18n="smartscreenTitle">Instalação & Ajuda do Windows</h2>
+                <p data-i18n="smartscreenDesc">Por que o Windows bloqueia novos aplicativos e como instalar com total segurança.</p>
+            </div>
+
+            <div class="smartscreen-why-box">
+                <div class="smartscreen-why-icon">🛡️</div>
+                <div class="smartscreen-why-content">
+                    <h4 data-i18n="smartscreenWhyTitle">O Fightcade Plus é seguro? Sim, 100% de código aberto!</h4>
+                    <p data-i18n="smartscreenWhyText">O aviso do Windows SmartScreen ("O Windows protegeu o seu computador") <strong>não significa vírus</strong>. A Microsoft exige certificados digitais comerciais caros para liberar executáveis de novos projetos independentes. Nosso código é limpo e público no GitHub.</p>
+                </div>
+            </div>
+
+            <div class="smartscreen-grid">
+                <div class="smartscreen-card">
+                    <span class="smartscreen-badge recommended" data-i18n="smartscreenCard1Badge">Recomendado (10s)</span>
+                    <h3 data-i18n="smartscreenCard1Title">1. Executar em 2 Cliques</h3>
+                    <p data-i18n="smartscreenCard1Desc">Ao abrir o instalador e ver a janela azul do Windows Defender, clique no link <strong>"Mais informações"</strong> e em seguida no botão <strong>"Executar assim mesmo"</strong>.</p>
+                </div>
+
+                <div class="smartscreen-card">
+                    <span class="smartscreen-badge alt" data-i18n="smartscreenCard2Badge">Propriedades (15s)</span>
+                    <h3 data-i18n="smartscreenCard2Title">2. Desbloquear Arquivo</h3>
+                    <p data-i18n="smartscreenCard2Desc">Clique com o botão direito no instalador baixado (<code>Setup-FightcadePlus-2.0.1.exe</code>) &gt; <strong>Propriedades</strong> &gt; marque <strong>"Desbloquear"</strong> no rodapé &gt; <strong>Aplicar</strong> e <strong>OK</strong>.</p>
+                </div>
+
+                <div class="smartscreen-card">
+                    <span class="smartscreen-badge settings" data-i18n="smartscreenCard3Badge">Avançado (1 min)</span>
+                    <h3 data-i18n="smartscreenCard3Title">3. Desativar SmartScreen</h3>
+                    <p data-i18n="smartscreenCard3Desc">Abra o menu Iniciar &gt; <strong>Segurança do Windows</strong> &gt; <strong>Controle de aplicativos e navegador</strong> &gt; <strong>Proteção baseada em reputação</strong> &gt; desative <strong>"Verificar aplicativos e arquivos"</strong>.</p>
+                </div>
+            </div>
+
+            <div class="smartscreen-zip-box">
+                <div class="smartscreen-why-icon">📦</div>
+                <div class="smartscreen-why-content">
+                    <h4 data-i18n="smartscreenZipTitle">Prefere não usar o instalador? Baixe a Versão Portátil (.zip)</h4>
+                    <p data-i18n="smartscreenZipText">Basta descompactar a pasta em qualquer local e abrir o Fightcade. O pacote compactado não inclui as ROMs dos jogos para download rápido: caso já tenha salas de jogos abertas ao logar, basta <strong>sair da sala e entrar novamente</strong> para que as ROMs sejam baixadas automaticamente!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Changelog Section -->
     <section id="changelog" class="changelog">
         <div class="container">
@@ -1174,6 +1577,78 @@
             </div>
             <div id="changelogTimeline" class="changelog-timeline">
                 <!-- Timeline items rendered dynamically by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-i18n="faqTitle">Dúvidas Frequentes (FAQ)</h2>
+                <p data-i18n="faqDesc">Tudo o que você precisa saber sobre a segurança, recursos e funcionamento do Fightcade Plus.</p>
+            </div>
+
+            <div class="faq-accordion">
+                <div class="faq-item active">
+                    <button class="faq-question">
+                        <span data-i18n="faqQ1">O Fightcade Plus é seguro? Posso ser banido por usá-lo?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faqA1"><strong>Sim, é 100% seguro.</strong> O mod é de código aberto e funciona exclusivamente como extensão cosmética e utilitária na interface do Fightcade. Ele <strong>não altera a memória do emulador nem permite trapaças</strong>, sendo totalmente compatível e seguro para o jogo diário.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span data-i18n="faqQ2">Como funciona o download automático de ROMs?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faqA2">Ao entrar em qualquer sala de jogo, o Fightcade Plus detecta os arquivos necessários e realiza o download diretamente. Se você estiver usando a <strong>versão compactada (.zip)</strong> e já tiver salas abertas ao iniciar sessão, basta <strong>sair da sala e entrar novamente</strong> para iniciar o download.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span data-i18n="faqQ3">Como o Radar de Elo e o Simulador calculam os pontos?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faqA3">O modelo é híbrido: para <strong>assinantes Patreon do Fightcade ("Ranked Warrior" ou superior)</strong>, a API oficial fornece o número real e a pontuação exibida é <strong>100% exata</strong>. Para jogadores não-assinantes (contas gratuitas), o Fightcade oculta os pontos numéricos; nesses casos, o mod calcula uma <strong>estimativa contínua via curva piramidal quadrática calibrada (p = 2.0)</strong> cruzando a letra de rank (E a S) com a posição na leaderboard. Além disso, ao passar o mouse sobre os jogadores você visualiza as metas de pontos de cada FT antes de aceitar e pode simular qualquer placar no menu ⚔️.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span data-i18n="faqQ4">Como funciona o auto-reject de desafios?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faqA4">No menu de configurações (⚙️), você pode ativar a recusa automática por <strong>Formato FT</strong> (ex: jogar apenas FT5), <strong>Ping Máximo</strong>, <strong>País</strong> ou <strong>Reputação Negativa</strong>. O desafio é interceptado antes do som nativo e um aviso discreto com cooldown anti-spam é enviado no chat.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span data-i18n="faqQ5">O que é o Modo Eco e como ele me ajuda?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faqA5">O Modo Eco reduz o uso de ciclos de CPU e renderização de GPU do Electron quando você está focado no emulador ou em outro aplicativo. Isso libera recursos do computador para sua partida rodar com menos quedas de frames e menor latência.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span data-i18n="faqQ6">Como atualizo para novas versões?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p data-i18n="faqA6">O Fightcade Plus possui um verificador inteligente integrado que avisa quando há uma nova versão disponível. Basta baixar o instalador ou substituir a pasta na versão portátil. Suas configurações pessoais são preservadas automaticamente.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1196,13 +1671,15 @@
     <footer>
         <div class="container">
             <a href="#" class="footer-logo">
-                <img src="assets/logo.png" alt="Fightcade Plus Logo" style="height: 28px; width: 28px; margin-right: 8px; vertical-align: middle; border-radius: 50%;">
-                Fightcade<span>Plus</span>
+                <img src="assets/logo.png" alt="FightcadePlus Logo" style="height: 28px; width: 28px; margin-right: 8px; vertical-align: middle; border-radius: 50%;">
+                <span class="logo-title">Fightcade<span>Plus</span></span>
             </a>
             <p data-i18n="footerText">O Fightcade Plus é uma modificação estética e funcional independente. Todos os direitos reservados.</p>
             <div class="footer-links">
                 <a href="#features" data-i18n="navFeatures">Funcionalidades</a>
                 <a href="#gallery" data-i18n="navGallery">Galeria</a>
+                <a href="#smartscreen" data-i18n="navInstallation">Instalação</a>
+                <a href="#faq" data-i18n="navFaq">FAQ</a>
                 <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">Repositório GitHub</a>
             </div>
             <p style="margin-top: 16px; opacity: 0.3; font-size: 12px;">&copy; 2026 Fightcade Plus. Licenciado sob termos Open Source.</p>
@@ -1226,15 +1703,34 @@
             pt: {
                 navFeatures: "Funcionalidades",
                 navGallery: "Galeria",
+                navInstallation: "Instalação",
                 navChangelog: "Changelog",
+                navFaq: "FAQ",
                 navSupport: "Apoiar",
                 navContact: "Contato",
+                heroSmartscreenHint: "🛡️ Aviso do Windows Defender? Veja como instalar com segurança",
+                smartscreenTitle: "Instalação & Ajuda do Windows",
+                smartscreenDesc: "Por que o Windows bloqueia novos aplicativos e como instalar com total segurança.",
+                smartscreenWhyTitle: "O Fightcade Plus é seguro? Sim, 100% de código aberto!",
+                smartscreenWhyText: "O aviso do Windows SmartScreen (\"O Windows protegeu o seu computador\") <strong>não significa vírus</strong>. A Microsoft exige certificados digitais comerciais caros para liberar executáveis de novos projetos independentes. Nosso código é limpo e público no GitHub.",
+                smartscreenCard1Badge: "Recomendado (10s)",
+                smartscreenCard1Title: "1. Executar em 2 Cliques",
+                smartscreenCard1Desc: "Ao abrir o instalador e ver a janela azul do Windows Defender, clique no link <strong>\"Mais informações\"</strong> e em seguida no botão <strong>\"Executar assim mesmo\"</strong>.",
+                smartscreenCard2Badge: "Propriedades (15s)",
+                smartscreenCard2Title: "2. Desbloquear Arquivo",
+                smartscreenCard2Desc: "Clique com o botão direito no instalador baixado (<code>Setup-FightcadePlus-2.0.1.exe</code>) &gt; <strong>Propriedades</strong> &gt; marque <strong>\"Desbloquear\"</strong> no rodapé &gt; <strong>Aplicar</strong> e <strong>OK</strong>.",
+                smartscreenCard3Badge: "Avançado (1 min)",
+                smartscreenCard3Title: "3. Desativar SmartScreen",
+                smartscreenCard3Desc: "Abra o menu Iniciar &gt; <strong>Segurança do Windows</strong> &gt; <strong>Controle de aplicativos e navegador</strong> &gt; <strong>Proteção baseada em reputação</strong> &gt; desative <strong>\"Verificar aplicativos e arquivos\"</strong>.",
                 contactLabel: "💬 Dúvidas ou Sugestões? Fale Conosco",
-                downloadBtn: "Download v2.0.0",
-                heroTag: "v2.0.0 — Novo Update",
+                downloadBtn: "Download",
+                heroTag: "v2.0.1 — Novo Update",
                 heroTitle: "Melhore sua experiência no Fightcade",
                 heroDesc: "O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.",
-                heroDownload: "Download Setup v2.0.0 (.exe)",
+                heroDownload: "Download Setup v2.0.1 (.exe)",
+                heroDownloadZip: "Portátil (.zip)",
+                smartscreenZipTitle: "Prefere não usar o instalador? Baixe a Versão Portátil (.zip)",
+                smartscreenZipText: "Basta descompactar a pasta em qualquer local e abrir o Fightcade. O pacote compactado não inclui as ROMs dos jogos para download rápido: caso já tenha salas de jogos abertas ao logar, basta <strong>sair da sala e entrar novamente</strong> para que as ROMs sejam baixadas automaticamente!",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Apoiar via LivePix",
                 demoTitle: "Veja o Mod em Ação",
@@ -1242,18 +1738,44 @@
                 demoStatus: "EM BREVE",
                 featuresTitle: "Funcionalidades Principais",
                 featuresDesc: "Módulos de alto rendimento criados para otimizar partidas e economizar tempo nos lobbies.",
+                featEloTitle: "Radar de Elo & Metas Dinâmicas",
+                featEloDesc: "Suporte a Elo real exato para assinantes Patreon ('Ranked Warrior'+) e estimativa contínua piramidal (p = 2.0) para contas gratuitas. Metas pré-jogo no hover.",
+                featSimulatorTitle: "Simulador de Séries FT",
+                featSimulatorDesc: "Ferramenta flutuante interativa (⚔️) para simular placares de FT2 até FT20 e calcular com exatidão os saldos de Elo antes de jogar.",
+                featFtFilterTitle: "Filtro de Formato FT",
+                featFtFilterDesc: "Aceite apenas os formatos que você deseja jogar (FT2, FT3, FT5, FT10, FT20 ou Casuais) com auto-reject inteligente no socket e aviso no chat.",
+                featConnTitle: "Identificação de Conexão",
+                featConnDesc: "Detecta e exibe badges em tempo real para Cabo (Ethernet), Wi-Fi (destaque amarelo) e conexões instáveis de VPN ou Relay.",
+                featEndgameTitle: "Fim de Partida & Rage Quit",
+                featEndgameDesc: "Card elegante com o saldo final de pontos após a disputa e alerta instantâneo no chat se o adversário puxar o cabo ou fechar o jogo.",
                 featCountryTitle: "Filtro por Países",
-                featCountryDesc: "Filtre e elimine oponentes indesejados em tempo real na lista lateral e chat. Reduza o lag focando em conexões locais.",
-                featRankTitle: "Badges de Ranking",
-                featRankDesc: "Injeta badges de classificação e pontuação ELO ao lado dos nicks para você identificar a habilidade do oponente imediatamente.",
-                featPingTitle: "Bandeiras & Ping",
-                featPingDesc: "Substitui as barras nativas de ping por ping exato em milissegundos e inclui a bandeira real do país do jogador no chat.",
-                featRepTitle: "Reputação de Usuários",
-                featRepDesc: "Favorite jogadores amigáveis ou classifique trolls e usuários nocivos com dislikes para silenciá-los automaticamente.",
-                featQueueTitle: "Fila Automática (Streamer)",
-                featQueueDesc: "Gerencie queues em live sem esforço com comandos rápidos (`!join`). O bot envia atualizações periódicas no chat.",
-                featThemesTitle: "Estilos Desbloqueados",
-                featThemesDesc: "Acesse novos temas e gradientes de cores da interface sem a necessidade de licenças premium ou custos extras.",
+                featCountryDesc: "Filtre oponentes indesejados em tempo real na lista lateral e chat. Reduza o lag e encontre conexões locais muito mais rápido.",
+                featPingTitle: "Ping em ms & Bandeiras",
+                featPingDesc: "Substitui as barras genéricas por ping numérico exato em milissegundos e exibe a bandeira do país real de cada jogador no chat.",
+                featRankTitle: "Badges de Ranking & Nível",
+                featRankDesc: "Injeta badges de classificação oficial e pontuação aproximada ao lado dos nicks para você identificar o nível do oponente na hora.",
+                featAudiosTitle: "20 Áudios Customizados",
+                featAudiosDesc: "Substitua o toque tradicional de sino por 20 locuções e efeitos clássicos (Arcade, MK, Counter-Strike, Rock n' Roll Racing, Mario e mais).",
+                featRepTitle: "Reputação & Chat Limpo",
+                featRepDesc: "Favorite rivais amigáveis ou classifique jogadores nocivos com dislike para silenciar mensagens e recusar desafios automaticamente.",
+                featQueueTitle: "Fila de Lives (Streamer)",
+                featQueueDesc: "Organize filas de desafio com comandos rápidos no chat (`!join`). O bot gerencia a ordem e posta mensagens promocionais a cada 10 min.",
+                featEcoTitle: "Modo Eco & Obsidian Glass",
+                featEcoDesc: "Interface dark premium em Obsidian Glass com Modo Eco: reduz drasticamente o consumo de CPU/GPU do Electron quando a janela perde o foco.",
+                faqTitle: "Dúvidas Frequentes (FAQ)",
+                faqDesc: "Tudo o que você precisa saber sobre a segurança, recursos e funcionamento do Fightcade Plus.",
+                faqQ1: "O Fightcade Plus é seguro? Posso ser banido por usá-lo?",
+                faqA1: "<strong>Sim, é 100% seguro.</strong> O mod é de código aberto e funciona exclusivamente como extensão cosmética e utilitária na interface do Fightcade. Ele <strong>não altera a memória do emulador nem permite trapaças</strong>, sendo totalmente compatível e seguro para o jogo diário.",
+                faqQ2: "Como funciona o download automático de ROMs?",
+                faqA2: "Ao entrar em qualquer sala de jogo, o Fightcade Plus detecta os arquivos necessários e realiza o download diretamente. Se você estiver usando a <strong>versão compactada (.zip)</strong> e já tiver salas abertas ao iniciar sessão, basta <strong>sair da sala e entrar novamente</strong> para iniciar o download.",
+                faqQ3: "Como o Radar de Elo e o Simulador calculam os pontos?",
+                faqA3: "O modelo é híbrido: para <strong>assinantes Patreon do Fightcade ('Ranked Warrior' ou superior)</strong>, a API oficial fornece o número real e o Elo exibido é <strong>100% exato</strong>. Para contas gratuitas, o Fightcade oculta os pontos numéricos; nesses casos, o mod calcula uma <strong>estimativa contínua via curva piramidal quadrática calibrada (p = 2.0)</strong> cruzando a letra do rank (E a S) e a posição na leaderboard. Além disso, ao passar o mouse sobre os jogadores você vê metas de pontos e pode simular confrontos na ferramenta ⚔️.",
+                faqQ4: "Como funciona o auto-reject de desafios?",
+                faqA4: "No menu de configurações (⚙️), você pode ativar a recusa automática por <strong>Formato FT</strong> (ex: jogar apenas FT5), <strong>Ping Máximo</strong>, <strong>País</strong> ou <strong>Reputação Negativa</strong>. O desafio é interceptado antes do som nativo e um aviso discreto com cooldown anti-spam é enviado no chat.",
+                faqQ5: "O que é o Modo Eco e como ele me ajuda?",
+                faqA5: "O Modo Eco reduz o uso de ciclos de CPU e renderização de GPU do Electron quando você está focado no emulador ou em outro aplicativo. Isso libera recursos do computador para sua partida rodar com menos quedas de frames e menor latência.",
+                faqQ6: "Como atualizo para novas versões?",
+                faqA6: "O Fightcade Plus possui um verificador inteligente integrado que avisa quando há uma nova versão disponível. Basta baixar o instalador ou substituir a pasta na versão portátil. Suas configurações pessoais são preservadas automaticamente.",
                 galleryTitle: "Interface & Capturas",
                 galleryDesc: "Veja imagens demonstrativas da extensão rodando diretamente integrada ao cliente desktop do Fightcade.",
                 gallerySlide1Title: "Painel de Configurações Nativo",
@@ -1275,15 +1797,34 @@
             en: {
                 navFeatures: "Features",
                 navGallery: "Gallery",
+                navInstallation: "Installation",
                 navChangelog: "Changelog",
+                navFaq: "FAQ",
                 navSupport: "Support",
                 navContact: "Contact",
+                heroSmartscreenHint: "🛡️ Windows Defender warning? Learn how to install safely",
+                smartscreenTitle: "Installation & Windows Help",
+                smartscreenDesc: "Why Windows blocks new applications and how to install safely in seconds.",
+                smartscreenWhyTitle: "Is Fightcade Plus safe? Yes, 100% open-source!",
+                smartscreenWhyText: "The Windows SmartScreen alert (\"Windows protected your PC\") <strong>does not mean a virus</strong>. Microsoft requires costly commercial certificates to whitelist new independent executables. Our code is clean and publicly verifiable on GitHub.",
+                smartscreenCard1Badge: "Recommended (10s)",
+                smartscreenCard1Title: "1. Run in 2 Clicks",
+                smartscreenCard1Desc: "When the blue Windows Defender window appears, click the <strong>\"More info\"</strong> link and then click the <strong>\"Run anyway\"</strong> button.",
+                smartscreenCard2Badge: "Properties (15s)",
+                smartscreenCard2Title: "2. Unblock the File",
+                smartscreenCard2Desc: "Right-click the downloaded installer (<code>Setup-FightcadePlus-2.0.1.exe</code>) &gt; <strong>Properties</strong> &gt; check <strong>\"Unblock\"</strong> at the bottom &gt; <strong>Apply</strong> and <strong>OK</strong>.",
+                smartscreenCard3Badge: "Advanced (1 min)",
+                smartscreenCard3Title: "3. Disable SmartScreen",
+                smartscreenCard3Desc: "Open Start Menu &gt; <strong>Windows Security</strong> &gt; <strong>App &amp; browser control</strong> &gt; <strong>Reputation-based protection</strong> &gt; toggle off <strong>\"Check apps and files\"</strong>.",
                 contactLabel: "💬 Questions or Feedback? Contact Us",
-                downloadBtn: "Download v2.0.0",
-                heroTag: "v2.0.0 — New Update",
+                downloadBtn: "Download",
+                heroTag: "v2.0.1 — New Update",
                 heroTitle: "Elevate your Fightcade experience",
                 heroDesc: "Fightcade Plus is a full modular mod adding stability enhancements, automatic ping/country filters, integrated player reputation, and live stream queues to your native Fightcade client.",
-                heroDownload: "Download Setup v2.0.0 (.exe)",
+                heroDownload: "Download Setup v2.0.1 (.exe)",
+                heroDownloadZip: "Portable (.zip)",
+                smartscreenZipTitle: "Prefer not to use the installer? Download the Portable (.zip)",
+                smartscreenZipText: "Simply extract the folder to any location and launch Fightcade. The compressed package does not include game ROMs to keep download size compact: if you already have game channels open when logging in, simply <strong>leave the channel and rejoin it</strong> to trigger the automatic ROM download!",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Support via LivePix",
                 demoTitle: "See the Mod in Action",
@@ -1291,18 +1832,44 @@
                 demoStatus: "COMING SOON",
                 featuresTitle: "Core Features",
                 featuresDesc: "High-performance modules designed to optimize matches and save time in lobbies.",
+                featEloTitle: "Elo Radar & Dynamic Goals",
+                featEloDesc: "Official exact Elo support for Patreon subscribers ('Ranked Warrior'+) and continuous quadratic pyramid estimation (p = 2.0) for free users. Previews match goals on hover.",
+                featSimulatorTitle: "FT Match Simulator",
+                featSimulatorDesc: "Interactive floating tool (⚔️) to simulate series scores from FT2 up to FT20 and calculate exact expected Elo deltas beforehand.",
+                featFtFilterTitle: "FT Format Filter",
+                featFtFilterDesc: "Only accept match modalities you want (FT2, FT3, FT5, FT10, FT20, or Casuals) with smart socket-layer rejection and custom chat notices.",
+                featConnTitle: "Connection Type Detection",
+                featConnDesc: "Real-time badges detecting Cable (Ethernet), Wi-Fi (amber highlight), and unstable VPN or Relay route connections.",
+                featEndgameTitle: "Endgame Summary & Rage Quit",
+                featEndgameDesc: "Sleek match recap card showing points gained/lost per player and immediate chat alerts if an opponent pulls the cable or quits.",
                 featCountryTitle: "Country Filters",
-                featCountryDesc: "Filter and eliminate unwanted opponents in real-time on the sidebar and chat. Reduce lag by focusing on local connections.",
-                featRankTitle: "Ranking Badges",
-                featRankDesc: "Inject ranking badges and ELO scores next to nicknames so you can immediately identify the opponent's skill level.",
-                featPingTitle: "Flags & Ping",
-                featPingDesc: "Replaces native ping bars with exact millisecond values and includes the player's actual country flag in the chat log.",
-                featRepTitle: "Player Reputation",
-                featRepDesc: "Favorite friendly players or rate trolls and toxic users with downvotes to automatically mute and silence them.",
+                featCountryDesc: "Filter unwanted opponents in real-time on the sidebar and chat log. Minimize connection lag by prioritizing local rivals.",
+                featPingTitle: "Numerical Ping & Country Flags",
+                featPingDesc: "Replaces generic latency bars with exact millisecond values and displays each player's actual country flag in the chat.",
+                featRankTitle: "Ranking Badges & Skill Level",
+                featRankDesc: "Injects official ranking tier badges and approximate Elo score next to nicknames to immediately recognize opponent skill.",
+                featAudiosTitle: "20 Custom Challenger Audios",
+                featAudiosDesc: "Replace the default bell alert with 20 classic voice and audio tracks (Arcade announcers, Mortal Kombat, CS, Mario, and more).",
+                featRepTitle: "Reputation & Clean Chat",
+                featRepDesc: "Favorite friendly rivals or downvote toxic players to automatically silence their chat messages and reject their challenges.",
                 featQueueTitle: "Streamer Live Queue",
-                featQueueDesc: "Manage live stream queues effortlessly with quick chat commands (`!join`). The bot posts automated channel updates.",
-                featThemesTitle: "Unlocked Visual Themes",
-                featThemesDesc: "Access premium interface color themes and gradients without the need for premium licenses or extra costs.",
+                featQueueDesc: "Organize live stream viewer queues with chat commands (`!join`). The bot manages queue order and broadcasts promos every 10 mins.",
+                featEcoTitle: "Eco Mode & Obsidian Glass",
+                featEcoDesc: "Obsidian Glass dark theme with Eco Mode: drastically lowers Electron CPU/GPU consumption whenever Fightcade is unfocused.",
+                faqTitle: "Frequently Asked Questions",
+                faqDesc: "Everything you need to know about Fightcade Plus security, features, and usage.",
+                faqQ1: "Is Fightcade Plus safe? Can I get banned?",
+                faqA1: "<strong>Yes, 100% safe.</strong> Fightcade Plus is an open-source cosmetic and quality-of-life extension running on Fightcade's Electron UI. It <strong>never touches emulator memory or enables cheats</strong>, making it fully legitimate and safe for everyday play.",
+                faqQ2: "How does automatic ROM downloading work?",
+                faqA2: "Upon entering any game channel, Fightcade Plus detects the required game files and downloads them automatically. If you use the <strong>portable (.zip) version</strong> and already had channels open when logging in, simply <strong>leave the channel and rejoin</strong> to trigger the download.",
+                faqQ3: "How do the Elo Radar and FT Simulator estimate ratings?",
+                faqA3: "The model is hybrid: for <strong>Fightcade Patreon subscribers ('Ranked Warrior' tier or higher)</strong>, the official API returns raw rating numbers and the displayed Elo is <strong>100% exact</strong>. For free accounts, Fightcade hides numeric Elo; in those cases, the mod calculates a continuous <strong>competitive quadratic pyramid estimate (p = 2.0)</strong> based on rank tier (E to S) and leaderboard position. You can also hover over opponents to preview point goals or simulate any matchup in the ⚔️ tool.",
+                faqQ4: "How does challenge auto-reject work?",
+                faqA4: "In the Settings panel (⚙️), enable automatic filters by <strong>FT Format</strong> (e.g. only FT5), <strong>Max Ping</strong>, <strong>Country</strong>, or <strong>Negative Reputation</strong>. Challenges are blocked before playing audio cues and an anti-spam notice is posted to the chat.",
+                faqQ5: "What is Eco Mode and how does it help?",
+                faqA5: "Eco Mode throttles background Electron CPU and GPU activity whenever Fightcade is unfocused. This frees up precious computer resources so your emulator matches or live broadcasts run at peak frame rates with lower latency.",
+                faqQ6: "How do I update to newer versions?",
+                faqA6: "Fightcade Plus includes a built-in update detector that notifies you whenever a new release is available. Simply download the latest installer or extract the portable ZIP files over your existing install. Your personal settings are automatically preserved.",
                 galleryTitle: "Interface & Screenshots",
                 galleryDesc: "See demonstration captures of the extension running directly integrated into the Fightcade desktop client.",
                 gallerySlide1Title: "Native Settings Panel",
@@ -1324,15 +1891,33 @@
             es: {
                 navFeatures: "Características",
                 navGallery: "Galería",
+                navInstallation: "Instalación",
                 navChangelog: "Changelog",
                 navSupport: "Soporte",
                 navContact: "Contacto",
+                heroSmartscreenHint: "🛡️ ¿Aviso de Windows Defender? Aprende a instalarlo con seguridad",
+                smartscreenTitle: "Instalación & Ayuda de Windows",
+                smartscreenDesc: "Por qué Windows bloquea aplicaciones nuevas y cómo instalar con total seguridad.",
+                smartscreenWhyTitle: "¿Fightcade Plus es seguro? ¡Sí, 100% código abierto!",
+                smartscreenWhyText: "El aviso de Windows SmartScreen (\"Windows protegió su PC\") <strong>no significa un virus</strong>. Microsoft exige costosos certificados comerciales de pago para nuevos proyectos independientes. Nuestro código es limpio y público en GitHub.",
+                smartscreenCard1Badge: "Recomendado (10s)",
+                smartscreenCard1Title: "1. Ejecutar en 2 Clics",
+                smartscreenCard1Desc: "Cuando aparezca la ventana azul de Windows Defender, haz clic en <strong>\"Más información\"</strong> y luego en el botón <strong>\"Ejecutar de todas formas\"</strong>.",
+                smartscreenCard2Badge: "Propiedades (15s)",
+                smartscreenCard2Title: "2. Desbloquear Archivo",
+                smartscreenCard2Desc: "Haz clic derecho en el instalador descargado (<code>Setup-FightcadePlus-2.0.1.exe</code>) &gt; <strong>Propiedades</strong> &gt; marca <strong>\"Desbloquear\"</strong> al pie &gt; <strong>Aplicar</strong> y <strong>Aceptar</strong>.",
+                smartscreenCard3Badge: "Avanzado (1 min)",
+                smartscreenCard3Title: "3. Desactivar SmartScreen",
+                smartscreenCard3Desc: "Abre el menú Inicio &gt; <strong>Seguridad de Windows</strong> &gt; <strong>Control de aplicaciones y navegador</strong> &gt; <strong>Protección basada en reputación</strong> &gt; desactiva <strong>\"Comprobar aplicaciones y archivos\"</strong>.",
                 contactLabel: "💬 ¿Preguntas o Sugerencias? Contáctanos",
-                downloadBtn: "Descargar v2.0.0",
-                heroTag: "v2.0.0 — Nueva Actualización",
+                downloadBtn: "Descargar",
+                heroTag: "v2.0.1 — Nueva Actualización",
                 heroTitle: "Mejora tu experiencia en Fightcade",
                 heroDesc: "Fightcade Plus es un mod modular completo que añade mejoras de estabilidad, filtros automáticos de ping/país, reputación de jugadores y cola de streaming en vivo a tu cliente nativo de Fightcade.",
-                heroDownload: "Descargar Setup v2.0.0 (.exe)",
+                heroDownload: "Descargar Setup v2.0.1 (.exe)",
+                heroDownloadZip: "Portátil (.zip)",
+                smartscreenZipTitle: "¿Prefieres no usar el instalador? Descarga la Versión Portátil (.zip)",
+                smartscreenZipText: "Simplemente descomprime la carpeta en cualquier ubicación y abre Fightcade. El paquete comprimido no incluye las ROMs para mantener la descarga ligera: si ya tienes salas de juegos abiertas al iniciar sesión, ¡solo debes <strong>salir de la sala y volver a entrar</strong> para que las ROMs se descarguen automáticamente!",
                 heroPaypal: "Donate via PayPal",
                 heroLivepix: "Apoyar vía LivePix",
                 demoTitle: "Mira el Mod en Acción",
@@ -1340,18 +1925,44 @@
                 demoStatus: "MUY PRONTO",
                 featuresTitle: "Características Principales",
                 featuresDesc: "Módulos de alto rendimiento diseñados para optimizar partidas y ahorrar tiempo en los lobbies.",
-                featCountryTitle: "Filtro de Países",
-                featCountryDesc: "Filtra y elimina oponentes no deseados en tiempo real en la barra lateral y el chat. Reduce el lag enfocándose en conexiones locales.",
-                featRankTitle: "Medallas de Clasificación",
-                featRankDesc: "Inyecta medallas de rango y puntuación ELO al lado de los nicks para identificar la habilidad del oponente inmediatamente.",
-                featPingTitle: "Banderas & Ping",
-                featPingDesc: "Reemplaza las barras de ping nativas con el valor exacto en milisegundos e incluye la bandera real del país del jugador en el chat.",
-                featRepTitle: "Reputación de Usuarios",
-                featRepDesc: "Marca como favorito a jugadores amigables o califica a trolls y usuarios tóxicos con dislikes para silenciarlos automáticamente.",
-                featQueueTitle: "Fila Automática (Streamer)",
-                featQueueDesc: "Gestiona colas en directo sin esfuerzo con comandos rápidos (`!join`). El bot envía actualizaciones automáticas en el chat.",
-                featThemesTitle: "Temas Desbloqueados",
-                featThemesDesc: "Accede a nuevos temas y gradientes de color de la interfaz sin necesidad de licencias premium o costes adicionales.",
+                featEloTitle: "Radar de Elo & Metas Dinámicas",
+                featEloDesc: "Soporte de Elo real exacto para suscriptores de Patreon ('Ranked Warrior'+) y estimación continua piramidal (p = 2.0) para cuentas gratuitas. Metas en el hover.",
+                featSimulatorTitle: "Simulador de Series FT",
+                featSimulatorDesc: "Herramienta flotante interactiva (⚔️) para simular marcadores desde FT2 hasta FT20 y calcular con exactitud los puntos de Elo antes de jugar.",
+                featFtFilterTitle: "Filtro de Formato FT",
+                featFtFilterDesc: "Acepta solo las modalidades que deseas jugar (FT2, FT3, FT5, FT10, FT20 o Casuales) con auto-rechazo en el socket y aviso en el chat.",
+                featConnTitle: "Identificación de Conexión",
+                featConnDesc: "Detecta e inserta insignias en tiempo real para Cable (Ethernet), Wi-Fi (resaltado amarillo) y conexiones inestables de VPN o Relay.",
+                featEndgameTitle: "Fin de Partida & Rage Quit",
+                featEndgameDesc: "Tarjeta elegante con el saldo final de puntos tras la serie y alerta inmediata en el chat si el adversario desconecta el cable o cierra el juego.",
+                featCountryTitle: "Filtro por Países",
+                featCountryDesc: "Filtra oponentes no deseados en tiempo real en la barra lateral y chat. Reduce el lag encontrando rivales locales con mayor rapidez.",
+                featPingTitle: "Ping numérico & Banderas",
+                featPingDesc: "Sustituye las barras genéricas por el ping numérico exacto en milisegundos y muestra la bandera real del país del jugador en el chat.",
+                featRankTitle: "Insignias de Rango & Nivel",
+                featRankDesc: "Inyecta insignias de rango oficial y puntuación estimada junto a los nicks para identificar el nivel del oponente de inmediato.",
+                featAudiosTitle: "20 Audios Personalizados",
+                featAudiosDesc: "Reemplaza el timbre tradicional por 20 voces y efectos clásicos (Locutores arcade, Mortal Kombat, Counter-Strike, Mario y más).",
+                featRepTitle: "Reputación & Chat Limpio",
+                featRepDesc: "Marca favoritos a rivales amigables o califica con dislike a usuarios tóxicos para silenciar sus mensajes y rechazar sus retos.",
+                featQueueTitle: "Fila de Directos (Streamer)",
+                featQueueDesc: "Organiza colas de retos con comandos rápidos en el chat (`!join`). El bot gestiona el orden y publica promociones cada 10 min.",
+                featEcoTitle: "Modo Eco & Obsidian Glass",
+                featEcoDesc: "Diseño dark premium en Obsidian Glass con Modo Eco: reduce drásticamente el consumo de CPU/GPU de Electron cuando la ventana pierde el foco.",
+                faqTitle: "Preguntas Frecuentes (FAQ)",
+                faqDesc: "Todo lo que necesitas saber sobre la seguridad, funciones y uso de Fightcade Plus.",
+                faqQ1: "¿Fightcade Plus es seguro? ¿Puedo ser sancionado por usarlo?",
+                faqA1: "<strong>Sí, es 100% seguro.</strong> El mod es de código aberto y funciona como una extensión cosmética y de calidad de vida en la interfaz Electron de Fightcade. <strong>No modifica la memoria del emulador ni permite trampas</strong>, siendo totalmente legítimo y seguro.",
+                faqQ2: "¿Cómo funciona la descarga automática de ROMs?",
+                faqA2: "Al unirte a cualquier sala de juego, Fightcade Plus detecta los archivos necesarios y los descarga automáticamente. Si utilizas la <strong>versión portátil (.zip)</strong> y ya tenías salas abiertas al iniciar sesión, solo debes <strong>salir de la sala y volver a entrar</strong> para iniciar la descarga.",
+                faqQ3: "¿Cómo calculan los puntos el Radar de Elo y el Simulador?",
+                faqA3: "El modelo es híbrido: para los <strong>suscriptores de Patreon de Fightcade ('Ranked Warrior' o superior)</strong>, el servidor oficial envía los puntos reales y el Elo mostrado es <strong>100% exacto</strong>. Para cuentas gratuitas, Fightcade oculta el valor numérico; en esos casos, el mod calcula una <strong>estimación continua mediante una curva piramidal cuadrática calibrada (p = 2.0)</strong> cruzando el rango (E a S) y la posición en la tabla. Además, al pasar el cursor sobre los rivales verás las metas de puntos y podrás simular series en la herramienta ⚔️.",
+                faqQ4: "¿Cómo funciona el auto-rechazo de retos?",
+                faqA4: "En el panel de ajustes (⚙️), activa el auto-rechazo por <strong>Formato FT</strong> (ej: jugar solo FT5), <strong>Ping Máximo</strong>, <strong>País</strong> o <strong>Reputación Negativa</strong>. El reto se bloquea antes de reproducir sonido nativo y se envía un aviso discreto con protección contra spam al chat.",
+                faqQ5: "¿Qué es el Modo Eco y en qué me beneficia?",
+                faqA5: "El Modo Eco reduce los ciclos de procesador (CPU) y el consumo de GPU de Electron cuando la ventana de Fightcade pierde el foco. Esto reserva los recursos del PC para que tu emulador o directo funcionen con máxima fluidez y menor latencia.",
+                faqQ6: "¿Cómo me actualizo a las nuevas versiones?",
+                faqA6: "Fightcade Plus incorpora un comprobador inteligente de actualizaciones que te avisa cuando hay una nueva versión. Solo tienes que descargar el instalador o descomprimir el archivo portátil sobre tu instalación. Todas tus preferencias se conservan intactas.",
                 galleryTitle: "Interfaz & Capturas",
                 galleryDesc: "Mira imágenes demostrativas de la extensión funcionando directamente integrada al cliente de escritorio de Fightcade.",
                 gallerySlide1Title: "Panel de Configuración Nativo",
@@ -1373,6 +1984,31 @@
         };
 
         const changelogTimelineData = [
+            {
+                version: "v2.0.1",
+                date: {
+                    pt: "21 de Setembro de 2026",
+                    en: "September 21, 2026",
+                    es: "21 de Septiembre de 2026"
+                },
+                changes: {
+                    pt: [
+                        "Curva de calibração quadrática no Radar de Elo e Simulador FT com teto de ganho/perda de 40 pts.",
+                        "Separação granular de avisos no chat: notificação de auto-reject exclusiva por FT mantida obrigatória e chave independente para demais filtros.",
+                        "Pacote portátil compactado (ZIP) adicionado aos canais oficiais de distribuição e release notes."
+                    ],
+                    en: [
+                        "Quadratic calibration curve in Elo Radar & FT Simulator with 40-pt gain/loss cap.",
+                        "Granular chat notice separation: mandatory FT auto-reject notice preserved with independent toggle for general filters.",
+                        "Portable compressed package (ZIP) added to official distribution channels and release notes."
+                    ],
+                    es: [
+                        "Curva de calibración cuadrática en el Radar de Elo y Simulador FT con tope de ganancia/pérdida de 40 pts.",
+                        "Separación granular de avisos en el chat: notificación obligatoria para auto-rechazo por FT y conmutador independiente para los demás filtros.",
+                        "Paquete portátil comprimido (ZIP) añadido a los canales oficiales de distribución y notas de lanzamiento."
+                    ]
+                }
+            },
             {
                 version: "v2.0.0",
                 date: {
@@ -1621,15 +2257,26 @@
         function renderChangelog(lang) {
             const timeline = document.getElementById('changelogTimeline');
             if (!timeline) return;
-            timeline.innerHTML = changelogTimelineData.map(item => `
-                <div class="changelog-item fade-i18n">
-                    <span class="changelog-version">${item.version}</span>
-                    <span class="changelog-date">${item.date[lang]}</span>
-                    <ul class="changelog-changes">
-                        ${item.changes[lang].map(change => `<li>${change}</li>`).join('')}
-                    </ul>
+            timeline.innerHTML = changelogTimelineData.map((item, idx) => {
+                const isLatest = idx === 0;
+                const activeClass = isLatest ? 'active' : '';
+                return `
+                <div class="changelog-item ${activeClass} fade-i18n">
+                    <button class="changelog-header" type="button" aria-expanded="${isLatest}">
+                        <div class="changelog-header-info">
+                            <span class="changelog-version">${item.version}</span>
+                            ${isLatest ? '<span class="changelog-badge-latest">LATEST</span>' : ''}
+                            <span class="changelog-date">${item.date[lang]}</span>
+                        </div>
+                        <span class="changelog-icon">+</span>
+                    </button>
+                    <div class="changelog-body">
+                        <ul class="changelog-changes">
+                            ${item.changes[lang].map(change => `<li>${change}</li>`).join('')}
+                        </ul>
+                    </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function setLanguage(lang) {
@@ -1658,13 +2305,6 @@
                     }
                 }
             });
-
-            // Translate Demo Video placeholder state
-            const videoPlaceholder = document.querySelector('.video-placeholder');
-            if (videoPlaceholder) {
-                const statusText = translations[lang].demoStatus || "EM BREVE";
-                videoPlaceholder.style.backgroundImage = `linear-gradient(rgba(21, 10, 20, 0.45), rgba(21, 10, 20, 0.45)), url('https://placehold.co/1280x720/120911/33f1e5?text=${encodeURIComponent(statusText)}')`;
-            }
 
             // Render translated Changelog Timeline
             renderChangelog(lang);
@@ -1755,6 +2395,39 @@
         document.querySelectorAll('[data-action="open-contact"], .tally-contact-label, #tallyContactBtn').forEach(el => {
             el.addEventListener('click', openContactModal);
         });
+
+        // FAQ Accordion Interaction
+        document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.closest('.faq-item');
+                const isOpen = item.classList.contains('active');
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+                if (!isOpen) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Changelog Accordion Interaction
+        const changelogEl = document.getElementById('changelogTimeline');
+        if (changelogEl) {
+            changelogEl.addEventListener('click', (e) => {
+                const header = e.target.closest('.changelog-header');
+                if (!header) return;
+                const item = header.closest('.changelog-item');
+                if (!item) return;
+                const isOpen = item.classList.contains('active');
+                changelogEl.querySelectorAll('.changelog-item').forEach(i => {
+                    i.classList.remove('active');
+                    const h = i.querySelector('.changelog-header');
+                    if (h) h.setAttribute('aria-expanded', 'false');
+                });
+                if (!isOpen) {
+                    item.classList.add('active');
+                    header.setAttribute('aria-expanded', 'true');
+                }
+            });
+        }
     </script>
 </body>
 </html>

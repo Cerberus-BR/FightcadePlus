@@ -51,7 +51,7 @@ const defaultConfig = {
 };
 
 module.exports = {
-    CURRENT_VERSION: "2.0.0",
+    CURRENT_VERSION: "2.0.1",
     AVAILABLE_COUNTRIES,
     COUNTRY_NAME_TO_CODE,
     defaultConfig

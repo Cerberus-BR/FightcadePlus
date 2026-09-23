@@ -1015,7 +1015,8 @@ function createSettingsTab() {
             settingToggle('pingFilter.enabled', t('settings.pingFilter')) +
             settingInput('pingFilter.maxPingMs', t('settings.maxPingMs'), 'number') +
             settingToggle('pingFilter.autoReject', t('settings.autoRejectPing')) +
-            settingToggle('pingFilter.hideHighPing', t('settings.hideHighPing'))) +
+            settingToggle('pingFilter.hideHighPing', t('settings.hideHighPing')) +
+            settingToggle('countryFilter.autoRejectNotify', t('autoReject.notifyToggle'))) +
         createMasterSection('ftFilter.enabled', t('settings.ftFilter'), 'cerbFtFilterChildren',
             settingToggle('ftFilter.autoReject', t('settings.autoRejectFt')) +
             `<div class="modern-toggle" style="flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 14px;">

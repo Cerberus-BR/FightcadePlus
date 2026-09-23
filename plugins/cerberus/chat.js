@@ -571,16 +571,21 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                                 declineBtn.click();
                             }
 
-                            // [CERBERUS] Auto-Reject Notify: Mandatory notice in chat with a 5s cooldown
-                            const now = Date.now();
-                            const state = (typeof window !== 'undefined' && window.CerberusState) ? window.CerberusState : (typeof window !== 'undefined' ? (window.CerberusState = {}) : {});
-                            if (!state.lastAutoRejectNotifyTime || (now - state.lastAutoRejectNotifyTime >= 5000)) {
-                                state.lastAutoRejectNotifyTime = now;
-                                const { formatAllowedFts } = _deps();
-                                const notifyMsg = rejectReason === 'ft' && typeof formatAllowedFts === 'function'
-                                    ? t('autoReject.notifyFtMsg', { fts: formatAllowedFts(ConfigManager.getSetting('ftFilter')) })
-                                    : t('autoReject.notifyMsg');
-                                setTimeout(() => executeChatMacro([notifyMsg]), 500);
+                            // [CERBERUS] Auto-Reject Notify: mandatory for FT filter, optional via toggle for other filters
+                            const isFtReject = rejectReason === 'ft';
+                            const shouldNotify = isFtReject || (ConfigManager.getSetting('countryFilter.autoRejectNotify') !== false);
+
+                            if (shouldNotify) {
+                                const now = Date.now();
+                                const state = (typeof window !== 'undefined' && window.CerberusState) ? window.CerberusState : (typeof window !== 'undefined' ? (window.CerberusState = {}) : {});
+                                if (!state.lastAutoRejectNotifyTime || (now - state.lastAutoRejectNotifyTime >= 5000)) {
+                                    state.lastAutoRejectNotifyTime = now;
+                                    const { formatAllowedFts } = _deps();
+                                    const notifyMsg = isFtReject && typeof formatAllowedFts === 'function'
+                                        ? t('autoReject.notifyFtMsg', { fts: formatAllowedFts(ConfigManager.getSetting('ftFilter')) })
+                                        : t('autoReject.notifyMsg');
+                                    setTimeout(() => executeChatMacro([notifyMsg]), 500);
+                                }
                             }
                         }
 

@@ -224,15 +224,20 @@ function wrapCallbacks(callbacks, FCADE) {
                     fcadeObj.declineChallenge(channelname, userObj, challengeid);
                 }
 
-                // Mandatory chat notice on auto-reject (protected by 5s cooldown)
-                const now = Date.now();
-                const state = (typeof window !== 'undefined' && window.CerberusState) ? window.CerberusState : (typeof window !== 'undefined' ? (window.CerberusState = {}) : {});
-                if (!state.lastAutoRejectNotifyTime || (now - state.lastAutoRejectNotifyTime >= 5000)) {
-                    state.lastAutoRejectNotifyTime = now;
-                    const notifyMsg = rejectReason === 'ft' && typeof formatAllowedFts === 'function'
-                        ? t('autoReject.notifyFtMsg', { fts: formatAllowedFts(ConfigManager.getSetting('ftFilter')) })
-                        : t('autoReject.notifyMsg');
-                    setTimeout(() => executeChatMacro([notifyMsg]), 500);
+                // Chat notice on auto-reject: mandatory for FT filter, optional via toggle for other filters
+                const isFtReject = rejectReason === 'ft';
+                const shouldNotify = isFtReject || (ConfigManager.getSetting('countryFilter.autoRejectNotify') !== false);
+
+                if (shouldNotify) {
+                    const now = Date.now();
+                    const state = (typeof window !== 'undefined' && window.CerberusState) ? window.CerberusState : (typeof window !== 'undefined' ? (window.CerberusState = {}) : {});
+                    if (!state.lastAutoRejectNotifyTime || (now - state.lastAutoRejectNotifyTime >= 5000)) {
+                        state.lastAutoRejectNotifyTime = now;
+                        const notifyMsg = isFtReject && typeof formatAllowedFts === 'function'
+                            ? t('autoReject.notifyFtMsg', { fts: formatAllowedFts(ConfigManager.getSetting('ftFilter')) })
+                            : t('autoReject.notifyMsg');
+                        setTimeout(() => executeChatMacro([notifyMsg]), 500);
+                    }
                 }
                 return;
             }

@@ -1,63 +1,167 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
-  <!-- Background -->
-  <rect width="800" height="500" fill="#150a14" rx="16" />
-  
-  <!-- Outer glowing border -->
-  <rect x="2" y="2" width="796" height="496" fill="none" stroke="#ff007a" stroke-width="2" rx="14" opacity="0.3" />
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#140913" />
+      <stop offset="100%" stop-color="#0d050c" />
+    </linearGradient>
+    <linearGradient id="panelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#211120" />
+      <stop offset="100%" stop-color="#1a0c19" />
+    </linearGradient>
+    <linearGradient id="activeTabGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(255, 0, 122, 0.22)" />
+      <stop offset="100%" stop-color="rgba(157, 44, 179, 0.08)" />
+    </linearGradient>
+    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#33f1e5" />
+      <stop offset="100%" stop-color="#14b8a6" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+  </defs>
 
-  <!-- App Header / Toolbar -->
-  <rect x="0" y="0" width="800" height="60" fill="#0f070e" rx="16" />
-  <circle cx="25" cy="30" r="6" fill="#ff5f56" />
-  <circle cx="45" cy="30" r="6" fill="#ffbd2e" />
-  <circle cx="65" cy="30" r="6" fill="#27c93f" />
-  <text x="400" y="38" fill="#a295a1" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">🐺 FIGHTCADE PLUS — CONFIGURAÇÕES MODULARES</text>
+  <!-- App Window Background -->
+  <rect width="800" height="500" fill="url(#bgGrad)" rx="14" />
+  <rect x="1" y="1" width="798" height="498" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1.5" rx="13" />
 
-  <!-- Sidebar -->
-  <rect x="20" y="80" width="220" height="390" fill="#1d101c" rx="8" />
-  <!-- Sidebar Menu Items -->
-  <rect x="30" y="100" width="200" height="36" fill="rgba(255,0,122,0.1)" stroke="rgba(255,0,122,0.2)" rx="6" />
-  <text x="45" y="123" fill="#ff007a" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">⚙️ Ajustes Gerais</text>
-  
-  <text x="45" y="173" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🌍 Filtro de Países</text>
-  <text x="45" y="223" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🤖 Fila de Live</text>
-  <text x="45" y="273" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🛡️ Reputação &amp; Chat</text>
-  <text x="45" y="323" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">ℹ️ Sobre o Mod</text>
+  <!-- Window Header / Title Bar -->
+  <rect x="0" y="0" width="800" height="52" fill="#10060f" rx="14" />
+  <rect x="0" y="40" width="800" height="12" fill="#10060f" />
+  <line x1="0" y1="52" x2="800" y2="52" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
 
-  <!-- Main Settings Panel Area -->
-  <rect x="260" y="80" width="520" height="390" fill="#1b0e1a" rx="8" border="1px solid rgba(255,255,255,0.05)" />
+  <!-- macOS window control dots -->
+  <circle cx="28" cy="26" r="6" fill="#f87171" opacity="0.9" />
+  <circle cx="48" cy="26" r="6" fill="#fbbf24" opacity="0.9" />
+  <circle cx="68" cy="26" r="6" fill="#4ade80" opacity="0.9" />
 
-  <!-- Option 1 -->
-  <rect x="280" y="110" width="480" height="60" fill="rgba(255,255,255,0.02)" rx="6" />
-  <text x="300" y="136" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="bold">Filtro de Região Automatizado</text>
-  <text x="300" y="152" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11">Oculta jogadores com latência superior a 150ms</text>
-  <!-- Switch ON -->
-  <rect x="690" y="125" width="50" height="26" fill="#33f1e5" rx="13" />
-  <circle cx="727" cy="138" r="10" fill="#fff" />
+  <!-- Title & Version Badge -->
+  <text x="400" y="32" fill="#f8f6f8" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="13" font-weight="700" letter-spacing="0.5" text-anchor="middle">FIGHTCADE PLUS: MODULAR SETTINGS</text>
+  <rect x="670" y="16" width="102" height="20" fill="rgba(51, 241, 229, 0.1)" stroke="rgba(51, 241, 229, 0.3)" rx="10" />
+  <text x="721" y="30" fill="#33f1e5" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">v2.1.0 STABLE</text>
 
-  <!-- Option 2 -->
-  <rect x="280" y="185" width="480" height="60" fill="rgba(255,255,255,0.02)" rx="6" />
-  <text x="300" y="211" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="bold">Exibir Badges de Ranking</text>
-  <text x="300" y="227" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11">Injeta badges com a pontuação ELO nas salas</text>
-  <!-- Switch ON -->
-  <rect x="690" y="200" width="50" height="26" fill="#33f1e5" rx="13" />
-  <circle cx="727" cy="213" r="10" fill="#fff" />
+  <!-- Left Sidebar (Tabs) -->
+  <rect x="18" y="68" width="220" height="414" fill="#170c16" rx="10" />
+  <rect x="18" y="68" width="220" height="414" fill="none" stroke="rgba(255, 255, 255, 0.06)" rx="10" />
 
-  <!-- Option 3 -->
-  <rect x="280" y="260" width="480" height="60" fill="rgba(255,255,255,0.02)" rx="6" />
-  <text x="300" y="286" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="bold">Modo de Privacidade Streamer (Blur)</text>
-  <text x="300" y="302" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11">Borra nicks dos jogadores durante a transmissão</text>
-  <!-- Switch OFF -->
-  <rect x="690" y="275" width="50" height="26" fill="rgba(255,255,255,0.15)" rx="13" />
-  <circle cx="703" cy="288" r="10" fill="#fff" />
+  <!-- Tab 1: General & Audio -->
+  <g transform="translate(26, 82)">
+    <rect width="204" height="40" fill="transparent" rx="8" />
+    <text x="14" y="25" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="13" font-weight="500">⚙️ General &amp; Sounds</text>
+  </g>
 
-  <!-- Option 4 -->
-  <rect x="280" y="335" width="480" height="60" fill="rgba(255,255,255,0.02)" rx="6" />
-  <text x="300" y="361" fill="#fff" font-family="system-ui, sans-serif" font-size="14" font-weight="bold">Fila Interativa do Chat (!join)</text>
-  <text x="300" y="377" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11">Permite a entrada de desafiantes usando comandos rápidos</text>
-  <!-- Switch ON -->
-  <rect x="690" y="350" width="50" height="26" fill="#33f1e5" rx="13" />
-  <circle cx="727" cy="363" r="10" fill="#fff" />
+  <!-- Tab 2: Challenge Filter FT (Active) -->
+  <g transform="translate(26, 128)">
+    <rect width="204" height="40" fill="url(#activeTabGrad)" stroke="rgba(255, 0, 122, 0.35)" stroke-width="1" rx="8" />
+    <rect x="2" y="8" width="3" height="24" fill="#ff007a" rx="1.5" />
+    <text x="14" y="25" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">🛡️ Challenge Filter (FT)</text>
+  </g>
 
-  <!-- Footnote -->
-  <text x="520" y="445" fill="#33f1e5" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" opacity="0.8">✦ SALVAMENTO AUTOMÁTICO ATIVADO ✦</text>
+  <!-- Tab 3: Country Filter -->
+  <g transform="translate(26, 174)">
+    <rect width="204" height="40" fill="transparent" rx="8" />
+    <text x="14" y="25" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="13" font-weight="500">🌍 Country &amp; Ping Filter</text>
+  </g>
+
+  <!-- Tab 4: Elo Radar -->
+  <g transform="translate(26, 220)">
+    <rect width="204" height="40" fill="transparent" rx="8" />
+    <text x="14" y="25" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="13" font-weight="500">🏆 Elo Radar &amp; Goals</text>
+  </g>
+
+  <!-- Tab 5: Streamer Queue -->
+  <g transform="translate(26, 266)">
+    <rect width="204" height="40" fill="transparent" rx="8" />
+    <text x="14" y="25" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="13" font-weight="500">🤖 Streamer Live Queue</text>
+  </g>
+
+  <!-- Tab 6: Reputation -->
+  <g transform="translate(26, 312)">
+    <rect width="204" height="40" fill="transparent" rx="8" />
+    <text x="14" y="25" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="13" font-weight="500">⭐ Reputation &amp; Chat</text>
+  </g>
+
+  <!-- Sidebar Footer Info -->
+  <g transform="translate(26, 420)">
+    <rect width="204" height="50" fill="rgba(255, 255, 255, 0.02)" stroke="rgba(255, 255, 255, 0.04)" rx="8" />
+    <circle cx="18" cy="25" r="4" fill="#10b981" />
+    <text x="30" y="22" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Fightcade Connected</text>
+    <text x="30" y="37" fill="#8d7f8c" font-family="-apple-system, sans-serif" font-size="10">Socket Hook Active</text>
+  </g>
+
+  <!-- Main Content Panel -->
+  <rect x="250" y="68" width="532" height="414" fill="url(#panelGrad)" rx="10" />
+  <rect x="250" y="68" width="532" height="414" fill="none" stroke="rgba(255, 255, 255, 0.08)" rx="10" />
+
+  <!-- Section Header inside Panel -->
+  <text x="272" y="100" fill="#ffffff" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="16" font-weight="700">FT Format Challenge Filter</text>
+  <text x="272" y="118" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="12">Automatic socket rejection before playing sounds or rendering cards.</text>
+
+  <!-- Option 1: Format Selector Buttons -->
+  <g transform="translate(272, 134)">
+    <rect width="488" height="88" fill="rgba(255, 255, 255, 0.02)" stroke="rgba(255, 255, 255, 0.06)" rx="8" />
+    <text x="16" y="26" fill="#f8f6f8" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Allowed Match Formats:</text>
+    
+    <!-- FT Pills -->
+    <!-- FT2 (Off) -->
+    <rect x="16" y="42" width="60" height="30" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.12)" rx="6" />
+    <text x="46" y="62" fill="#8d7f8c" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="700" text-anchor="middle">FT2</text>
+    
+    <!-- FT3 (Off) -->
+    <rect x="84" y="42" width="60" height="30" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.12)" rx="6" />
+    <text x="114" y="62" fill="#8d7f8c" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="700" text-anchor="middle">FT3</text>
+    
+    <!-- FT5 (ON - Active) -->
+    <rect x="152" y="42" width="64" height="30" fill="rgba(51, 241, 229, 0.15)" stroke="#33f1e5" stroke-width="1.5" rx="6" />
+    <text x="184" y="62" fill="#33f1e5" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="700" text-anchor="middle">✓ FT5</text>
+    
+    <!-- FT10 (ON - Active) -->
+    <rect x="224" y="42" width="68" height="30" fill="rgba(51, 241, 229, 0.15)" stroke="#33f1e5" stroke-width="1.5" rx="6" />
+    <text x="258" y="62" fill="#33f1e5" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="700" text-anchor="middle">✓ FT10</text>
+
+    <!-- Casual (Off) -->
+    <rect x="300" y="42" width="80" height="30" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.12)" rx="6" />
+    <text x="340" y="62" fill="#8d7f8c" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="700" text-anchor="middle">Casual</text>
+
+    <text x="472" y="62" fill="#33f1e5" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="end">2 formats allowed</text>
+  </g>
+
+  <!-- Option 2: Eco Mode Switch -->
+  <g transform="translate(272, 234)">
+    <rect width="488" height="64" fill="rgba(255, 255, 255, 0.02)" stroke="rgba(255, 255, 255, 0.06)" rx="8" />
+    <text x="16" y="27" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Background Eco Mode</text>
+    <text x="16" y="46" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="11">Lowers Electron CPU/GPU rendering rate when Fightcade is unfocused.</text>
+    <rect x="340" y="14" width="76" height="20" fill="rgba(16, 185, 129, 0.12)" stroke="rgba(16, 185, 129, 0.3)" rx="10" />
+    <text x="378" y="28" fill="#10b981" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">-65% CPU</text>
+    
+    <!-- Switch ON (Emerald) -->
+    <rect x="428" y="20" width="46" height="24" fill="url(#emeraldGrad)" rx="12" />
+    <circle cx="459" cy="32" r="9" fill="#ffffff" />
+  </g>
+
+  <!-- Option 3: Auto-Reject Notice in Chat -->
+  <g transform="translate(272, 310)">
+    <rect width="488" height="64" fill="rgba(255, 255, 255, 0.02)" stroke="rgba(255, 255, 255, 0.06)" rx="8" />
+    <text x="16" y="27" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Discreet Chat Auto-Reject Notice</text>
+    <text x="16" y="46" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="11">Notifies opponent with 3-message anti-spam rotation and 30s cooldown.</text>
+    
+    <!-- Switch ON (Teal) -->
+    <rect x="428" y="20" width="46" height="24" fill="url(#tealGrad)" rx="12" />
+    <circle cx="459" cy="32" r="9" fill="#0d050c" />
+  </g>
+
+  <!-- Option 4: Elo Radar Hover -->
+  <g transform="translate(272, 386)">
+    <rect width="488" height="64" fill="rgba(255, 255, 255, 0.02)" stroke="rgba(255, 255, 255, 0.06)" rx="8" />
+    <text x="16" y="27" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Continuous Elo Radar (Pyramidal Curve)</text>
+    <text x="16" y="46" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="11">Displays estimated ratings, dynamic point goals, and trends on hover.</text>
+    
+    <!-- Switch ON (Teal) -->
+    <rect x="428" y="20" width="46" height="24" fill="url(#tealGrad)" rx="12" />
+    <circle cx="459" cy="32" r="9" fill="#0d050c" />
+  </g>
+
+  <!-- Bottom Panel Status -->
+  <text x="516" y="468" fill="#33f1e5" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle" opacity="0.9">✦ Settings saved and active in real-time across channels ✦</text>
 </svg>

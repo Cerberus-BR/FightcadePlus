@@ -1,67 +1,150 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
-  <!-- Background -->
-  <rect width="800" height="500" fill="#150a14" rx="16" />
+  <defs>
+    <linearGradient id="bgGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#140913" />
+      <stop offset="100%" stop-color="#0d050c" />
+    </linearGradient>
+    <linearGradient id="matchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(157, 44, 179, 0.25)" />
+      <stop offset="100%" stop-color="rgba(255, 0, 122, 0.12)" />
+    </linearGradient>
+    <linearGradient id="botOnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+  </defs>
+
+  <!-- App Window Background -->
+  <rect width="800" height="500" fill="url(#bgGrad3)" rx="14" />
+  <rect x="1" y="1" width="798" height="498" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1.5" rx="13" />
+
+  <!-- Window Header / Title Bar -->
+  <rect x="0" y="0" width="800" height="52" fill="#10060f" rx="14" />
+  <rect x="0" y="40" width="800" height="12" fill="#10060f" />
+  <line x1="0" y1="52" x2="800" y2="52" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+
+  <!-- Window Dots -->
+  <circle cx="28" cy="26" r="6" fill="#f87171" opacity="0.9" />
+  <circle cx="48" cy="26" r="6" fill="#fbbf24" opacity="0.9" />
+  <circle cx="68" cy="26" r="6" fill="#4ade80" opacity="0.9" />
+
+  <!-- Title & Status -->
+  <text x="400" y="32" fill="#ffffff" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="13" font-weight="700" letter-spacing="0.5" text-anchor="middle">STREAMER LIVE QUEUE MANAGER (NATIVE CHAT BOT)</text>
   
-  <!-- Outer glowing border -->
-  <rect x="2" y="2" width="796" height="496" fill="none" stroke="#9d2cb3" stroke-width="2" rx="14" opacity="0.3" />
+  <rect x="630" y="16" width="146" height="20" fill="rgba(239, 68, 68, 0.15)" stroke="rgba(239, 68, 68, 0.4)" rx="10" />
+  <circle cx="642" cy="26" r="3.5" fill="#ef4444" />
+  <text x="708" y="30" fill="#f87171" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">LIVE: 5 IN QUEUE</text>
 
-  <!-- App Header / Toolbar -->
-  <rect x="0" y="0" width="800" height="60" fill="#0f070e" rx="16" />
-  <circle cx="25" cy="30" r="6" fill="#ff5f56" />
-  <circle cx="45" cy="30" r="6" fill="#ffbd2e" />
-  <circle cx="65" cy="30" r="6" fill="#27c93f" />
-  <text x="400" y="38" fill="#a295a1" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">🤖 GERENCIADOR DE FILA PARA LIVE STREAMERS</text>
+  <!-- Top Controls Bar -->
+  <g transform="translate(24, 66)">
+    <rect width="752" height="48" fill="#170c16" rx="8" />
+    <rect width="752" height="48" fill="none" stroke="rgba(255, 255, 255, 0.06)" rx="8" />
+    
+    <!-- Bot Switch Status -->
+    <rect x="16" y="12" width="120" height="24" fill="url(#botOnGrad)" rx="12" />
+    <circle cx="28" cy="24" r="5" fill="#ffffff" />
+    <text x="74" y="28" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" text-anchor="middle">BOT ACTIVE</text>
 
-  <!-- Sidebar -->
-  <rect x="20" y="80" width="220" height="390" fill="#1d101c" rx="8" />
-  <rect x="30" y="200" width="200" height="36" fill="rgba(157,44,179,0.1)" stroke="rgba(157,44,179,0.2)" rx="6" />
-  <text x="45" y="223" fill="#9d2cb3" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">🤖 Fila de Live</text>
-  
-  <text x="45" y="123" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">⚙️ Ajustes Gerais</text>
-  <text x="45" y="173" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🌍 Filtro de Países</text>
-  <text x="45" y="273" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13">🛡️ Reputação &amp; Chat</text>
+    <!-- Settings tags -->
+    <text x="156" y="29" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="12">Chat command: <tspan fill="#33f1e5" font-weight="700">!join</tspan> to queue | <tspan fill="#33f1e5" font-weight="700">!queue</tspan> to view positions</text>
+    
+    <rect x="620" y="12" width="118" height="24" fill="rgba(157, 44, 179, 0.15)" stroke="rgba(157, 44, 179, 0.3)" rx="6" />
+    <text x="679" y="28" fill="#d880f0" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" text-anchor="middle">Auto-Promo: 10m</text>
+  </g>
 
-  <!-- Main Settings Panel Area -->
-  <rect x="260" y="80" width="520" height="390" fill="#1b0e1a" rx="8" />
+  <!-- Left Column: Current Match Spotlight (330px width) -->
+  <g transform="translate(24, 126)">
+    <rect width="330" height="274" fill="url(#matchGrad)" stroke="rgba(157, 44, 179, 0.35)" stroke-width="1.5" rx="10" />
+    
+    <!-- Match Header -->
+    <rect x="14" y="14" width="302" height="24" fill="rgba(0, 0, 0, 0.3)" rx="4" />
+    <circle cx="26" cy="26" r="3.5" fill="#4ade80" />
+    <text x="36" y="30" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-size="11" font-weight="700">CURRENT MATCH (FT3 SERIES)</text>
+    <text x="306" y="30" fill="#33f1e5" font-family="'Space Grotesk', monospace" font-size="11" font-weight="700" text-anchor="end">06:42</text>
 
-  <!-- Queue status header in widget -->
-  <rect x="280" y="100" width="480" height="50" fill="rgba(157,44,179,0.1)" rx="6" />
-  <text x="300" y="130" fill="#fff" font-family="system-ui, sans-serif" font-size="15" font-weight="bold">Fila Ativa: 5 Jogadores</text>
-  <!-- BOT ON Status badge -->
-  <rect x="650" y="112" width="90" height="26" fill="#59b240" rx="4" />
-  <text x="695" y="129" fill="#fff" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" text-anchor="middle">BOT ON</text>
+    <!-- Player 1 (Streamer) -->
+    <rect x="14" y="48" width="302" height="52" fill="rgba(0, 0, 0, 0.25)" rx="6" />
+    <text x="26" y="72" fill="#33f1e5" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">Streamer (You)</text>
+    <rect x="26" y="78" width="56" height="14" fill="#33f1e5" rx="3" />
+    <text x="54" y="89" fill="#0d050c" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="800" text-anchor="middle">RANK S</text>
+    <text x="296" y="80" fill="#ffffff" font-family="'Space Grotesk', monospace" font-size="28" font-weight="700" text-anchor="end">2</text>
 
-  <!-- Add Player input simulation -->
-  <rect x="280" y="165" width="370" height="34" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.08)" rx="4" />
-  <text x="295" y="186" fill="#6b5b6a" font-family="system-ui, sans-serif" font-size="12">Digitar nick para adicionar manualmente...</text>
-  <rect x="660" y="165" width="100" height="34" fill="#9d2cb3" rx="4" />
-  <text x="710" y="186" fill="#fff" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">ADICIONAR</text>
+    <!-- VS Divider -->
+    <text x="165" y="116" fill="#8d7f8c" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="700" text-anchor="middle">VS</text>
 
-  <!-- Queue list elements -->
-  <!-- 1. Player: KOF_Master -->
-  <rect x="280" y="215" width="480" height="40" fill="rgba(255,255,255,0.02)" rx="6" />
-  <text x="295" y="240" fill="#fff" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">1. KOF_Master</text>
-  <text x="630" y="239" fill="#59b240" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">AGUARDANDO</text>
-  <!-- Action buttons simulation -->
-  <rect x="715" y="223" width="30" height="24" fill="rgba(255,255,255,0.05)" rx="3" />
-  <text x="730" y="239" fill="#a295a1" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">❌</text>
+    <!-- Player 2 (Challenger) -->
+    <rect x="14" y="126" width="302" height="52" fill="rgba(0, 0, 0, 0.25)" rx="6" />
+    <text x="26" y="150" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">KOF_Master</text>
+    <rect x="26" y="156" width="60" height="14" fill="#ff007a" rx="3" />
+    <text x="56" y="167" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-size="9" font-weight="800" text-anchor="middle">RANK A (1820)</text>
+    <text x="296" y="158" fill="#ffffff" font-family="'Space Grotesk', monospace" font-size="28" font-weight="700" text-anchor="end">1</text>
 
-  <!-- 2. Player: KenSf3 -->
-  <rect x="280" y="260" width="480" height="40" fill="rgba(255,255,255,0.02)" rx="6" />
-  <text x="295" y="285" fill="#fff" font-family="system-ui, sans-serif" font-size="13" font-weight="bold">2. KenSf3</text>
-  <text x="630" y="284" fill="#59b240" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">AGUARDANDO</text>
-  <rect x="715" y="268" width="30" height="24" fill="rgba(255,255,255,0.05)" rx="3" />
-  <text x="730" y="284" fill="#a295a1" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">❌</text>
+    <!-- Match Point Alert -->
+    <rect x="14" y="188" width="302" height="28" fill="rgba(51, 241, 229, 0.1)" stroke="rgba(51, 241, 229, 0.25)" rx="4" />
+    <text x="165" y="206" fill="#33f1e5" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" text-anchor="middle">🔥 MATCH POINT FOR STREAMER</text>
 
-  <!-- 3. Player: RyuSf3 (Already Played) -->
-  <rect x="280" y="305" width="480" height="40" fill="rgba(255,255,255,0.01)" rx="6" opacity="0.5" />
-  <text x="295" y="330" fill="#a295a1" font-family="system-ui, sans-serif" font-size="13" style="text-decoration: line-through;">3. RyuFighter</text>
-  <text x="630" y="329" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">JOGOU</text>
-  <rect x="715" y="313" width="30" height="24" fill="rgba(255,255,255,0.05)" rx="3" />
-  <text x="730" y="329" fill="#a295a1" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle">❌</text>
+    <!-- Quick Action Buttons -->
+    <rect x="14" y="226" width="146" height="34" fill="#ff007a" rx="6" />
+    <text x="87" y="247" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" text-anchor="middle">⏩ Call Next</text>
 
-  <!-- Auto reply details -->
-  <rect x="280" y="360" width="480" height="50" fill="rgba(0,0,0,0.15)" stroke="rgba(255,255,255,0.03)" rx="6" />
-  <text x="295" y="380" fill="#a295a1" font-family="system-ui, sans-serif" font-size="11">Resposta Automática no Chat do Canal:</text>
-  <text x="295" y="396" fill="#33f1e5" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">"[Fila] Bem-vindos: KOF_Master, KenSf3. Digite !join para entrar."</text>
+    <rect x="170" y="226" width="146" height="34" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.15)" rx="6" />
+    <text x="243" y="247" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">🔄 Reset Series</text>
+  </g>
+
+  <!-- Right Column: Waiting Queue (410px width) -->
+  <g transform="translate(366, 126)">
+    <rect width="410" height="274" fill="#170c16" rx="10" />
+    <rect width="410" height="274" fill="none" stroke="rgba(255, 255, 255, 0.06)" rx="10" />
+
+    <!-- Queue Header -->
+    <text x="16" y="26" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-size="13" font-weight="700">Challenger Queue (First-Come, First-Served)</text>
+    <text x="394" y="26" fill="#33f1e5" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="end">4 Waiting</text>
+
+    <!-- Queue Row 1 (Next Up) -->
+    <g transform="translate(14, 40)">
+      <rect width="382" height="46" fill="rgba(51, 241, 229, 0.06)" stroke="rgba(51, 241, 229, 0.25)" rx="6" />
+      <text x="12" y="27" fill="#33f1e5" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="700">1st</text>
+      <text x="38" y="27" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">NeonStrike</text>
+      <text x="140" y="27" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="11">[Rank B | 🇧🇷 18ms]</text>
+      <rect x="290" y="11" width="80" height="24" fill="#33f1e5" rx="4" />
+      <text x="330" y="27" fill="#0d050c" font-family="-apple-system, sans-serif" font-size="10" font-weight="800" text-anchor="middle">NEXT UP</text>
+    </g>
+
+    <!-- Queue Row 2 -->
+    <g transform="translate(14, 92)">
+      <rect width="382" height="46" fill="rgba(255, 255, 255, 0.02)" stroke="rgba(255, 255, 255, 0.05)" rx="6" />
+      <text x="12" y="27" fill="#8d7f8c" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="700">2nd</text>
+      <text x="38" y="27" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">ShadowFox</text>
+      <text x="140" y="27" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="11">[Rank A | 🇨🇱 48ms]</text>
+      <rect x="290" y="11" width="80" height="24" fill="rgba(255, 255, 255, 0.05)" rx="4" />
+      <text x="330" y="27" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="10" font-weight="600" text-anchor="middle">IN QUEUE</text>
+    </g>
+
+    <!-- Queue Row 3 -->
+    <g transform="translate(14, 144)">
+      <rect width="382" height="46" fill="rgba(255, 255, 255, 0.02)" stroke="rgba(255, 255, 255, 0.05)" rx="6" />
+      <text x="12" y="27" fill="#8d7f8c" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="700">3rd</text>
+      <text x="38" y="27" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">SolarKnight</text>
+      <text x="140" y="27" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="11">[Rank B | 🇦🇷 52ms]</text>
+      <rect x="290" y="11" width="80" height="24" fill="rgba(255, 255, 255, 0.05)" rx="4" />
+      <text x="330" y="27" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="10" font-weight="600" text-anchor="middle">IN QUEUE</text>
+    </g>
+
+    <!-- Add manual player input simulation -->
+    <g transform="translate(14, 214)">
+      <rect width="270" height="34" fill="rgba(0, 0, 0, 0.3)" stroke="rgba(255, 255, 255, 0.08)" rx="6" />
+      <text x="14" y="21" fill="#6e616d" font-family="-apple-system, sans-serif" font-size="11">Enter nickname manually...</text>
+      <rect x="280" y="0" width="102" height="34" fill="rgba(157, 44, 179, 0.8)" rx="6" />
+      <text x="331" y="21" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" text-anchor="middle">+ Add</text>
+    </g>
+  </g>
+
+  <!-- Bottom Bar: Chat Bot Notification Mockup -->
+  <g transform="translate(24, 414)">
+    <rect width="752" height="66" fill="#10060f" stroke="rgba(255, 255, 255, 0.06)" rx="8" />
+    <text x="16" y="24" fill="#a295a1" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">AUTOMATED CHANNEL CHAT BROADCAST:</text>
+    <rect x="16" y="34" width="720" height="24" fill="rgba(255, 255, 255, 0.02)" rx="4" />
+    <text x="24" y="50" fill="#33f1e5" font-family="'Space Grotesk', monospace" font-size="11" font-weight="700">[Queue Bot]:</text>
+    <text x="96" y="50" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="11">Match started: <tspan fill="#33f1e5">@Streamer</tspan> vs <tspan fill="#ff007a">@KOF_Master</tspan> (FT3). Next up: <tspan fill="#4ade80">@KenSf3</tspan>. Type !join to challenge.</text>
+  </g>
 </svg>

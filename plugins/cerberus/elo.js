@@ -104,26 +104,30 @@ function estimatePlayerElo(username, rankLetter, gameId, RankCache) {
     }
 
     // Only interpolate position if cache has schemaVersion >= 2 and the rank was fully traversed (complete: true)
+    // or if a confirmed boundary was preserved from a previous complete sync (preservedBoundary: true)
     if (gameData.schemaVersion === 2 && gameData.rankCoverage && gameData.rankCoverage[letter]) {
         const coverage = gameData.rankCoverage[letter];
-        if (coverage.complete === true) {
-            const minPos = coverage.firstPosition;
-            const maxPos = coverage.lastPosition;
-            if (typeof minPos === 'number' && typeof maxPos === 'number' && maxPos > minPos) {
-                const ratio = Math.max(0, Math.min(1, (userRankNum - minPos) / (maxPos - minPos)));
-                // Curva de distribuição piramidal competitiva (Quadrática p = 2.0):
-                // A maioria dos jogadores acumula na base da faixa e apenas o topo se aproxima do teto
-                const progress = 1 - ratio;
-                const curvedProgress = Math.pow(progress, 2.0);
-                const interpolated = range.min + (curvedProgress * (range.max - range.min));
-                const res = Math.round(interpolated);
-                _setEloMemo(cacheKey, res);
-                return res;
-            }
+        const minPos = coverage.firstPosition;
+        const maxPos = coverage.complete === true
+            ? coverage.lastPosition
+            : (coverage.preservedBoundary && typeof coverage.historicalLastPosition === 'number' && coverage.historicalLastPosition > minPos
+                ? coverage.historicalLastPosition
+                : null);
+
+        if (typeof minPos === 'number' && typeof maxPos === 'number' && maxPos > minPos && typeof userRankNum === 'number') {
+            const ratio = Math.max(0, Math.min(1, (userRankNum - minPos) / (maxPos - minPos)));
+            // Curva de distribuição piramidal competitiva (Quadrática p = 2.0):
+            // A maioria dos jogadores acumula na base da faixa e apenas o topo se aproxima do teto
+            const progress = 1 - ratio;
+            const curvedProgress = Math.pow(progress, 2.0);
+            const interpolated = range.min + (curvedProgress * (range.max - range.min));
+            const res = Math.round(interpolated);
+            _setEloMemo(cacheKey, res);
+            return res;
         }
     }
 
-    // Partial ranks, legacy caches without schemaVersion 2, or single-player ranks fallback to mid
+    // Partial ranks without preserved boundaries, legacy caches without schemaVersion 2, or unindexed players fallback to mid
     const res = Math.round(range.mid);
     _setEloMemo(cacheKey, res);
     return res;
@@ -162,18 +166,29 @@ function getPlayerEloInfo(username, rankLetter, gameId, RankCache) {
     }
 
     const gameData = gameId && RankCache?.data?.[gameId];
+    const coverage = gameData?.rankCoverage?.[letter];
+    const minPos = coverage?.firstPosition;
+    const hasHistoricalBoundary = !hasRankChanged && !!(
+        gameData &&
+        gameData.schemaVersion === 2 &&
+        coverage &&
+        coverage.preservedBoundary === true &&
+        typeof coverage.historicalLastPosition === 'number' &&
+        typeof minPos === 'number' &&
+        coverage.historicalLastPosition > minPos &&
+        typeof userRankNum === 'number'
+    );
     const isComplete = !hasRankChanged && !!(
         gameData &&
         gameData.schemaVersion === 2 &&
-        gameData.rankCoverage &&
-        letter &&
-        gameData.rankCoverage[letter]?.complete === true &&
+        coverage &&
+        coverage.complete === true &&
         typeof userRankNum === 'number'
     );
 
     return {
         elo: estimatePlayerElo(username, letter, gameId, RankCache),
-        source: isComplete ? 'estimated' : 'partial',
+        source: (isComplete || hasHistoricalBoundary) ? 'estimated' : 'partial',
         minElo,
         maxElo
     };
@@ -270,18 +285,18 @@ function getRecommendation(myElo, oppElo, ftTarget, customT) {
 
     let diffText = '';
     if (diffPercent <= 5 || myEloNum === oppEloNum) {
-        diffText = tr ? tr('elo.diffEven') : '📊 Evenly matched score';
+        diffText = tr ? tr('elo.diffEven') : 'Evenly matched score';
     } else if (oppEloNum < myEloNum) {
         if (diffPercent >= 35) {
-            diffText = tr ? tr('elo.diffMuchLower') : '📊 Opponent score significantly lower';
+            diffText = tr ? tr('elo.diffMuchLower') : 'Opponent score significantly lower';
         } else {
-            diffText = tr ? tr('elo.diffBelow', { diff: diffPercent }) : `📊 Opponent has ${diffPercent}% less Elo`;
+            diffText = tr ? tr('elo.diffBelow', { diff: diffPercent }) : `Opponent has ${diffPercent}% less Elo`;
         }
     } else {
         if (diffPercent >= 35) {
-            diffText = tr ? tr('elo.diffMuchHigher') : '📊 Opponent score significantly higher';
+            diffText = tr ? tr('elo.diffMuchHigher') : 'Opponent score significantly higher';
         } else {
-            diffText = tr ? tr('elo.diffAbove', { diff: diffPercent }) : `📊 Opponent has ${diffPercent}% more Elo`;
+            diffText = tr ? tr('elo.diffAbove', { diff: diffPercent }) : `Opponent has ${diffPercent}% more Elo`;
         }
     }
 
@@ -300,25 +315,25 @@ function getRecommendation(myElo, oppElo, ftTarget, customT) {
         type = 'high_reward';
         const lossScore = worstProfitableLoss.score.replace('-', 'x');
         const lossPts = Math.abs(worstProfitableLoss.netDelta);
-        text = tr ? tr('elo.reqSingleWin', { score: lossScore, pts: lossPts }) : `🔥 Easy XP: even a loss (${lossScore}) earns ~${lossPts} pts`;
+        text = tr ? tr('elo.reqSingleWin', { score: lossScore, pts: lossPts }) : `Easy XP: even a loss (${lossScore}) earns ~${lossPts} pts`;
     } else if (profitableScenarios.length === 0) {
         type = 'unranked';
-        text = tr ? tr('elo.reqNoPoints') : '🎮 Play for practice and have fun!';
+        text = tr ? tr('elo.reqNoPoints') : 'Play for practice and have fun!';
     } else if (worstProfitableWin.score === `${ft}-0`) {
         type = 'high_risk';
         const cleanPts = Math.abs(worstProfitableWin.netDelta);
         const cleanScore = `${ft}x0`;
-        text = tr ? tr('elo.reqCleanWin', { clean: cleanScore, pts: cleanPts }) : `🎯 Only a clean sweep (${cleanScore}) guarantees ~${cleanPts} pts`;
+        text = tr ? tr('elo.reqCleanWin', { clean: cleanScore, pts: cleanPts }) : `Only a clean sweep (${cleanScore}) guarantees ~${cleanPts} pts`;
     } else if (worstProfitableWin.score === `${ft}-${ft - 1}`) {
         type = 'balanced';
         const winPts = Math.abs(worstProfitableWin.netDelta);
         const scoreStr = worstProfitableWin.score.replace('-', 'x');
-        text = tr ? tr('elo.reqBalanced', { score: scoreStr, pts: winPts }) : `⚖️ Even a tight win (${scoreStr}) guarantees ~${winPts} pts`;
+        text = tr ? tr('elo.reqBalanced', { score: scoreStr, pts: winPts }) : `Even a tight win (${scoreStr}) guarantees ~${winPts} pts`;
     } else {
         type = 'high_risk';
         const winPts = Math.abs(worstProfitableWin.netDelta);
         const scoreStr = worstProfitableWin.score.replace('-', 'x');
-        text = tr ? tr('elo.reqModerateRisk', { score: scoreStr, pts: winPts }) : `⚡ Score ${scoreStr} or better guarantees ~${winPts} pts`;
+        text = tr ? tr('elo.reqModerateRisk', { score: scoreStr, pts: winPts }) : `Score ${scoreStr} or better guarantees ~${winPts} pts`;
     }
 
     const result = {

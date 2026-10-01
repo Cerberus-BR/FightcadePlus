@@ -12,14 +12,32 @@ function init(FCADE) {
     
     // 0. Privacy Shield & Safety Patch
     blockAnalyticsAndTagManager();
-    const VueConstructor = FCADE?.constructor || window.Vue;
-    if (VueConstructor && typeof VueConstructor.set === 'function' && !VueConstructor._cerbSetPatched) {
-        const origSet = VueConstructor.set;
-        VueConstructor.set = function(target, key, val) {
-            if (!target || typeof target !== 'object') return val;
-            return origSet.call(this, target, key, val);
+    const vueTargets = [
+        FCADE?.constructor,
+        FCADE?.constructor?.super,
+        window.Vue
+    ].filter(Boolean);
+
+    for (const V of vueTargets) {
+        if (typeof V.set === 'function' && !V._cerbSetPatched) {
+            const origSet = V.set;
+            V.set = function(target, key, val) {
+                if (!target || typeof target !== 'object') return val;
+                return origSet.call(this, target, key, val);
+            };
+            V._cerbSetPatched = true;
+        }
+    }
+
+    if (FCADE && typeof FCADE.onUserAwayStateChanges === 'function' && !FCADE.onUserAwayStateChanges._cerbPatched) {
+        const origOnUserAway = FCADE.onUserAwayStateChanges;
+        FCADE.onUserAwayStateChanges = function(username, isAway, channelname) {
+            if (!this.globalUsers || (!this.globalUsers[username] && (!username || !this.globalUsers[username.toLowerCase()]))) {
+                return;
+            }
+            return origOnUserAway.apply(this, arguments);
         };
-        VueConstructor._cerbSetPatched = true;
+        FCADE.onUserAwayStateChanges._cerbPatched = true;
     }
     CerberusData.load();
     ConfigManager.loadConfig();

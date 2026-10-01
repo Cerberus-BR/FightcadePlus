@@ -9,9 +9,12 @@ const dataPath = path.join(__dirname, '..', 'cerberus_data.json');
 if (!window.CerberusState) {
     window.CerberusState = { 
         liveMasterOn: false, promoBotInterval: null, replyQueue: [], 
-        menuIsHovered: false, menuHideTimeout: null, menuShowTimeout: null, 
+        menuIsHovered: false, menuHideTimeout: null, menuShowTimeout: null, selfProfileHideTimeout: null, 
         menuCleanupInterval: null, sidebarSearchTerm: '', lastUIRenderSignature: '',
-        lastAutoRejectNotifyTime: 0
+        lastAutoRejectNotifyTime: 0,
+        lastAutoRejectPerUser: {},
+        lastToastPerUser: {},
+        lastFavoriteJoinPerUser: {}
     };
 }
 
@@ -68,7 +71,7 @@ function safeLoadJSON(filePath, defaults) {
 let dataSaveTimeout = null;
 
 const CerberusData = {
-    blockedCountriesSet: new Set(), positive: new Set(), negative: new Set(), selectedTheme: 'bretema', lastUpdateCheck: 0, latestVersion: null, downloadUrl: null, remoteNotices: [], liveQueue: [], queueTimestamp: 0, dismissedMotds: new Set(),
+    blockedCountriesSet: new Set(), positive: new Set(), negative: new Set(), selectedTheme: 'bretema', lastUpdateCheck: 0, latestVersion: null, downloadUrl: null, remoteNotices: [], liveQueue: [], queueTimestamp: 0, dismissedMotds: new Set(), userPositionHistory: {},
     
     load() {
         const data = safeLoadJSON(dataPath, null);
@@ -81,6 +84,7 @@ const CerberusData = {
             this.positive = new Set(data.positive || []); this.negative = new Set(data.negative || []); this.selectedTheme = data.selectedTheme || 'bretema';
             this.lastUpdateCheck = data.lastUpdateCheck || 0; this.latestVersion = data.latestVersion || null; this.downloadUrl = data.downloadUrl || null; this.queueTimestamp = data.queueTimestamp || 0;
             this.remoteNotices = Array.isArray(data.remoteNotices) ? data.remoteNotices : [];
+            this.userPositionHistory = (data.userPositionHistory && typeof data.userPositionHistory === 'object' && !Array.isArray(data.userPositionHistory)) ? data.userPositionHistory : {};
             if (Date.now() - this.queueTimestamp > 43200000) { this.liveQueue = []; this.queueTimestamp = Date.now(); } else { this.liveQueue = data.liveQueue || []; }
             this.dismissedMotds = new Set();
         }
@@ -88,7 +92,7 @@ const CerberusData = {
     save() {
         clearTimeout(dataSaveTimeout);
         dataSaveTimeout = setTimeout(() => {
-            atomicWriteJSON(dataPath, { blockedCountries: [...this.blockedCountriesSet], positive: [...this.positive], negative: [...this.negative], selectedTheme: this.selectedTheme, lastUpdateCheck: this.lastUpdateCheck, latestVersion: this.latestVersion, downloadUrl: this.downloadUrl, remoteNotices: this.remoteNotices, liveQueue: this.liveQueue, queueTimestamp: this.queueTimestamp, lastUpdated: new Date().toISOString() }).catch(() => { });
+            atomicWriteJSON(dataPath, { blockedCountries: [...this.blockedCountriesSet], positive: [...this.positive], negative: [...this.negative], selectedTheme: this.selectedTheme, lastUpdateCheck: this.lastUpdateCheck, latestVersion: this.latestVersion, downloadUrl: this.downloadUrl, remoteNotices: this.remoteNotices, liveQueue: this.liveQueue, queueTimestamp: this.queueTimestamp, userPositionHistory: this.userPositionHistory, lastUpdated: new Date().toISOString() }).catch(() => { });
         }, 500);
     },
     addQueue(playerName) {
@@ -152,7 +156,71 @@ const CerberusData = {
     setTheme(theme) { this.selectedTheme = theme; this.save(); },
     isMotdDismissed(gameId) { return this.dismissedMotds.has(gameId || 'global'); },
     dismissMotd(gameId) { this.dismissedMotds.add(gameId || 'global'); },
-    restoreMotd(gameId) { this.dismissedMotds.delete(gameId || 'global'); }
+    restoreMotd(gameId) { this.dismissedMotds.delete(gameId || 'global'); },
+    recordUserPosition(gameId, username, position, rankLetter, elo) {
+        if (!gameId || !username || typeof position !== 'number' || position <= 0) return false;
+        const key = `${String(gameId).toLowerCase()}:${String(username).toLowerCase().trim()}`;
+        if (!this.userPositionHistory[key]) {
+            this.userPositionHistory[key] = [];
+        }
+        const history = this.userPositionHistory[key];
+        const last = history[history.length - 1];
+        if (last && last.pos === position) {
+            if (rankLetter && last.rank !== rankLetter) last.rank = rankLetter;
+            if (elo && last.elo !== elo) last.elo = elo;
+            return false;
+        }
+        history.push({
+            timestamp: Date.now(),
+            pos: position,
+            rank: rankLetter || null,
+            elo: elo || null
+        });
+        if (history.length > 10) {
+            this.userPositionHistory[key] = history.slice(-10);
+        }
+        this.save();
+        return true;
+    },
+    getUserPositionHistory(gameId, username) {
+        if (!gameId || !username) return [];
+        const key = `${String(gameId).toLowerCase()}:${String(username).toLowerCase().trim()}`;
+        return this.userPositionHistory[key] || [];
+    },
+    getUserPositionDelta(gameId, username) {
+        const history = this.getUserPositionHistory(gameId, username);
+        if (!history || history.length === 0) return null;
+        const current = history[history.length - 1];
+        if (history.length === 1) {
+            return {
+                diff: 0,
+                status: 'initial',
+                text: '',
+                previousPos: null,
+                currentPos: current.pos,
+                history
+            };
+        }
+        const previous = history[history.length - 2];
+        const diff = previous.pos - current.pos;
+        let status = 'same';
+        let text = '—';
+        if (diff > 0) {
+            status = 'up';
+            text = `▲ +${diff}`;
+        } else if (diff < 0) {
+            status = 'down';
+            text = `▼ ${diff}`;
+        }
+        return {
+            diff,
+            status,
+            text,
+            previousPos: previous.pos,
+            currentPos: current.pos,
+            history
+        };
+    }
 };
 
 module.exports = { CerberusData, safeLoadJSON, atomicWriteJSON };

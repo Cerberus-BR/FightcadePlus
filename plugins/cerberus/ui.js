@@ -13,21 +13,21 @@ function createFlagElement(country) { return createIconSpan('flagWrapper cerberu
 function createPingElement(src, title) { return createIconSpan('pingWrapper cerberus-injected-pingbar', '15px', '15px', src, title); }
 function createRankElement(src, title) { return createIconSpan('rankWrapper cerberus-injected-rank', '15px', '15px', src, title); }
 function createPingTextElement(minPing) {
-    const text = document.createElement('span'); text.className = `cerberus-injected-pingtext`; let color = '#aaa';
-    if (minPing !== null) { if (minPing < 60) color = '#00ff00'; else if (minPing > 90) color = '#ff4444'; }
-    Object.assign(text.style, { fontSize: '10px', marginLeft: '5px', fontWeight: 'normal', color: color, verticalAlign: 'middle' });
+    const text = document.createElement('span'); text.className = `cerberus-injected-pingtext`; let color = '#9ca3af';
+    if (minPing !== null) { if (minPing < 60) color = '#4ade80'; else if (minPing > 90) color = '#f87171'; }
+    Object.assign(text.style, { fontSize: '10px', marginLeft: '5px', fontWeight: '500', fontVariantNumeric: 'tabular-nums', color: color, verticalAlign: 'middle' });
     text.innerHTML = minPing !== null ? `(${minPing}ms)` : ''; return text;
 }
 function createStatusElement(state) {
     const status = document.createElement('div'); status.className = `statusWrapper cerberus-injected-status`;
-    let color = '#ff4444'; let shadow = 'red'; let title = t('status.offline');
-    if (state === 'online') { color = '#00ff00'; shadow = 'green'; title = t('status.online'); } else if (state === 'away') { color = '#ffaa00'; shadow = 'orange'; title = t('status.away'); }
+    let color = '#f87171'; let shadow = 'rgba(248, 113, 113, 0.3)'; let title = t('status.offline');
+    if (state === 'online') { color = '#4ade80'; shadow = 'rgba(74, 222, 128, 0.3)'; title = t('status.online'); } else if (state === 'away') { color = '#fbbf24'; shadow = 'rgba(251, 191, 36, 0.3)'; title = t('status.away'); }
     status.title = title;
     Object.assign(status.style, { width: '8px', height: '8px', display: 'inline-block', borderRadius: '50%', backgroundColor: color, marginRight: '5px', flexShrink: '0', boxShadow: `0 0 2px ${shadow}`, verticalAlign: 'middle' });
     return status;
 }
 function getRankBadgeIcon(numericRank) {
-    return numericRank <= 15 ? '👑' : (numericRank <= 200 ? '🏅' : '');
+    return '';
 }
 
 function getRankBadgeText(numericRank) {
@@ -37,9 +37,24 @@ function getRankBadgeText(numericRank) {
 
 function createRankBadge(numericRank) {
     const badge = document.createElement('span'); badge.className = 'cerb-rank-badge';
-    Object.assign(badge.style, { fontSize: '12px', fontWeight: 'normal', color: '#ffd700', backgroundColor: 'transparent', border: 'none', padding: '0', marginRight: '5px', verticalAlign: 'middle', display: 'inline-block', flexShrink: '0', whiteSpace: 'nowrap' });
+    Object.assign(badge.style, { fontSize: '12px', fontWeight: '500', color: '#fbbf24', fontVariantNumeric: 'tabular-nums', backgroundColor: 'transparent', border: 'none', padding: '0', marginRight: '5px', verticalAlign: 'middle', display: 'inline-block', flexShrink: '0', whiteSpace: 'nowrap' });
     badge.textContent = getRankBadgeText(numericRank);
     badge.title = t('settings.rankBadgeTitle', { rank: numericRank });
+    return badge;
+}
+
+function createPositionDeltaElement(delta, t) {
+    if (!delta || delta.status === 'initial' || !delta.text) return null;
+    const badge = document.createElement('span');
+    badge.className = `cerb-pos-delta cerb-pos-${delta.status}`;
+    badge.textContent = delta.text;
+    if (delta.status === 'up') {
+        badge.title = t ? t('elo.posDeltaUp', { diff: delta.diff, prev: delta.previousPos, curr: delta.currentPos }) : `Subiu ${delta.diff} posições`;
+    } else if (delta.status === 'down') {
+        badge.title = t ? t('elo.posDeltaDown', { diff: Math.abs(delta.diff), prev: delta.previousPos, curr: delta.currentPos }) : `Caiu ${Math.abs(delta.diff)} posições`;
+    } else {
+        badge.title = t ? t('elo.posDeltaSame', { curr: delta.currentPos }) : 'Mesma posição';
+    }
     return badge;
 }
 
@@ -47,7 +62,7 @@ function injectStyles() {
     if (document.getElementById('cerberusStyles')) return;
     const style = document.createElement('style'); style.id = 'cerberusStyles';
     style.textContent = `
-        .cerb-section-children.cerb-disabled { opacity: 0.35; pointer-events: none; user-select: none; }
+        .cerb-section-children.cerb-disabled { opacity: 0.55; pointer-events: none; user-select: none; }
         /* [CERBERUS] Eco Mode: Low GPU / CPU consumption when window loses focus */
         body.cerb-eco-mode *,
         body.cerb-eco-mode *::before,
@@ -69,18 +84,22 @@ function injectStyles() {
         }
         @keyframes cerbAntiFlash { 0%, 99% { opacity: 0; max-height: 0px; padding: 0px; margin: 0px; overflow: hidden; } 100% { opacity: 1; max-height: 500px; } }
         .usersListWrapper .userItem:not([data-cerberus-processed="true"]), .matchesList .matchItem:not([data-cerberus-processed="true"]), .chatContent .messageWrapper:not([data-cerberus-processed="true"]) { animation: cerbAntiFlash 0.35s forwards; }
+        .cerb-pos-delta { font-size: 10px; font-weight: 600; font-variant-numeric: tabular-nums; padding: 1px 4px; border-radius: 4px; margin-right: 4px; display: inline-block; vertical-align: middle; line-height: 1.2; cursor: default; user-select: none; letter-spacing: 0.2px; }
+        .cerb-pos-delta.cerb-pos-up { color: #4ade80; background: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.25); }
+        .cerb-pos-delta.cerb-pos-down { color: #f87171; background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.25); }
+        .cerb-pos-delta.cerb-pos-same { color: #94a3b8; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
         #settingsTab textarea::selection, #settingsTab input::selection { background: var(--accentColor, rgba(100, 149, 237, 0.5)); color: var(--mainColor-darker, #fff); }
         #settingsTab textarea::-moz-selection, #settingsTab input::-moz-selection { background: var(--accentColor, rgba(100, 149, 237, 0.5)); color: var(--mainColor-darker, #fff); }
         @keyframes cerbSpin { 100% { transform: rotate(360deg); } }
-        @keyframes cerbPulseGlow { 0%, 100% { box-shadow: 0 0 4px rgba(255, 215, 0, 0.15); } 50% { box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); } }
+        @keyframes cerbPulseGlow { 0%, 100% { border-color: rgba(250, 204, 21, 0.3); } 50% { border-color: rgba(250, 204, 21, 0.6); } }
         .cerb-sync-btn { transition: width 0.3s ease, border-radius 0.3s ease, background 0.2s ease, padding 0.3s ease; margin-left: 8px; }
-        .cerb-sync-btn.syncing { width: auto !important; min-width: 28px; border-radius: 14px !important; background: rgba(255, 215, 0, 0.08) !important; border: 1px solid rgba(255, 215, 0, 0.25) !important; padding: 0 10px !important; cursor: pointer !important; opacity: 1 !important; animation: cerbPulseGlow 2.5s ease-in-out infinite; gap: 5px; }
-        .cerb-sync-btn.syncing .cerb-spin-icon { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255, 215, 0, 0.25); border-top-color: #ffd700; border-radius: 50%; animation: cerbSpin 0.7s linear infinite; vertical-align: middle; flex-shrink: 0; }
-        .cerb-sync-btn .cerb-sync-progress { font-size: 11px; color: #ffd700; font-weight: 600; vertical-align: middle; letter-spacing: 0.3px; white-space: nowrap; margin-left: 3px; }
+        .cerb-sync-btn.syncing { width: auto !important; min-width: 28px; border-radius: 14px !important; background: rgba(250, 204, 21, 0.08) !important; border: 1px solid rgba(250, 204, 21, 0.3) !important; padding: 0 10px !important; cursor: pointer !important; opacity: 1 !important; animation: cerbPulseGlow 2.5s ease-in-out infinite; }
+        .cerb-sync-btn.syncing .cerb-spin-icon { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(250, 204, 21, 0.25); border-top-color: #facc15; border-radius: 50%; animation: cerbSpin 0.7s linear infinite; vertical-align: middle; flex-shrink: 0; }
+        .cerb-sync-btn .cerb-sync-progress { font-size: 11px; color: #facc15; font-weight: 600; font-variant-numeric: tabular-nums; vertical-align: middle; letter-spacing: 0.3px; white-space: nowrap; margin-left: 5px; }
         .cerb-sync-btn:hover:not(.syncing) { background: rgba(255,255,255,0.1) !important; }
-        .cerb-sync-btn.syncing:hover { background: rgba(255, 68, 68, 0.12) !important; border-color: rgba(255, 68, 68, 0.4) !important; animation: none; box-shadow: 0 0 8px rgba(255, 68, 68, 0.3); }
-        .cerb-sync-btn.syncing:hover .cerb-spin-icon { border-top-color: #ff6b6b; border-color: rgba(255, 68, 68, 0.25); }
-        @keyframes cerbBlockPulse { 0% { background-color: rgba(255, 68, 68, 0.4); box-shadow: inset 4px 0 0px #ff4444; } 50% { background-color: rgba(255, 68, 68, 0.05); box-shadow: inset 4px 0 0px #ff4444; } 100% { background-color: transparent; box-shadow: none; } }
+        .cerb-sync-btn.syncing:hover { background: rgba(239, 68, 68, 0.12) !important; border-color: rgba(239, 68, 68, 0.4) !important; animation: none; }
+        .cerb-sync-btn.syncing:hover .cerb-spin-icon { border-top-color: #f87171; border-color: rgba(239, 68, 68, 0.25); }
+        @keyframes cerbBlockPulse { 0% { background-color: rgba(239, 68, 68, 0.25); box-shadow: inset 3px 0 0px #ef4444; } 50% { background-color: rgba(239, 68, 68, 0.05); box-shadow: inset 3px 0 0px #ef4444; } 100% { background-color: transparent; box-shadow: none; } }
         .cerberus-anim-block-pulse { animation: cerbBlockPulse 2s ease-in-out 2 forwards !important; }
         
         .cerb-fabs-container {
@@ -89,7 +108,6 @@ function injectStyles() {
             bottom: 58px;
             display: flex;
             flex-direction: column-reverse;
-            gap: 5px;
             z-index: 100;
             pointer-events: none;
         }
@@ -100,13 +118,12 @@ function injectStyles() {
             text-align: center;
             text-transform: uppercase;
             padding: 4px 8px;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
             font-size: 10px;
             letter-spacing: 0.3px;
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-            backdrop-filter: blur(6px);
             border-radius: 4px;
             opacity: 0.6;
             box-sizing: border-box;
@@ -117,11 +134,10 @@ function injectStyles() {
         .cerb-fab-btn:hover {
             opacity: 1;
             transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.45);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.35);
         }
         .cerb-clear-chat-fab {
-            background: rgba(20, 20, 26, 0.45);
+            background: rgba(20, 20, 26, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #94a3b8;
         }
@@ -186,11 +202,11 @@ function injectStyles() {
         }
         
         .q-live-btn { border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 5px 10px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s; color: white; }
-        .q-live-btn.on { background: rgba(0, 170, 0, 0.3); border-color: #00aa00; }
-        .q-live-btn.on:hover { background: rgba(0, 170, 0, 0.5); }
-        .q-live-btn.off { background: rgba(170, 0, 0, 0.3); border-color: #ff4444; }
-        .q-live-btn.off:hover { background: rgba(170, 0, 0, 0.5); }
-        .cerb-motd-update-notice { background: rgba(255, 165, 0, 0.15); border-left: 4px solid #ffaa00; padding: 10px 15px; margin-top: 15px; border-radius: 4px; color: #ffdca5; font-size: 13px; display: inline-block; width: calc(100% - 10px); box-sizing: border-box; line-height: 1.4; }
+        .q-live-btn.on { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); }
+        .q-live-btn.on:hover { background: rgba(34, 197, 94, 0.3); }
+        .q-live-btn.off { background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); }
+        .q-live-btn.off:hover { background: rgba(239, 68, 68, 0.3); }
+        .cerb-motd-update-notice { background: rgba(245, 158, 11, 0.12); border-left: 3px solid #f59e0b; padding: 10px 15px; margin-top: 15px; border-radius: 6px; color: #fef3c7; font-size: 13px; display: inline-block; width: calc(100% - 10px); box-sizing: border-box; line-height: 1.4; }
         .cerb-motd-remote-notice { padding: 10px 15px; margin-top: 10px; border-radius: 4px; font-size: 13px; display: inline-block; width: calc(100% - 10px); box-sizing: border-box; line-height: 1.4; word-break: break-word; }
         .cerb-motd-remote-notice.info { background: rgba(56, 189, 248, 0.15); border-left: 4px solid #38bdf8; color: #bae6fd; }
         .cerb-motd-remote-notice.warning { background: rgba(251, 191, 36, 0.15); border-left: 4px solid #fbbf24; color: #fef08a; }
@@ -218,7 +234,6 @@ function injectStyles() {
             z-index: 10;
             opacity: 0.55;
             transition: all 0.2s ease;
-            backdrop-filter: blur(4px);
         }
         .cerb-motd-dismiss-btn:hover {
             opacity: 1;
@@ -230,15 +245,14 @@ function injectStyles() {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(10, 10, 14, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(10, 10, 14, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-left: 2px solid var(--accentColor, rgba(99, 102, 241, 0.4));
             padding: 3px 8px;
             border-radius: 4px;
             font-size: 10px;
             color: #71717a;
             margin: 2px 0;
-            backdrop-filter: blur(4px);
         }
         .cerb-motd-expand-btn {
             background: transparent;
@@ -262,11 +276,10 @@ function injectStyles() {
             transform: translate(-50%, -50%);
             width: 490px;
             max-width: 95vw;
-            background: rgba(30, 36, 48, 0.96);
-            border: 1px solid var(--accentColor, rgba(99, 102, 241, 0.45));
+            background: rgba(24, 29, 40, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 12px;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(99, 102, 241, 0.2);
-            backdrop-filter: blur(16px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
             z-index: 100001;
             display: flex;
             flex-direction: column;
@@ -288,10 +301,11 @@ function injectStyles() {
         .sim-close { background: none; border: none; font-size: 20px; color: #cbd5e1; cursor: pointer; line-height: 1; }
         .sim-close:hover { color: #f87171; }
         .sim-body { padding: 14px; max-height: 80vh; overflow-y: auto; }
-        .sim-controls-grid { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .sim-controls-grid { display: flex; align-items: center; margin-bottom: 12px; }
         .sim-player-box { flex: 1; background: rgba(255, 255, 255, 0.05); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
         .sim-box-title { font-size: 11px; font-weight: bold; color: #cbd5e1; margin-bottom: 6px; }
-        .sim-input-row { display: flex; gap: 6px; margin-bottom: 6px; }
+        .sim-input-row { display: flex; margin-bottom: 6px; }
+        .sim-input-row .sim-select { margin-right: 6px; }
         .sim-select, .sim-input {
             background: rgba(16, 22, 32, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.18);
@@ -316,8 +330,8 @@ function injectStyles() {
             transition: all 0.2s;
         }
         .sim-btn-secondary:hover { background: rgba(99, 102, 241, 0.45); color: #fff; }
-        .sim-vs-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 0 4px; }
-        .sim-vs-badge { font-size: 11px; font-weight: 900; color: #fbbf24; background: rgba(251, 191, 36, 0.2); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(251, 191, 36, 0.35); }
+        .sim-vs-box { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 8px; padding: 0 4px; }
+        .sim-vs-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: #fbbf24; background: rgba(251, 191, 36, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(251, 191, 36, 0.3); margin-bottom: 4px; }
         .sim-ft-select-wrap { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #cbd5e1; }
         .sim-select-compact { background: rgba(16, 22, 32, 0.7); border: 1px solid rgba(255, 255, 255, 0.18); color: #fff; border-radius: 4px; font-size: 10px; padding: 2px 4px; margin-top: 2px; }
         .sim-elo-source, .sim-note { font-size: 12px; color: #cbd5e1; line-height: 1.4; margin-top: 6px; }
@@ -328,8 +342,8 @@ function injectStyles() {
         .sim-summary-card.high_risk { background: rgba(248, 113, 113, 0.15); border-left: 3px solid #f87171; color: #fecaca; }
         .sim-summary-card.unranked { background: rgba(255, 255, 255, 0.08); border-left: 3px solid #94a3b8; color: #cbd5e1; }
         .sim-table-wrap { max-height: 220px; overflow-y: auto; background: rgba(16, 22, 32, 0.55); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; }
-        .sim-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
-        .sim-table th { background: rgba(255, 255, 255, 0.08); padding: 6px 8px; color: #cbd5e1; font-weight: bold; border-bottom: 1px solid rgba(255, 255, 255, 0.12); position: sticky; top: 0; }
+        .sim-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; font-variant-numeric: tabular-nums; }
+        .sim-table th { background: rgba(255, 255, 255, 0.08); padding: 6px 8px; color: #94a3b8; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); position: sticky; top: 0; }
         .sim-table td { padding: 5px 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
         .sim-table tr { transition: background 0.15s ease; }
         
@@ -358,8 +372,17 @@ function injectStyles() {
         .sim-row.loss-3:hover { background: rgba(252, 165, 165, 0.12); }
         .sim-row.loss-4:hover { background: rgba(248, 113, 113, 0.14); }
         
-        body.cerb-hide-sidebar-ping .usersListToolbar .userItem .pingWrapper img.ping { display: none !important; }
+        body.cerb-hide-sidebar-ping .userItem .pingWrapper img.ping { display: none !important; }
         
+        .cerberus-ping-text {
+            font-size: 11px;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            margin-left: auto;
+            vertical-align: middle;
+            display: inline-flex;
+            align-items: center;
+        }
         .cerb-net-icon {
             display: inline-block;
             vertical-align: middle;
@@ -369,9 +392,9 @@ function injectStyles() {
             flex-shrink: 0;
         }
         .cerb-net-cable {
-            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="6" y="14" width="12" height="8" rx="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="10" y1="6" x2="10.01" y2="6"></line><line x1="12" y1="10" x2="12" y2="14"></line></svg>') no-repeat center / contain;
-            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="6" y="14" width="12" height="8" rx="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="10" y1="6" x2="10.01" y2="6"></line><line x1="12" y1="10" x2="12" y2="14"></line></svg>') no-repeat center / contain;
-            background-color: #cccccc;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6v3H9z"></path><rect x="5" y="5" width="14" height="11" rx="2"></rect><path d="M9 9h6"></path><path d="M12 16v6"></path></svg>') no-repeat center / contain;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6v3H9z"></path><rect x="5" y="5" width="14" height="11" rx="2"></rect><path d="M9 9h6"></path><path d="M12 16v6"></path></svg>') no-repeat center / contain;
+            background-color: #94a3b8;
         }
         .cerb-net-wifi {
             mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>') no-repeat center / contain;
@@ -381,7 +404,7 @@ function injectStyles() {
         .cerb-net-vpn {
             mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>') no-repeat center / contain;
             -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>') no-repeat center / contain;
-            background-color: #ff4444;
+            background-color: #f87171;
         }
         .challengeContent,
         .challengeContainer,
@@ -412,16 +435,16 @@ function injectStyles() {
             box-sizing: border-box !important;
             border-radius: 4px;
             background: rgba(0, 0, 0, 0.35);
-            border-left: 3px solid #00d2ff;
+            border-left: 3px solid #38bdf8;
             color: #ececec;
             line-height: 1.45;
             overflow-wrap: break-word;
             word-break: break-word;
             user-select: text;
         }
-        .cerb-challenge-elo-hint.high_risk { border-left-color: #ff4444; color: #ff9999; }
-        .cerb-challenge-elo-hint.high_reward { border-left-color: #00ff88; color: #a3ffcc; }
-        .cerb-challenge-elo-hint.balanced { border-left-color: #fbbf24; color: #fde68a; }
+        .cerb-challenge-elo-hint.high_risk { border-left-color: #ef4444; color: #fca5a5; }
+        .cerb-challenge-elo-hint.high_reward { border-left-color: #22c55e; color: #86efac; }
+        .cerb-challenge-elo-hint.balanced { border-left-color: #f59e0b; color: #fde68a; }
         .cerb-challenge-elo-hint.unranked { border-left-color: #888888; color: #cccccc; }
 
         .cerb-endgame-elo-box {
@@ -442,21 +465,26 @@ function injectStyles() {
         .cerb-endgame-result-row {
             display: flex;
             flex-direction: column;
-            gap: 3px;
             font-weight: 500;
         }
         .cerb-endgame-player {
             display: flex;
             align-items: center;
-            gap: 6px;
             font-size: 11px;
             overflow-wrap: break-word;
         }
-        .cerb-endgame-delta.gain { color: #a3e635; font-weight: 600; }
+        .cerb-endgame-player + .cerb-endgame-player {
+            margin-top: 3px;
+        }
+        .cerb-endgame-player > * + * {
+            margin-left: 6px;
+        }
+        .cerb-endgame-delta { font-variant-numeric: tabular-nums; }
+        .cerb-endgame-delta.gain { color: #4ade80; font-weight: 600; }
+        .cerb-endgame-delta.loss { color: #f87171; font-weight: 600; }
         .cerb-endgame-warning-row {
             display: flex;
             align-items: center;
-            gap: 10px;
             margin-top: 6px;
             padding: 6px 10px;
             width: fit-content;
@@ -472,6 +500,7 @@ function injectStyles() {
             flex-shrink: 0;
             line-height: 1;
             user-select: none;
+            margin-right: 10px;
         }
         .cerb-warning-text {
             font-size: 11px;
@@ -480,7 +509,7 @@ function injectStyles() {
             overflow-wrap: break-word;
         }
         .cerb-endgame-motivation-row { margin-top: 5px; font-size: 11px; line-height: 1.35; padding-top: 4px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-weight: 500; overflow-wrap: break-word; }
-        .cerb-endgame-motivation-row.win { color: #a3e635; }
+        .cerb-endgame-motivation-row.win { color: #4ade80; }
         .cerb-endgame-motivation-row.profit { color: #38bdf8; }
         .cerb-endgame-motivation-row.defeat { color: #f87171; }
         .cerb-rank-badge { flex-shrink: 0; white-space: nowrap; }
@@ -488,12 +517,13 @@ function injectStyles() {
         .chatContent { padding-bottom: 20px !important; }
         .chatContent.blur-all .message .line .blocksContainer { filter: blur(5px); transition: filter 0.2s ease; user-select: none; }
         .chatContent.blur-all:hover .message .line .blocksContainer { filter: blur(0); user-select: text; }
-        #cerbGlobalMenu { position: fixed; background: var(--mainColor-dark, rgba(18, 18, 26, 0.95)); backdrop-filter: blur(12px); border: 1px solid var(--accentColor, var(--mainColor-light, rgba(102, 126, 234, 0.4))); border-radius: 14px; padding: 6px 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 15px var(--accentColor, rgba(102, 126, 234, 0.25)); display: flex; align-items: center; gap: 8px; z-index: 100000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0.9) translateY(6px); user-select: none; white-space: nowrap; }
+        #cerbGlobalMenu { position: fixed; background: var(--mainColor-dark, rgba(18, 18, 26, 0.98)); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; padding: 6px 10px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5); display: flex; align-items: center; z-index: 100000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; transform: scale(0.92) translateY(4px); user-select: none; white-space: nowrap; }
         #cerbGlobalMenu.visible { opacity: 1; pointer-events: auto; transform: scale(1) translateY(0); }
-        #cerbGlobalMenu .cerb-action-icon { cursor: pointer; font-size: 16px; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease; display: inline-block; padding: 3px 5px; line-height: 1; }
-        #cerbGlobalMenu .cerb-action-icon:hover { transform: scale(1.35) translateY(-2px); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6)); }
+        #cerbGlobalMenu .cerb-action-icon { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 4px; transition: transform 0.15s ease, background 0.15s ease; padding: 2px; margin: 0 3px; }
+        #cerbGlobalMenu .cerb-action-icon:hover { background: rgba(255, 255, 255, 0.12); transform: scale(1.15); }
         .cerb-menu-divider { width: 1px; height: 18px; background: rgba(255, 255, 255, 0.2); margin: 0 3px; }
-        .userItem { position: relative; padding-right: 2em !important; }
+        .userItem { position: relative; }
+        body.cerb-hide-sidebar-ping .userItem { padding-right: 2em !important; }
         .playerInfo { position: relative; }
         .userItem .flagWrapper { transition: opacity 0.15s ease, visibility 0.15s ease; }
         .userItem:hover .flagWrapper { opacity: 0 !important; visibility: hidden !important; }
@@ -522,8 +552,85 @@ function injectStyles() {
         .cerb-flag-trigger:hover {
             mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>') no-repeat center / contain;
             -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>') no-repeat center / contain;
-            background-color: var(--accentColor, var(--mainColor-light, #667eea));
+        }
+        .cerb-flag-trigger.cerb-self-profile-trigger {
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>') no-repeat center / contain;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>') no-repeat center / contain;
+            background-color: #fbbf24;
+        }
+        .cerb-flag-trigger.cerb-self-profile-trigger:hover {
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>') no-repeat center / contain;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>') no-repeat center / contain;
+            background-color: #fde047;
             transform: translateY(-50%) scale(1.25);
+        }
+
+        .cerb-profile-card {
+            position: fixed;
+            z-index: 100000;
+            width: 280px;
+            background: rgba(18, 18, 24, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+            padding: 12px;
+            box-sizing: border-box;
+            display: none;
+            flex-direction: column;
+            font-family: inherit;
+            color: #fff;
+        }
+        .cerb-profile-card > * + * { margin-top: 8px; }
+        .cerb-profile-card.visible {
+            display: flex !important;
+            animation: cerbProfileFadeIn 0.15s ease-out;
+        }
+        @keyframes cerbProfileFadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .cerb-profile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 6px;
+        }
+        .cerb-profile-name { font-weight: 700; font-size: 14px; color: #fbbf24; }
+        .cerb-profile-tag { font-size: 10px; color: #aaa; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .cerb-profile-info-row { font-size: 12px; color: #e0e0e0; display: flex; align-items: center; }
+        .cerb-profile-info-row > * + * { margin-left: 6px; }
+        .cerb-profile-history { font-size: 11px; color: #aaa; background: rgba(0,0,0,0.25); padding: 6px 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
+        .cerb-profile-history strong { color: #fff; }
+        .cerb-profile-actions { display: flex; flex-direction: column; margin-top: 4px; }
+        .cerb-profile-actions > * + * { margin-top: 6px; }
+        .cerb-profile-btn {
+            background: rgba(251, 191, 36, 0.12);
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            color: #fbbf24;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease;
+            text-align: center;
+        }
+        .cerb-profile-btn:hover:not(:disabled) {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+        .cerb-profile-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .cerb-profile-btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ccc;
+            font-weight: 500;
+        }
+        .cerb-profile-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.25);
         }
 
         .cerb-chat-trigger {
@@ -549,25 +656,24 @@ function injectStyles() {
             transform: scale(1.25);
         }
         
-        .cerb-update-btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background: var(--mainColor-darker, rgba(0,0,0,0.25)); border: 1px solid var(--accentColor, var(--mainColor-light, rgba(102, 126, 234, 0.4))); border-radius: 8px; color: var(--accentColor, var(--mainColor-lighter, #a3bffa)); text-decoration: none; font-weight: 600; transition: all 0.2s ease; font-size: 14px; }
-        .cerb-update-btn:hover { background: var(--accentColor, var(--mainColor-light, rgba(102, 126, 234, 0.3))); color: var(--mainColor-darker, #000); transform: translateY(-2px); box-shadow: 0 4px 12px var(--accentColor, rgba(0,0,0, 0.3)); }
-        .cerb-donate-btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 13px; text-decoration: none; transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.3); flex: 1; }
-        .cerb-donate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
-        .cerb-donate-paypal { background: #00457C; color: #fff; border: 1px solid #005A9C; }
-        .cerb-donate-livepix { background: #00FF87; color: #000; border: 1px solid #00CC6A; }
+        .cerb-update-btn { display: inline-flex; align-items: center; justify-content: center; margin-top: 20px; padding: 10px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; color: #f1f5f9; text-decoration: none; font-weight: 600; transition: all 0.2s ease; font-size: 13px; }
+        .cerb-update-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: #ffffff; transform: translateY(-1px); }
+        .cerb-donate-btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; text-decoration: none; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.3); flex: 1; }
+        .cerb-donate-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.4); }
+        .cerb-donate-paypal { background: #0284c7; color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); }
+        .cerb-donate-livepix { background: #059669; color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); }
 
         #cerberusPanel {
             position: fixed;
             width: 480px;
             max-height: 85vh;
-            background: rgba(22, 27, 38, 0.96);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(22, 27, 38, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             z-index: 10000;
             color: #f1f5f9;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.15);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
             display: none;
             overflow: hidden;
             flex-direction: column;
@@ -587,11 +693,13 @@ function injectStyles() {
         #cerberusPanel .header .title, #cerberusQueueWindow .q-title {
             display: flex;
             align-items: center;
-            gap: 8px;
             font-size: 14px;
             font-weight: 600;
             color: #ffffff;
             letter-spacing: 0.3px;
+        }
+        #cerberusPanel .header .title > * + *, #cerberusQueueWindow .q-title > * + * {
+            margin-left: 8px;
         }
         #cerberusPanel .closeBtn, #cerberusQueueWindow .q-close {
             background: transparent;
@@ -616,8 +724,10 @@ function injectStyles() {
             display: flex;
             background: rgba(14, 18, 26, 0.5);
             padding: 6px 12px;
-            gap: 6px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        #cerberusPanel .tab + .tab {
+            margin-left: 6px;
         }
         #cerberusPanel .tab {
             padding: 6px 14px;
@@ -669,10 +779,9 @@ function injectStyles() {
         .cerb-card-title {
             margin: 0;
             font-size: 12px;
-            text-transform: uppercase;
-            color: var(--accentColor, #818cf8);
-            letter-spacing: 0.6px;
-            font-weight: 700;
+            color: #818cf8;
+            letter-spacing: 0.3px;
+            font-weight: 600;
         }
         
         .modern-toggle {
@@ -728,7 +837,6 @@ function injectStyles() {
         input:checked + .slider {
             background-color: var(--accentColor, #6366f1);
             border-color: var(--accentColor, #6366f1);
-            box-shadow: 0 0 8px var(--accentColor, rgba(99, 102, 241, 0.35));
         }
         .cerb-section-children input:checked + .slider,
         .modern-toggle input:checked + .slider {
@@ -756,42 +864,305 @@ function injectStyles() {
             border-color: var(--accentColor, #818cf8);
             box-shadow: 0 0 0 2px var(--accentColor, rgba(99, 102, 241, 0.2));
         }
-        #cerberusQueueWindow { position: fixed; right: 20px; bottom: 150px; width: 320px; max-height: 400px; background: rgba(22, 27, 38, 0.96); backdrop-filter: blur(20px); border: 1px solid var(--accentColor, rgba(99, 102, 241, 0.4)); border-radius: 12px; z-index: 10000; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; overflow: hidden; }
+        #cerberusPanel input:focus,
+        #cerberusPanel select:focus,
+        #cerberusPanel textarea:focus {
+            border-color: #818cf8 !important;
+            box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.25) !important;
+        }
+        #cerberusQueueWindow { position: fixed; right: 20px; bottom: 150px; width: 320px; max-height: 400px; background: rgba(22, 27, 38, 0.98); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; z-index: 10000; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55); display: flex; flex-direction: column; overflow: hidden; }
         #cerbQueueCount { color: var(--accentColor, #a5b4fc); margin-left: 5px; font-size: 12px; }
-        .q-add-box { display: flex; padding: 10px; background: rgba(14, 18, 26, 0.5); border-bottom: 1px solid rgba(255,255,255,0.06); gap: 8px; }
-        .q-add-box input { flex: 1; padding: 6px 10px; background: rgba(14, 18, 26, 0.65); border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; color: #fff; font-size: 12px; outline: none; }
+        .q-add-box { display: flex; padding: 10px; background: rgba(14, 18, 26, 0.5); border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .q-add-box input { flex: 1; padding: 6px 10px; background: rgba(14, 18, 26, 0.65); border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; color: #fff; font-size: 12px; outline: none; margin-right: 8px; }
         .q-add-box input:focus { border-color: var(--accentColor, #818cf8); }
-        .q-add-box button { background: var(--accentColor, #6366f1); color: #ffffff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s; text-transform: uppercase; }
-        .q-add-box button:hover { filter: brightness(1.15); box-shadow: 0 0 8px var(--accentColor); }
-        .q-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .q-add-box button { background: var(--accentColor, #6366f1); color: #ffffff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+        .q-add-box button:hover { filter: brightness(1.1); }
+        .q-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; }
+        .q-list .q-item + .q-item { margin-top: 6px; }
         .q-empty { text-align: center; color: #888; font-size: 12px; padding: 20px 0; font-style: italic; }
         .q-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--accentColor, #6366f1); }
         .q-name { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; }
         .q-name.played { text-decoration: line-through; color: #888; border-left-color: #444; }
-        .q-controls { display: flex; gap: 4px; }
+        .q-controls { display: flex; }
+        .q-controls button + button { margin-left: 4px; }
         .q-controls button { background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; cursor: pointer; font-size: 11px; padding: 4px; transition: all 0.2s; color: #ccc; }
         .q-controls button:hover:not(:disabled) { background: rgba(255,255,255,0.1); transform: scale(1.1); }
         .q-controls button:disabled { opacity: 0.3; cursor: not-allowed; }
-        .q-controls button.danger:hover { background: rgba(255,68,68,0.2); border-color: #ff4444; }
+        .q-controls button.danger:hover { background: rgba(239,68,68,0.2); border-color: #ef4444; color: #f87171; }
         .q-footer { padding: 10px; background: rgba(0,0,0,0.3); text-align: right; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-        .q-clear-btn { background: transparent; border: 1px solid rgba(255,68,68,0.4); color: #ff4444; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
-        .q-clear-btn:hover { background: rgba(255,68,68,0.2); }
+        .q-clear-btn { background: transparent; border: 1px solid rgba(239,68,68,0.4); color: #f87171; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .q-clear-btn:hover { background: rgba(239,68,68,0.2); }
         #cerberusPanel .content::-webkit-scrollbar, .q-list::-webkit-scrollbar { width: 6px; }
         #cerberusPanel .content::-webkit-scrollbar-thumb, .q-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
         #cerberusPanel .content::-webkit-scrollbar-track, .q-list::-webkit-scrollbar-track { background: transparent; }
+
+        /* [CERBERUS] Toast Notification System */
+        .cerb-toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100002;
+            pointer-events: none;
+        }
+        .cerb-toast + .cerb-toast {
+            margin-top: 10px;
+        }
+        .cerb-toast {
+            pointer-events: auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(13, 17, 26, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            color: #f1f5f9;
+            padding: 11px 14px 13px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            animation: cerbToastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            min-width: 280px;
+            max-width: 340px;
+            overflow: hidden;
+            user-select: none;
+        }
+        .cerb-toast.cerb-toast-out {
+            opacity: 0;
+            transform: translateX(35px) scale(0.96);
+        }
+        .cerb-toast-icon-wrap {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-right: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+        .cerb-toast-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+            flex: 1;
+            padding-right: 22px;
+        }
+        .cerb-toast-user {
+            font-size: 13px;
+            font-weight: 600;
+            color: #f8fafc;
+            line-height: 1.3;
+            letter-spacing: 0.1px;
+            word-break: break-word;
+            margin: 0 0 2px 0;
+        }
+        .cerb-toast-desc {
+            font-size: 12px;
+            font-weight: 400;
+            color: #94a3b8;
+            line-height: 1.35;
+            word-break: break-word;
+            margin: 0;
+        }
+        .cerb-toast-desc strong {
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+        .cerb-toast-close {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 4px;
+            transition: color 0.15s, background 0.15s;
+        }
+        .cerb-toast-close:hover {
+            color: #f1f5f9;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .cerb-toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ef4444, #f87171);
+            width: 100%;
+            border-radius: 0 0 10px 10px;
+            animation: cerbToastBar 9s linear forwards;
+        }
+        @keyframes cerbToastBar {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+        @keyframes cerbToastIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        /* Favorito / Verde */
+        .cerb-toast.cerb-toast-fav .cerb-toast-icon-wrap {
+            background: rgba(74, 222, 128, 0.12);
+            border-color: rgba(74, 222, 128, 0.25);
+        }
+        .cerb-toast.cerb-toast-fav .cerb-toast-progress {
+            background: linear-gradient(90deg, #16a34a, #4ade80);
+        }
     `;
     document.head.appendChild(style);
+}
+
+function showAutoRejectToast(username, reason) {
+    try {
+        if (typeof document === 'undefined' || !document.body) return;
+        injectStyles();
+        let container = document.getElementById('cerbToastContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'cerbToastContainer';
+            container.className = 'cerb-toast-container';
+            document.body.appendChild(container);
+        }
+
+        const reasonMap = {
+            'ft': t('autoReject.reasonFt'),
+            'country': t('autoReject.reasonCountry'),
+            'rank': t('autoReject.reasonRank'),
+            'ping': t('autoReject.reasonPing'),
+            'reputation': t('autoReject.reasonReputation'),
+            'rep': t('autoReject.reasonReputation')
+        };
+        const reasonText = reasonMap[reason] || reason || t('autoReject.toastTitle');
+        const displayUser = username || 'Player';
+
+        const toast = document.createElement('div');
+        toast.className = 'cerb-toast';
+        toast.innerHTML = `
+            <div class="cerb-toast-icon-wrap">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/>
+                    <line x1="14.5" y1="9.5" x2="9.5" y2="14.5"/>
+                </svg>
+            </div>
+            <div class="cerb-toast-content">
+                <div class="cerb-toast-user">${displayUser}</div>
+                <div class="cerb-toast-desc">${reasonText}</div>
+            </div>
+            <button class="cerb-toast-close" title="Fechar">×</button>
+            <div class="cerb-toast-progress"></div>
+        `;
+
+        const closeBtn = toast.querySelector('.cerb-toast-close');
+        const dismiss = () => {
+            if (toast.dataset.dismissed) return;
+            toast.dataset.dismissed = "true";
+            toast.classList.add('cerb-toast-out');
+            setTimeout(() => {
+                if (toast.parentNode === container) container.removeChild(toast);
+            }, 250);
+        };
+        if (closeBtn) closeBtn.addEventListener('click', dismiss);
+
+        container.appendChild(toast);
+
+        while (container.children.length > 4) {
+            container.removeChild(container.firstChild);
+        }
+
+        setTimeout(dismiss, 9000);
+    } catch (e) {
+        console.warn('[Cerberus] Error showing auto-reject toast:', e);
+    }
+}
+
+function showFavoritePlayerToast(username, channelName) {
+    try {
+        if (typeof document === 'undefined' || !document.body) return;
+        injectStyles();
+        let container = document.getElementById('cerbToastContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'cerbToastContainer';
+            container.className = 'cerb-toast-container';
+            document.body.appendChild(container);
+        }
+
+        const displayUser = username || 'Player';
+        const channelText = channelName ? ` • <strong>${channelName}</strong>` : '';
+
+        const toast = document.createElement('div');
+        toast.className = 'cerb-toast cerb-toast-fav';
+        toast.innerHTML = `
+            <div class="cerb-toast-icon-wrap">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#4ade80" stroke="#4ade80" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+            </div>
+            <div class="cerb-toast-content">
+                <div class="cerb-toast-user">${displayUser}</div>
+                <div class="cerb-toast-desc">${t('favoriteJoin.toastJoined')}${channelText}</div>
+            </div>
+            <button class="cerb-toast-close" title="Fechar">×</button>
+            <div class="cerb-toast-progress"></div>
+        `;
+
+        const closeBtn = toast.querySelector('.cerb-toast-close');
+        const dismiss = () => {
+            if (toast.dataset.dismissed) return;
+            toast.dataset.dismissed = "true";
+            toast.classList.add('cerb-toast-out');
+            setTimeout(() => {
+                if (toast.parentNode === container) container.removeChild(toast);
+            }, 250);
+        };
+        if (closeBtn) closeBtn.addEventListener('click', dismiss);
+
+        container.appendChild(toast);
+
+        while (container.children.length > 4) {
+            container.removeChild(container.firstChild);
+        }
+
+        setTimeout(dismiss, 9000);
+    } catch (e) {
+        console.warn('[Cerberus] Error showing favorite player toast:', e);
+    }
 }
 
 function createControlPanel() {
     const { ConfigManager } = require('./config.js');
     if (document.getElementById('cerberusPanel')) return;
     const panel = document.createElement('div'); panel.id = 'cerberusPanel';
-    panel.innerHTML = `<div class="header" id="cerberusHeader"><div class="title"><span>🐺</span><span>${t('panelTitle')}</span></div><button class="closeBtn" id="cerbPanelCloseBtn">×</button></div><div class="tabs"><button class="tab" data-tab="countries" id="countriesTabBtn">${t('tabs.countries')}</button><button class="tab active" data-tab="settings">${t('tabs.settings')}</button><button class="tab" data-tab="about">${t('tabs.about')}</button></div><div class="content"><div id="countriesTab" class="tab-content" style="display:none;"></div><div id="settingsTab" class="tab-content" style="display:block;"></div><div id="aboutTab" class="tab-content" style="display:none;"></div></div>`;
+    panel.style.display = 'none';
+    panel.innerHTML = `<div class="header" id="cerberusHeader"><div class="title"><span>${t('panelTitle')}</span></div><button class="closeBtn" id="cerbPanelCloseBtn">×</button></div><div class="tabs"><button class="tab" data-tab="countries" id="countriesTabBtn">${t('tabs.countries')}</button><button class="tab active" data-tab="settings">${t('tabs.settings')}</button><button class="tab" data-tab="about">${t('tabs.about')}</button></div><div class="content"><div id="countriesTab" class="tab-content" style="display:none;"></div><div id="settingsTab" class="tab-content" style="display:block;"></div><div id="aboutTab" class="tab-content" style="display:none;"></div></div>`;
     const targetParent = document.getElementById('app') || document.body;
     targetParent.appendChild(panel); makeDraggable(panel, 'cerberusHeader');
 
     document.getElementById('cerbPanelCloseBtn').addEventListener('click', () => panel.style.display = 'none');
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && panel.style.display !== 'none') {
+            panel.style.display = 'none';
+        }
+    });
 
     panel.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -827,7 +1198,7 @@ function updateCountryTabVisibility(enabled) {
 function createCountriesTab() {
     const { CerberusData } = require('./state.js');
     const tab = document.getElementById('countriesTab');
-    tab.innerHTML = `<div style="background: rgba(255, 165, 0, 0.1); border: 1px solid rgba(255, 165, 0, 0.3); border-radius: 8px; padding: 10px; margin-bottom: 15px; font-size: 13px; text-align: center; color: #ffdca5; line-height: 1.4;">${t('countries.alert')}</div><input type="text" id="countrySearch" class="search-bar" placeholder="${t('countries.search')}"><div style="display: flex; gap: 10px; margin-bottom: 15px;"><button id="allowAllBtn" style="flex: 1; padding: 10px; background: rgba(0, 170, 0, 0.2); border: 1px solid rgba(0, 255, 0, 0.3); border-radius: 8px; color: #4ade80; cursor: pointer; font-weight: 600;">${t('countries.allowAll')}</button><button id="clearAllBtn" style="flex: 1; padding: 10px; background: rgba(170, 0, 0, 0.2); border: 1px solid rgba(255, 0, 0, 0.3); border-radius: 8px; color: #f87171; cursor: pointer; font-weight: 600;">${t('countries.clearAll')}</button></div><div id="countriesContainer"></div>`;
+    tab.innerHTML = `<div style="background: rgba(255, 165, 0, 0.1); border: 1px solid rgba(255, 165, 0, 0.3); border-radius: 8px; padding: 10px; margin-bottom: 15px; font-size: 13px; text-align: center; color: #ffdca5; line-height: 1.4;">${t('countries.alert')}</div><input type="text" id="countrySearch" class="search-bar" placeholder="${t('countries.search')}"><div style="display: flex; margin-bottom: 15px;"><button id="allowAllBtn" style="flex: 1; padding: 10px; margin-right: 10px; background: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 8px; color: #4ade80; cursor: pointer; font-weight: 600;">${t('countries.allowAll')}</button><button id="clearAllBtn" style="flex: 1; padding: 10px; background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.3); border-radius: 8px; color: #f87171; cursor: pointer; font-weight: 600;">${t('countries.clearAll')}</button></div><div id="countriesContainer"></div>`;
     document.getElementById('allowAllBtn').addEventListener('click', () => { CerberusData.allowAllCountries(); updateCountryList(); });
     document.getElementById('clearAllBtn').addEventListener('click', () => { CerberusData.blockAllCountries(); updateCountryList(); });
     document.getElementById('countrySearch').addEventListener('input', (e) => updateCountryList(e.target.value));
@@ -844,11 +1215,11 @@ function updateCountryList(filterText = '') {
         Object.assign(div.style, { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', marginBottom: '8px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '8px', borderLeft: `4px solid ${isAllowed ? '#4ade80' : '#4b5563'}`, transition: 'background 0.2s' });
         div.onmouseenter = () => div.style.background = 'rgba(255, 255, 255, 0.06)'; div.onmouseleave = () => div.style.background = 'rgba(255, 255, 255, 0.03)';
 
-        let bgStyle = code === 'XX'
-            ? `content: '🌐'; font-size: 14px; text-align: center; display: inline-block; width: 24px;`
-            : `background-image: url('static/flags/${code.toLowerCase()}.png'); background-size: contain; background-repeat: no-repeat;`;
+        let flagContent = code === 'XX'
+            ? `<svg width="18" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: ${isAllowed ? 0.8 : 0.4}; margin-right: 12px;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`
+            : `<span style="width:24px; height:16px; margin-right:12px; background-image: url('static/flags/${code.toLowerCase()}.png'); background-size: contain; background-repeat: no-repeat; opacity: ${isAllowed ? 1 : 0.5}"></span>`;
 
-        div.innerHTML = `<div style="display:flex; align-items:center; gap:12px;"><span style="width:24px; height:16px; ${bgStyle} opacity: ${isAllowed ? 1 : 0.5}"></span><span style="font-size:14px; color:${isAllowed ? '#fff' : '#888'}">${name} <small style="opacity:0.5">(${code})</small></span></div>`;
+        div.innerHTML = `<div style="display:flex; align-items:center;">${flagContent}<span style="font-size:14px; color:${isAllowed ? '#fff' : '#888'}">${name} <small style="opacity:0.5">(${code})</small></span></div>`;
         const toggle = createModernToggle(isAllowed, () => { if (isAllowed) CerberusData.blockCountry(code); else CerberusData.unblockCountry(code); updateCountryList(filterText); });
         div.appendChild(toggle); container.appendChild(div);
     });
@@ -880,7 +1251,7 @@ function createSettingsTab() {
 
     const settingToggle = (key, label) => {
         const val = ConfigManager.getSetting(key) === true;
-        return `<div class="modern-toggle"><span>${label}</span><label class="switch"><input type="checkbox" data-setting="${key}" ${val ? 'checked' : ''}><span class="slider"></span></label></div>`;
+        return `<label class="modern-toggle" style="cursor: pointer; user-select: none;"><span>${label}</span><span class="switch"><input type="checkbox" data-setting="${key}" ${val ? 'checked' : ''}><span class="slider"></span></span></label>`;
     };
 
     const escapeHtml = (str) => String(str ?? '')
@@ -894,7 +1265,7 @@ function createSettingsTab() {
         let val = ConfigManager.getSetting(key) ?? '';
         if (type === 'textarea') {
             const displayVal = String(val).replace(/\\n/g, '\n');
-            return `<div class="modern-toggle" style="flex-direction: column; align-items: stretch; gap: 6px;"><span>${label}</span><textarea data-setting="${key}" rows="3" style="background: rgba(14, 18, 26, 0.65); color: #f8fafc; border: 1px solid rgba(255,255,255,0.12); padding: 6px 8px; border-radius: 6px; outline: none; width: 100%; box-sizing: border-box; resize: vertical; font-family: inherit; font-size: 12px; line-height: 1.4;">${escapeHtml(displayVal)}</textarea></div>`;
+            return `<div class="modern-toggle" style="flex-direction: column; align-items: stretch;"><span style="margin-bottom: 6px;">${label}</span><textarea data-setting="${key}" rows="3" style="background: rgba(14, 18, 26, 0.65); color: #f8fafc; border: 1px solid rgba(255,255,255,0.12); padding: 6px 8px; border-radius: 6px; outline: none; width: 100%; box-sizing: border-box; resize: vertical; font-family: inherit; font-size: 12px; line-height: 1.4;">${escapeHtml(displayVal)}</textarea></div>`;
         }
         return `<div class="modern-toggle"><span>${label}</span><input type="${type}" data-setting="${key}" value="${escapeHtml(val)}" style="background: rgba(14, 18, 26, 0.65); color: #f8fafc; border: 1px solid rgba(255,255,255,0.12); padding: 4px 8px; border-radius: 6px; outline: none; width: 90px; text-align: center; font-size: 12px;"></div>`;
     };
@@ -907,13 +1278,13 @@ function createSettingsTab() {
 
     const blurToggle = () => {
         const isAll = ConfigManager.getSetting('chatUserInfo.blurMode') === 'all';
-        return `<div class="modern-toggle"><span>${t('settings.blurMode')}</span><label class="switch"><input type="checkbox" data-setting="chatUserInfo.blurMode" data-blur-toggle="true" ${isAll ? 'checked' : ''}><span class="slider"></span></label></div>`;
+        return `<label class="modern-toggle" style="cursor: pointer; user-select: none;"><span>${t('settings.blurMode')}</span><span class="switch"><input type="checkbox" data-setting="chatUserInfo.blurMode" data-blur-toggle="true" ${isAll ? 'checked' : ''}><span class="slider"></span></span></label>`;
     };
 
     const langSelect = `
         <div class="cerb-settings-card">
             <div class="modern-toggle" style="padding: 10px 14px;">
-                <span style="font-weight: 600; color: #fff;">🌐 ${t('settings.language')}</span>
+                <span style="font-weight: 600; color: #fff;">${t('settings.language')}</span>
                 <select id="cerbLangSelect" data-setting="language" style="background: rgba(14, 18, 26, 0.65); color: #f8fafc; border: 1px solid rgba(255,255,255,0.14); padding: 5px 10px; border-radius: 6px; outline: none; font-size: 12px; cursor: pointer;">
                     <option value="en" ${ConfigManager.getSetting('language') === 'en' ? 'selected' : ''}>🇺🇸 English</option>
                     <option value="pt" ${ConfigManager.getSetting('language') === 'pt' ? 'selected' : ''}>🇧🇷 Português</option>
@@ -927,10 +1298,10 @@ function createSettingsTab() {
     const soundPref = ConfigManager.getSetting('chatUserInfo.challengeSound') || 'native';
     const isAudioDisabled = soundPref === 'native' || soundPref === 'silent';
     const customAudioSelect = `
-        <div class="modern-toggle" style="flex-direction: column; align-items: stretch; gap: 6px;">
-            <span>${t('settings.challengeSound')}</span>
-            <div style="display: flex; gap: 6px; width: 100%;">
-                <select id="cerbAudioSelect" data-setting="chatUserInfo.challengeSound" style="flex: 1; background: rgba(14, 18, 26, 0.65); color: #f8fafc; border: 1px solid rgba(255,255,255,0.12); padding: 5px 8px; border-radius: 6px; outline: none; font-size: 12px;">
+        <div class="modern-toggle" style="flex-direction: column; align-items: stretch;">
+            <span style="margin-bottom: 6px;">${t('settings.challengeSound')}</span>
+            <div style="display: flex; width: 100%;">
+                <select id="cerbAudioSelect" data-setting="chatUserInfo.challengeSound" style="flex: 1; margin-right: 6px; background: rgba(14, 18, 26, 0.65); color: #f8fafc; border: 1px solid rgba(255,255,255,0.12); padding: 5px 8px; border-radius: 6px; outline: none; font-size: 12px;">
                     <option value="native" ${soundPref === 'native' ? 'selected' : ''}>${t('settings.soundNative')}</option>
                     <option value="custom1" ${soundPref === 'custom1' ? 'selected' : ''}>${t('settings.soundCustom1')}</option>
                     <option value="custom2" ${soundPref === 'custom2' ? 'selected' : ''}>${t('settings.soundCustom2')}</option>
@@ -954,15 +1325,15 @@ function createSettingsTab() {
 					<option value="custom20" ${soundPref === 'custom20' ? 'selected' : ''}>${t('settings.soundCustom20')}</option>
                     <option value="silent" ${soundPref === 'silent' ? 'selected' : ''}>${t('settings.soundSilent')}</option>
                 </select>
-                <button id="cerbAudioPlayBtn" ${isAudioDisabled ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="cursor: pointer;"'} class="q-live-btn on" style="padding: 4px 10px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">▶️</button>
+                <button id="cerbAudioPlayBtn" ${isAudioDisabled ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : 'style="cursor: pointer;"'} class="q-live-btn on" style="padding: 4px 10px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">▶</button>
             </div>
         </div>
     `;
 
     const autoJoinBlock = createMasterSection('autoJoin.enabled', t('settings.autoJoin'), 'cerbAutoJoinChildren',
-        `<div class="modern-toggle" style="flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 14px;">
-            <div style="display: flex; gap: 6px; width: 100%;">
-                <input type="text" data-setting="autoJoin.channelId" value="${(ConfigManager.getSetting('autoJoin.channelId') || '').replace(/"/g, '&quot;')}" placeholder="e.g. The King of Fighters 2002 (NGM-2650)" style="flex: 1; background: rgba(14, 18, 26, 0.65); color: #f8fafc; border: 1px solid rgba(255,255,255,0.12); padding: 6px 8px; border-radius: 6px; outline: none; font-size: 12px;">
+        `<div class="modern-toggle" style="flex-direction: column; align-items: stretch; padding: 10px 14px;">
+            <div style="display: flex; width: 100%;">
+                <input type="text" data-setting="autoJoin.channelId" value="${(ConfigManager.getSetting('autoJoin.channelId') || '').replace(/"/g, '&quot;')}" placeholder="e.g. The King of Fighters 2002 (NGM-2650)" style="flex: 1; margin-right: 6px; background: rgba(14, 18, 26, 0.65); color: #f8fafc; border: 1px solid rgba(255,255,255,0.12); padding: 6px 8px; border-radius: 6px; outline: none; font-size: 12px;">
                 <button id="cerbCaptureRoomBtn" style="background: var(--accentColor, #6366f1); color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;">${t('settings.autoJoinCapture')}</button>
             </div>
         </div>`
@@ -1019,26 +1390,26 @@ function createSettingsTab() {
             settingToggle('countryFilter.autoRejectNotify', t('autoReject.notifyToggle'))) +
         createMasterSection('ftFilter.enabled', t('settings.ftFilter'), 'cerbFtFilterChildren',
             settingToggle('ftFilter.autoReject', t('settings.autoRejectFt')) +
-            `<div class="modern-toggle" style="flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 14px;">
-                <span style="font-size: 11px; font-weight: 600; color: #cbd5e1;">${t('settings.ftAllowList')}</span>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; color: #f8fafc;">
-                        <input type="checkbox" data-setting="ftFilter.allowFt2" ${ConfigManager.getSetting('ftFilter.allowFt2') !== false ? 'checked' : ''}> FT2
+            `<div class="modern-toggle" style="flex-direction: column; align-items: stretch; padding: 10px 14px;">
+                <span style="font-size: 11px; font-weight: 600; color: #cbd5e1; margin-bottom: 8px;">${t('settings.ftAllowList')}</span>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 8px; gap: 8px;">
+                    <label style="display: flex; align-items: center; font-size: 11px; cursor: pointer; color: #f8fafc;">
+                        <input type="checkbox" data-setting="ftFilter.allowFt2" style="margin-right: 6px;" ${ConfigManager.getSetting('ftFilter.allowFt2') !== false ? 'checked' : ''}> FT2
                     </label>
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; color: #f8fafc;">
-                        <input type="checkbox" data-setting="ftFilter.allowFt3" ${ConfigManager.getSetting('ftFilter.allowFt3') !== false ? 'checked' : ''}> FT3
+                    <label style="display: flex; align-items: center; font-size: 11px; cursor: pointer; color: #f8fafc;">
+                        <input type="checkbox" data-setting="ftFilter.allowFt3" style="margin-right: 6px;" ${ConfigManager.getSetting('ftFilter.allowFt3') !== false ? 'checked' : ''}> FT3
                     </label>
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; color: #f8fafc;">
-                        <input type="checkbox" data-setting="ftFilter.allowFt5" ${ConfigManager.getSetting('ftFilter.allowFt5') !== false ? 'checked' : ''}> FT5
+                    <label style="display: flex; align-items: center; font-size: 11px; cursor: pointer; color: #f8fafc;">
+                        <input type="checkbox" data-setting="ftFilter.allowFt5" style="margin-right: 6px;" ${ConfigManager.getSetting('ftFilter.allowFt5') !== false ? 'checked' : ''}> FT5
                     </label>
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; color: #f8fafc;">
-                        <input type="checkbox" data-setting="ftFilter.allowFt10" ${ConfigManager.getSetting('ftFilter.allowFt10') !== false ? 'checked' : ''}> FT10
+                    <label style="display: flex; align-items: center; font-size: 11px; cursor: pointer; color: #f8fafc;">
+                        <input type="checkbox" data-setting="ftFilter.allowFt10" style="margin-right: 6px;" ${ConfigManager.getSetting('ftFilter.allowFt10') !== false ? 'checked' : ''}> FT10
                     </label>
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; color: #f8fafc;">
-                        <input type="checkbox" data-setting="ftFilter.allowFt20" ${ConfigManager.getSetting('ftFilter.allowFt20') !== false ? 'checked' : ''}> FT20
+                    <label style="display: flex; align-items: center; font-size: 11px; cursor: pointer; color: #f8fafc;">
+                        <input type="checkbox" data-setting="ftFilter.allowFt20" style="margin-right: 6px;" ${ConfigManager.getSetting('ftFilter.allowFt20') !== false ? 'checked' : ''}> FT20
                     </label>
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; color: #f8fafc;">
-                        <input type="checkbox" data-setting="ftFilter.allowCasual" ${ConfigManager.getSetting('ftFilter.allowCasual') !== false ? 'checked' : ''}> ${t('settings.ftCasual')}
+                    <label style="display: flex; align-items: center; font-size: 11px; cursor: pointer; color: #f8fafc;">
+                        <input type="checkbox" data-setting="ftFilter.allowCasual" style="margin-right: 6px;" ${ConfigManager.getSetting('ftFilter.allowCasual') !== false ? 'checked' : ''}> ${t('settings.ftCasual')}
                     </label>
                 </div>
             </div>`) +
@@ -1052,7 +1423,14 @@ function createSettingsTab() {
             customAudioSelect) +
         createMasterSection('chatUserInfo.enableReputation', t('settings.reputation'), 'cerbReputationChildren',
             settingToggle('chatUserInfo.hideNegativeMessages', t('settings.hideNeg')) +
-            settingToggle('chatUserInfo.autoRejectNegative', t('settings.autoRejectNeg'))) +
+            settingToggle('chatUserInfo.autoRejectNegative', t('settings.autoRejectNeg')) +
+            settingToggle('chatUserInfo.notifyFavoriteJoin', t('settings.notifyFavoriteJoin')) +
+            settingSelect('chatUserInfo.favoriteJoinSound', t('settings.favoriteJoinSound'), [
+                { value: 'pop', text: t('settings.favSoundPop') },
+                { value: 'custom20', text: t('settings.favSoundMsn') },
+                { value: 'custom19', text: t('settings.favSoundCoin') },
+                { value: 'silent', text: t('settings.favSoundSilent') }
+            ])) +
         createSection(t('settings.privacy'), blurToggle() + settingToggle('chatUserInfo.unlockColorThemes', t('settings.unlockThemes'))) +
         createSection(t('settings.performance'),
             settingToggle('performance.lowPowerOnBlur', t('settings.lowPowerOnBlur')) +
@@ -1230,7 +1608,7 @@ function createAboutTab() {
         updateHtml = `<div style="background: rgba(255, 165, 0, 0.2); border: 1px solid rgba(255, 165, 0, 0.5); padding: 10px; border-radius: 8px; margin-top: 15px; color: #ffdca5; font-weight: bold; text-align: center;">${t('about.updateAvailable')} ${CerberusData.latestVersion}${downloadLink}</div>`;
     }
 
-    let logoHtml = `<div style="font-size: 40px; margin-bottom: 10px;">🐺</div>`;
+    let logoHtml = `<div style="font-size: 24px; font-weight: 700; letter-spacing: 0.5px; color: #818cf8; margin-bottom: 10px;">Fightcade+</div>`;
     try {
         const fs = require('fs');
         const path = require('path');
@@ -1247,9 +1625,9 @@ function createAboutTab() {
     document.getElementById('aboutTab').innerHTML = `
         <div style="text-align: center; padding: 10px 20px;">
             ${logoHtml}
-            <h2 style="margin: 0; color: var(--mainColor-light, #667eea);">${t('about.title')}</h2>
-            <div style="font-size: 12px; opacity: 0.6; margin-top: 4px; margin-bottom: 12px;">
-                ${t('about.subtitle')} | <a href="https://cerberus-br.github.io/FightcadePlus" target="_blank" style="color: var(--mainColor-lighter, #a3bffa); text-decoration: underline;">${t('about.projectPage')}</a>
+            <h2 style="margin: 0; color: #f8fafc; font-size: 20px; font-weight: 700;">${t('about.title')}</h2>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px; margin-bottom: 12px;">
+                ${t('about.subtitle')} | <a href="https://cerberus-br.github.io/FightcadePlus" target="_blank" style="color: #818cf8; text-decoration: underline;">${t('about.projectPage')}</a>
             </div>
             <p style="opacity: 0.8; margin-top: 8px; font-weight: 500; font-size: 13px; line-height: 1.4;">
                 ${t('about.desc')}
@@ -1265,12 +1643,12 @@ function createAboutTab() {
                     ${t('about.supportDesc')}
                 </p>
                 
-                <div style="display: flex; justify-content: center; gap: 10px;">
-                    <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="cerb-donate-btn cerb-donate-paypal">
-                        💙 PayPal
+                <div style="display: flex; justify-content: center;">
+                    <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="cerb-donate-btn cerb-donate-paypal" style="margin-right: 10px;">
+                        PayPal
                     </a>
                     <a href="https://livepix.gg/cerberusbr" target="_blank" class="cerb-donate-btn cerb-donate-livepix">
-                        🟢 LivePix
+                        LivePix
                     </a>
                 </div>
             </div>
@@ -1284,7 +1662,7 @@ function createAboutTab() {
     document.getElementById('cerbManualUpdateBtn').addEventListener('click', async () => {
         const btn = document.getElementById('cerbManualUpdateBtn');
         btn.disabled = true;
-        btn.textContent = '⏳ ...';
+        btn.textContent = '...';
 
         const success = await checkForUpdates(true);
         btn.disabled = false;
@@ -1308,7 +1686,7 @@ function createQueuePanel() {
     const { CerberusData } = require('./state.js');
     if (document.getElementById('cerberusQueueWindow')) return;
     const panel = document.createElement('div'); panel.id = 'cerberusQueueWindow'; panel.style.display = 'none';
-    panel.innerHTML = `<div class="q-header" id="cerberusQueueHeader"><span class="q-title">📝 ${t('queue.title')} <small id="cerbQueueCount">(0)</small></span><button class="q-close" id="cerbQueueCloseBtn">×</button></div><div class="q-add-box"><input type="text" id="cerbQueueInput" placeholder="${t('queue.inputPh')}"><button id="cerbQueueAddBtn">${t('queue.addBtn')}</button></div><div class="q-list" id="cerbQueueList"></div><div class="q-footer" style="display:flex; justify-content:space-between;"><button id="cerbLiveMasterBtn" class="q-live-btn off">${t('sync.liveOff')}</button><button id="cerbQueueClearBtn" class="q-clear-btn">🧹 ${t('queue.clearBtn')}</button></div>`;
+    panel.innerHTML = `<div class="q-header" id="cerberusQueueHeader"><span class="q-title">${t('queue.title')} <small id="cerbQueueCount">(0)</small></span><button class="q-close" id="cerbQueueCloseBtn">×</button></div><div class="q-add-box"><input type="text" id="cerbQueueInput" placeholder="${t('queue.inputPh')}"><button id="cerbQueueAddBtn">${t('queue.addBtn')}</button></div><div class="q-list" id="cerbQueueList"></div><div class="q-footer" style="display:flex; justify-content:space-between;"><button id="cerbLiveMasterBtn" class="q-live-btn off">${t('sync.liveOff')}</button><button id="cerbQueueClearBtn" class="q-clear-btn">${t('queue.clearBtn')}</button></div>`;
     const targetParent = document.getElementById('app') || document.body;
     targetParent.appendChild(panel); makeDraggable(panel, 'cerberusQueueHeader');
 
@@ -1388,13 +1766,13 @@ function createSimulatorPanel() {
 
     panel.innerHTML = `
         <div class="sim-header" id="cerberusSimulatorHeader">
-            <span class="sim-title">⚔️ ${t('elo.simTitle')}</span>
+            <span class="sim-title">${t('elo.simTitle')}</span>
             <button type="button" class="sim-close" id="cerbSimulatorCloseBtn">×</button>
         </div>
         <div class="sim-body">
             <div class="sim-controls-grid">
                 <div class="sim-player-box">
-                    <div class="sim-box-title">👤 ${t('elo.simPlayer1')}</div>
+                    <div class="sim-box-title">${t('elo.simPlayer1')}</div>
                     <div class="sim-input-row">
                         <select id="cerbSimRank1" class="sim-select">
                             <option value="S">Rank S (~2050)</option>
@@ -1406,7 +1784,7 @@ function createSimulatorPanel() {
                         </select>
                         <input type="number" id="cerbSimElo1" class="sim-input" placeholder="Elo" value="1150" min="100" max="3000" />
                     </div>
-                    <button type="button" id="cerbSimUseMyEloBtn" class="sim-btn-secondary">📍 ${t('elo.simUseMyElo')}</button>
+                    <button type="button" id="cerbSimUseMyEloBtn" class="sim-btn-secondary">${t('elo.simUseMyElo')}</button>
                     <div class="sim-elo-source" id="cerbSimSource1" role="status">${t('elo.simExample')}</div>
                 </div>
 
@@ -1425,7 +1803,7 @@ function createSimulatorPanel() {
                 </div>
 
                 <div class="sim-player-box">
-                    <div class="sim-box-title">🥊 ${t('elo.simPlayer2')}</div>
+                    <div class="sim-box-title">${t('elo.simPlayer2')}</div>
                     <div class="sim-input-row">
                         <select id="cerbSimRank2" class="sim-select">
                             <option value="S">Rank S (~2050)</option>
@@ -1563,14 +1941,14 @@ function createSimulatorPanel() {
 
                 let impactLabel = '';
                 if (sc.isWin) {
-                    if (sc.oppWins === 0) impactLabel = `🟢 ${t('elo.simWinClean')}`;
-                    else if (sc.oppWins <= Math.floor(ft / 2)) impactLabel = `🟢 ${t('elo.simWinDecisive')}`;
-                    else impactLabel = delta > 0 ? `🟢 ${t('elo.simWinSimple')}` : `🔴 ${t('elo.simWinSimple')}`;
+                    if (sc.oppWins === 0) impactLabel = t('elo.simWinClean');
+                    else if (sc.oppWins <= Math.floor(ft / 2)) impactLabel = t('elo.simWinDecisive');
+                    else impactLabel = t('elo.simWinSimple');
                 } else {
-                    if (delta > 0) impactLabel = `🔥 ${t('elo.simLossProfit')}`;
-                    else if (sc.myWins === ft - 1) impactLabel = `🔴 ${t('elo.simLossTight')}`;
-                    else if (sc.myWins === 0) impactLabel = `🔴 ${t('elo.simLossSweep')}`;
-                    else impactLabel = `🔴 ${t('elo.simLossHeavy')}`;
+                    if (delta > 0) impactLabel = t('elo.simLossProfit');
+                    else if (sc.myWins === ft - 1) impactLabel = t('elo.simLossTight');
+                    else if (sc.myWins === 0) impactLabel = t('elo.simLossSweep');
+                    else impactLabel = t('elo.simLossHeavy');
                 }
 
                 const scoreDisplay = sc.score.replace('-', 'x');
@@ -1692,6 +2070,13 @@ if (typeof document !== 'undefined') {
                 menu.classList.remove('visible');
             }
         }
+        const profileMenu = document.getElementById('cerbSelfProfileMenu');
+        if (profileMenu && (profileMenu.classList.contains('visible') || profileMenu.style.display !== 'none')) {
+            if (!profileMenu.contains(e.target) && !e.target.closest('.cerb-self-profile-trigger')) {
+                profileMenu.classList.remove('visible');
+                profileMenu.style.display = 'none';
+            }
+        }
     });
 }
 
@@ -1704,14 +2089,14 @@ function injectGlobalMenu() {
     if (document.getElementById('cerbGlobalMenu')) return;
     const menu = document.createElement('div'); menu.id = 'cerbGlobalMenu';
     menu.innerHTML = `
-        <span id="cerbBtnLike" class="cerb-action-icon" title="${t('rep.like')}">👍</span>
-        <span id="cerbBtnDislike" class="cerb-action-icon" title="${t('rep.dislike')}">👎</span>
-        <span id="cerbBtnClear" class="cerb-action-icon" title="${t('rep.clear')}">🧹</span>
+        <span id="cerbBtnLike" class="cerb-action-icon" title="${t('rep.like')}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></span>
+        <span id="cerbBtnDislike" class="cerb-action-icon" title="${t('rep.dislike')}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg></span>
+        <span id="cerbBtnClear" class="cerb-action-icon" title="${t('rep.clear')}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
         <div class="cerb-menu-divider"></div>
-        <span id="cerbBtnBlock" class="cerb-action-icon" title="${t('rep.block')}">🚫</span>
-        <span id="cerbBtnUnblock" class="cerb-action-icon" title="${t('rep.unblock')}">🟢</span>
+        <span id="cerbBtnBlock" class="cerb-action-icon" title="${t('rep.block')}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></span>
+        <span id="cerbBtnUnblock" class="cerb-action-icon" title="${t('rep.unblock')}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
         <div class="cerb-menu-divider" id="cerbDivQueue"></div>
-        <span id="cerbBtnQueueAdd" class="cerb-action-icon" title="${t('queue.addBtn')}">➕</span>`;
+        <span id="cerbBtnQueueAdd" class="cerb-action-icon" title="${t('queue.addBtn')}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>`;
     const targetParent = document.getElementById('app') || document.body;
     targetParent.appendChild(menu);
 
@@ -1765,7 +2150,7 @@ function applyReputationStyleChat(author, msg, userKey, hideNegative) {
         if (msg && msg.dataset.cerbRepState) {
             delete msg.dataset.cerbRepState;
             if (author) { author.style.color = ''; author.style.fontWeight = ''; author.style.textShadow = ''; author.style.textDecoration = ''; }
-            if (msg) { msg.style.backgroundColor = ''; msg.style.borderLeft = ''; msg.style.paddingLeft = ''; msg.style.opacity = ''; }
+            if (msg) { msg.style.backgroundColor = ''; msg.style.borderLeft = ''; msg.style.boxShadow = ''; msg.style.paddingLeft = ''; msg.style.opacity = ''; }
         }
         return;
     }
@@ -1776,15 +2161,15 @@ function applyReputationStyleChat(author, msg, userKey, hideNegative) {
     if (msg && msg.dataset.cerbRepState === repState) return;
 
     if (author) { author.style.color = ''; author.style.fontWeight = ''; author.style.textShadow = ''; author.style.textDecoration = ''; }
-    if (msg) { msg.style.backgroundColor = ''; msg.style.borderLeft = ''; msg.style.paddingLeft = ''; msg.style.opacity = ''; msg.dataset.cerbRepState = repState; }
+    if (msg) { msg.style.backgroundColor = ''; msg.style.borderLeft = ''; msg.style.boxShadow = ''; msg.style.paddingLeft = ''; msg.style.opacity = ''; msg.dataset.cerbRepState = repState; }
 
     if (isPos) {
-        if (author) { author.style.color = '#00aa00'; author.style.fontWeight = 'bold'; author.style.textShadow = '0 0 3px rgba(0, 170, 0, 0.5)'; }
-        if (msg) { msg.style.backgroundColor = 'rgba(0, 255, 0, 0.08)'; msg.style.borderLeft = '3px solid #00aa00'; msg.style.paddingLeft = '5px'; }
+        if (author) { author.style.color = '#4ade80'; author.style.fontWeight = '600'; author.style.textShadow = 'none'; }
+        if (msg) { msg.style.backgroundColor = 'rgba(74, 222, 128, 0.08)'; msg.style.boxShadow = 'inset 3px 0 0 #4ade80'; }
     }
     else if (isNeg) {
-        if (author) { author.style.color = '#888'; author.style.textDecoration = 'line-through'; }
-        if (msg) msg.style.opacity = '0.35';
+        if (author) { author.style.color = '#94a3b8'; author.style.textDecoration = 'line-through'; }
+        if (msg) msg.style.opacity = '0.4';
     }
 }
 
@@ -1794,7 +2179,7 @@ function applyReputationStyleList(playerName, userItem, userKey) {
         if (userItem && userItem.dataset.cerbRepState) {
             delete userItem.dataset.cerbRepState;
             if (playerName) { playerName.style.color = ''; playerName.style.fontWeight = ''; playerName.style.textDecoration = ''; playerName.style.textShadow = ''; }
-            if (userItem) { userItem.style.opacity = ''; userItem.style.backgroundColor = ''; userItem.style.borderLeft = ''; }
+            if (userItem) { userItem.style.opacity = ''; userItem.style.backgroundColor = ''; userItem.style.borderLeft = ''; userItem.style.boxShadow = ''; }
         }
         return;
     }
@@ -1805,14 +2190,14 @@ function applyReputationStyleList(playerName, userItem, userKey) {
     if (userItem && userItem.dataset.cerbRepState === repState) return;
 
     if (playerName) { playerName.style.color = ''; playerName.style.fontWeight = ''; playerName.style.textDecoration = ''; playerName.style.textShadow = ''; }
-    if (userItem) { userItem.style.opacity = ''; userItem.style.backgroundColor = ''; userItem.style.borderLeft = ''; userItem.dataset.cerbRepState = repState; }
+    if (userItem) { userItem.style.opacity = ''; userItem.style.backgroundColor = ''; userItem.style.borderLeft = ''; userItem.style.boxShadow = ''; userItem.dataset.cerbRepState = repState; }
 
     if (isPos) {
-        if (playerName) { playerName.style.color = '#00aa00'; playerName.style.fontWeight = 'bold'; playerName.style.textShadow = '0 0 5px rgba(0, 255, 0, 0.6)'; }
-        if (userItem) { userItem.style.backgroundColor = 'rgba(0, 255, 0, 0.12)'; userItem.style.borderLeft = '4px solid #00aa00'; }
+        if (playerName) { playerName.style.color = '#4ade80'; playerName.style.fontWeight = '600'; playerName.style.textShadow = 'none'; }
+        if (userItem) { userItem.style.backgroundColor = 'rgba(74, 222, 128, 0.08)'; userItem.style.boxShadow = 'inset 3px 0 0 #4ade80'; }
     } else if (isNeg) {
-        if (playerName) { playerName.style.color = '#888'; playerName.style.textDecoration = 'line-through'; }
-        if (userItem) userItem.style.opacity = '0.35';
+        if (playerName) { playerName.style.color = '#94a3b8'; playerName.style.textDecoration = 'line-through'; }
+        if (userItem) userItem.style.opacity = '0.4';
     }
 }
 
@@ -1838,10 +2223,10 @@ function applyReputationStyleMatch(playerName, userKey) {
     if (playerInfo) playerInfo.style.opacity = '';
 
     if (isPos) {
-        if (playerName) { playerName.style.color = '#00aa00'; playerName.style.fontWeight = 'bold'; playerName.style.textShadow = '0 0 5px rgba(0, 255, 0, 0.6)'; }
+        if (playerName) { playerName.style.color = '#4ade80'; playerName.style.fontWeight = '600'; playerName.style.textShadow = 'none'; }
     } else if (isNeg) {
-        if (playerName) { playerName.style.color = '#888'; playerName.style.textDecoration = 'line-through'; }
-        if (playerInfo) playerInfo.style.opacity = '0.35';
+        if (playerName) { playerName.style.color = '#94a3b8'; playerName.style.textDecoration = 'line-through'; }
+        if (playerInfo) playerInfo.style.opacity = '0.4';
     }
 }
 
@@ -1866,6 +2251,156 @@ function _getUiDeps() {
     });
 }
 
+function getOrCreateSelfProfileMenu() {
+    let menu = document.getElementById('cerbSelfProfileMenu');
+    if (!menu) {
+        menu = document.createElement('div');
+        menu.id = 'cerbSelfProfileMenu';
+        menu.className = 'cerb-profile-card';
+        menu.style.display = 'none';
+        const targetParent = document.getElementById('app') || document.body;
+        targetParent.appendChild(menu);
+
+        menu.addEventListener('mouseenter', () => {
+            clearTimeout(window.CerberusState.selfProfileHideTimeout);
+        });
+        menu.addEventListener('mouseleave', () => {
+            window.CerberusState.selfProfileHideTimeout = setTimeout(() => {
+                menu.classList.remove('visible');
+                menu.style.display = 'none';
+            }, 350);
+        });
+    }
+    return menu;
+}
+
+function positionSelfProfileMenu(menu, anchorEl) {
+    if (!menu || !anchorEl) return;
+    try {
+        let rect = anchorEl.getBoundingClientRect();
+        if (rect.width === 0 && rect.height === 0) {
+            const parent = anchorEl.closest('.userItem, .playerInfo') || anchorEl.parentElement;
+            if (parent) rect = parent.getBoundingClientRect();
+        }
+        if (rect.width === 0 && rect.height === 0 && rect.top === 0 && rect.left === 0) return;
+
+        // Force layout computation with visibility:hidden to get exact rendered height
+        menu.style.visibility = 'hidden';
+        menu.style.display = 'flex';
+
+        const measuredWidth = menu.offsetWidth || Math.ceil(menu.getBoundingClientRect().width);
+        const menuWidth = Math.max(measuredWidth || 0, 280);
+
+        const measuredHeight = menu.offsetHeight || Math.ceil(menu.getBoundingClientRect().height);
+        const menuHeight = Math.max(measuredHeight || 0, 200);
+
+        let leftPos = rect.left;
+        if (leftPos + menuWidth > window.innerWidth - 12) leftPos = window.innerWidth - menuWidth - 12;
+        if (leftPos < 12) leftPos = 12;
+
+        // Try placing above anchor first (essential when nickname is at or near the bottom of the list)
+        let topPos = rect.top - menuHeight - 8;
+
+        // If it overflows top of screen, place below anchor
+        if (topPos < 12) {
+            topPos = rect.bottom + 8;
+        }
+
+        // If it overflows bottom of screen, clamp strictly inside viewport
+        if (topPos + menuHeight > window.innerHeight - 12) {
+            topPos = Math.max(12, window.innerHeight - menuHeight - 12);
+        }
+
+        // Final guard against negative top
+        if (topPos < 12) {
+            topPos = 12;
+        }
+
+        menu.style.left = Math.round(leftPos) + 'px';
+        menu.style.top = Math.round(topPos) + 'px';
+        menu.style.visibility = 'visible';
+    } catch (e) { }
+}
+
+function openSelfProfileMenu(userKey, anchorEl) {
+    const { getActiveGameId, getActiveChannelWrapper, t } = require('./utils.js');
+    const { RankCache } = require('./api.js');
+    const { CerberusData } = require('./state.js');
+    const { getLocalUserInfo, getNextRankRequirement } = require('./elo.js');
+
+    const menu = getOrCreateSelfProfileMenu();
+    if (!menu) return;
+    clearTimeout(window.CerberusState.selfProfileHideTimeout);
+
+    const cw = getActiveChannelWrapper();
+    const activeGameId = getActiveGameId(window.CerberusFCADE, cw);
+    const localInfo = getLocalUserInfo(window.CerberusFCADE, activeGameId, RankCache);
+
+    const rankLetter = localInfo?.rankLetter || '-';
+    const eloText = localInfo?.elo ? `${localInfo.elo} Elo` : (localInfo?.isUnranked ? 'Unranked' : '~1150 Elo');
+    const currentPos = (activeGameId && RankCache?.getRank) ? RankCache.getRank(activeGameId, userKey) : null;
+    const delta = CerberusData.getUserPositionDelta(activeGameId, userKey);
+    const posHistory = CerberusData.getUserPositionHistory(activeGameId, userKey);
+    const nextReq = getNextRankRequirement ? getNextRankRequirement(rankLetter, localInfo?.elo, activeGameId, RankCache) : null;
+
+    let nextRankText = '';
+    if (nextReq) {
+        if (nextReq.isMaxRank) nextRankText = t('profile.maxRank');
+        else if (nextReq.isSynced) nextRankText = t('profile.nextTarget', { pts: nextReq.ptsNeeded, nextRank: nextReq.nextRank });
+    }
+
+    let historyHtml = '';
+    if (posHistory && posHistory.length > 1) {
+        const trail = (posHistory.length > 5 ? '... ➔ ' : '') + posHistory.slice(-5).map(h => '#' + h.pos).join(' ➔ ');
+        historyHtml = `<div class="cerb-profile-history"><span>${t('profile.historyTitle')}:</span> <strong>${trail}</strong></div>`;
+    }
+
+    const posStr = currentPos ? (t('profile.position', { pos: currentPos }) + (delta?.text ? ` <span class="cerb-pos-delta cerb-pos-${delta.status}">${delta.text}</span>` : '')) : t('profile.unrankedPos');
+
+    menu.innerHTML = `
+        <div class="cerb-profile-header">
+            <span class="cerb-profile-name">${userKey}</span>
+            <span class="cerb-profile-tag">${t('profile.you')}</span>
+        </div>
+        <div class="cerb-profile-info-row"><strong>${t('profile.rankAndElo', { rank: rankLetter, elo: eloText })}</strong></div>
+        <div class="cerb-profile-info-row">${posStr}</div>
+        ${nextRankText ? `<div class="cerb-profile-info-row" style="color: #64b5f6;">${nextRankText}</div>` : ''}
+        ${historyHtml}
+        <div class="cerb-profile-actions">
+            <button type="button" class="cerb-profile-btn" id="cerbBtnSyncUser">${t('profile.syncBtn')}</button>
+        </div>
+    `;
+
+    // Hook buttons
+    const syncBtn = menu.querySelector('#cerbBtnSyncUser');
+    if (syncBtn) {
+        syncBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (RankCache.isSyncing) return;
+            syncBtn.disabled = true;
+            syncBtn.textContent = t('profile.syncing');
+            const res = await RankCache.syncUserRanking(activeGameId, userKey);
+            if (res.success) {
+                syncBtn.textContent = t('profile.syncSuccess', { pos: res.position });
+                setTimeout(() => {
+                    if (menu.classList.contains('visible')) {
+                        openSelfProfileMenu(userKey, anchorEl);
+                    }
+                }, 1200);
+            } else if (res.reason === 'not_found_in_top_999') {
+                syncBtn.textContent = t('profile.syncNotFound');
+                setTimeout(() => { syncBtn.disabled = false; syncBtn.textContent = t('profile.syncBtn'); }, 3000);
+            } else {
+                syncBtn.textContent = t('profile.syncError');
+                setTimeout(() => { syncBtn.disabled = false; syncBtn.textContent = t('profile.syncBtn'); }, 3000);
+            }
+        });
+    }
+
+    menu.classList.add('visible');
+    positionSelfProfileMenu(menu, anchorEl);
+}
+
 function addReputationControlsToElement(hoverContainer, type) {
     if (!hoverContainer) return;
     const activeUserKey = hoverContainer.dataset.currentUser;
@@ -1880,26 +2415,43 @@ function addReputationControlsToElement(hoverContainer, type) {
     if (hoverContainer.dataset.cerbHoverAdded === "true") return;
     hoverContainer.dataset.cerbHoverAdded = "true";
 
+    const { getLocalUsername, t } = require('./utils.js');
+    const localUserNick = (getLocalUsername(window.CerberusFCADE) || '').toLowerCase();
+    const isSelf = Boolean(localUserNick && activeUserKey.toLowerCase() === localUserNick);
+
     if (type === 'sidebar' || type === 'list') {
         const flagEl = hoverContainer.querySelector('.flagWrapper');
         if (flagEl) {
             const countryTitle = flagEl.title || flagEl.querySelector('img')?.title || (window.CerberusFCADE?.globalUsers?.[activeUserKey]?.country?.name) || '';
             if (triggerBtn) {
-                if (countryTitle && triggerBtn.title !== countryTitle) triggerBtn.title = countryTitle;
+                if (isSelf) {
+                    triggerBtn.classList.add('cerb-self-profile-trigger');
+                    triggerBtn.title = t ? (t('profile.title') || 'Meu Perfil & Estatísticas') : 'Meu Perfil & Estatísticas';
+                } else {
+                    triggerBtn.classList.remove('cerb-self-profile-trigger');
+                    if (countryTitle && triggerBtn.title !== countryTitle) triggerBtn.title = countryTitle;
+                }
             } else {
                 const btn = document.createElement('span');
-                btn.className = 'cerb-flag-trigger';
-                btn.title = countryTitle || t('rep.like') || 'Reputação / Opções';
-                btn.addEventListener('mouseenter', () => {
-                    const currentKey = hoverContainer.dataset.currentUser;
-                    const cTitle = flagEl.title || flagEl.querySelector('img')?.title || (window.CerberusFCADE?.globalUsers?.[currentKey]?.country?.name) || '';
-                    if (cTitle && btn.title !== cTitle) btn.title = cTitle;
-                });
+                btn.className = 'cerb-flag-trigger' + (isSelf ? ' cerb-self-profile-trigger' : '');
+                btn.title = isSelf ? (t ? (t('profile.title') || 'Meu Perfil & Estatísticas') : 'Meu Perfil & Estatísticas') : (countryTitle || (t ? t('rep.like') : 'Reputação / Opções'));
+                if (!isSelf) {
+                    btn.addEventListener('mouseenter', () => {
+                        const currentKey = hoverContainer.dataset.currentUser;
+                        const cTitle = flagEl.title || flagEl.querySelector('img')?.title || (window.CerberusFCADE?.globalUsers?.[currentKey]?.country?.name) || '';
+                        if (cTitle && btn.title !== cTitle) btn.title = cTitle;
+                    });
+                }
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const currentKey = hoverContainer.dataset.currentUser;
                     if (currentKey && !_getUiDeps().isSystemUser(currentKey)) {
-                        openReputationMenuForUser(currentKey, type, flagEl);
+                        const locNick = (getLocalUsername(window.CerberusFCADE) || '').toLowerCase();
+                        if (locNick && currentKey.toLowerCase() === locNick) {
+                            openSelfProfileMenu(currentKey, flagEl || btn);
+                        } else {
+                            openReputationMenuForUser(currentKey, type, flagEl);
+                        }
                     }
                 });
                 hoverContainer.appendChild(btn);
@@ -1909,13 +2461,18 @@ function addReputationControlsToElement(hoverContainer, type) {
         const rankEl = hoverContainer.querySelector('.rank, img.rank, .playerRank, .rankImg, img[src*="rank"], .cerb-rank-badge, .cerberus-injected-rank') || hoverContainer.querySelector('.playerName');
         if (rankEl && !triggerBtn) {
             const btn = document.createElement('span');
-            btn.className = 'cerb-flag-trigger';
-            btn.title = t('rep.like') || 'Reputação / Opções';
+            btn.className = 'cerb-flag-trigger' + (isSelf ? ' cerb-self-profile-trigger' : '');
+            btn.title = isSelf ? (t ? (t('profile.title') || 'Meu Perfil & Estatísticas') : 'Meu Perfil & Estatísticas') : (t ? t('rep.like') : 'Reputação / Opções');
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const currentKey = hoverContainer.dataset.currentUser;
                 if (currentKey && !_getUiDeps().isSystemUser(currentKey)) {
-                    openReputationMenuForUser(currentKey, type, btn);
+                    const locNick = (getLocalUsername(window.CerberusFCADE) || '').toLowerCase();
+                    if (locNick && currentKey.toLowerCase() === locNick) {
+                        openSelfProfileMenu(currentKey, btn);
+                    } else {
+                        openReputationMenuForUser(currentKey, type, btn);
+                    }
                 }
             });
             hoverContainer.appendChild(btn);
@@ -1956,8 +2513,9 @@ function injectHeaderButtons(FCADE) {
     headerTitle.style.display = 'flex'; headerTitle.style.alignItems = 'center';
 
     if (!headerTitle.querySelector('.cerb-settings-btn')) {
-        const btn = document.createElement('span'); btn.className = 'cerb-settings-btn'; btn.textContent = '⚙️'; btn.title = t('btnTitle');
-        Object.assign(btn.style, { cursor: 'pointer', fontSize: '16px', marginLeft: 'auto', marginRight: '8px', opacity: '0.8' });
+        const btn = document.createElement('span'); btn.className = 'cerb-settings-btn'; btn.title = t('btnTitle');
+        btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+        Object.assign(btn.style, { cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '22px', height: '22px', marginLeft: 'auto', marginRight: '8px', opacity: '0.8', transition: 'opacity 0.2s' });
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const panel = document.getElementById('cerberusPanel');
@@ -1979,8 +2537,9 @@ function injectHeaderButtons(FCADE) {
 
     if (showRankBtn) {
         if (!existingSyncBtn) {
-            const syncBtn = document.createElement('button'); syncBtn.className = 'cerb-sync-btn'; syncBtn.textContent = '🔄';
-            Object.assign(syncBtn.style, { cursor: 'pointer', fontSize: '15px', background: 'transparent', border: 'none', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', outline: 'none', padding: '0', marginRight: '5px', transition: 'background 0.2s' });
+            const syncBtn = document.createElement('button'); syncBtn.className = 'cerb-sync-btn';
+            syncBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>';
+            Object.assign(syncBtn.style, { cursor: 'pointer', background: 'transparent', border: 'none', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', outline: 'none', padding: '0', marginRight: '5px', transition: 'background 0.2s' });
             setSyncBtnState(syncBtn, isLocked);
             syncBtn.addEventListener('click', (e) => { e.stopPropagation(); if (RankCache.isSyncing) RankCache.cancelSync(); else { const cId = getActiveGameId(FCADE); if (cId) RankCache.syncRankings(cId); } });
             headerTitle.insertBefore(syncBtn, headerTitle.querySelector('.cerb-settings-btn'));
@@ -2134,7 +2693,7 @@ function injectUIEnhancements() {
         if (!simBtn) {
             simBtn = document.createElement('button');
             simBtn.className = 'cerb-sim-fab cerb-fab-btn';
-            simBtn.innerHTML = t('elo.simFab') || '⚔️ SIMULADOR FT';
+            simBtn.innerHTML = t('elo.simFab') || 'Simulador FT';
             simBtn.addEventListener('click', () => {
                 const panel = document.getElementById('cerberusSimulatorWindow');
                 if (panel) {
@@ -2169,7 +2728,7 @@ function updateMotdNotices(chatWrapper, activeGameId) {
         const updateNotice = document.createElement('div');
         updateNotice.className = 'cerb-motd-update-notice';
         const dlUrl = CerberusData.downloadUrl || 'https://cerberus-br.github.io/FightcadePlus';
-        updateNotice.innerHTML = `🐺 <b>${t('motd.updateAvail')} ${CerberusData.latestVersion}</b> <a href="${dlUrl}" target="_blank" style="color: #4ade80; text-decoration: underline; margin-left: 10px;">Download</a> <a href="https://cerberus-br.github.io/FightcadePlus" target="_blank" style="color: #a3bffa; text-decoration: underline; margin-left: 10px;">${t('motd.moreDetails')}</a>`;
+        updateNotice.innerHTML = `<b>${t('motd.updateAvail')} ${CerberusData.latestVersion}</b> <a href="${dlUrl}" target="_blank" style="color: #4ade80; text-decoration: underline; margin-left: 10px;">Download</a> <a href="https://cerberus-br.github.io/FightcadePlus" target="_blank" style="color: #a3bffa; text-decoration: underline; margin-left: 10px;">${t('motd.moreDetails')}</a>`;
         blocksContainer.appendChild(updateNotice);
         motdWrapper.dataset.cerbUpdateAdded = "true";
     }
@@ -2248,7 +2807,8 @@ module.exports = {
     applyReputationStyleChat, applyReputationStyleList, applyReputationStyleMatch,
     addReputationControlsToElement, unlockColorThemes, applyTheme, setSyncBtnState,
     injectHeaderButtons, injectSidebarSearch, injectUIEnhancements, updateMotdNotices, onChannelSwitch, createFlagElement,
-    createPingElement, createRankElement, createPingTextElement, createStatusElement, createRankBadge,
+    createPingElement, createRankElement, createPingTextElement, createStatusElement, createRankBadge, createPositionDeltaElement,
     getRankBadgeIcon, getRankBadgeText,
-    applyDevBadge, createChatTriggerElement, openReputationMenuForUser
+    applyDevBadge, createChatTriggerElement, openReputationMenuForUser, openSelfProfileMenu,
+    showAutoRejectToast, showFavoritePlayerToast
 };

@@ -8,6 +8,7 @@ function _deps() {
         ...require('./config.js'),
         ...require('./api.js'),
         ...require('./utils.js'),
+        ...require('./ui.js'),
         ...require('./constants.js'),
         ...require('./elo.js')
     });
@@ -55,7 +56,9 @@ function extractOpponentMinPing(FCADE, username) {
     }
 
     // Source 3: DOM pingWrapper title attribute fallback
-    const userElements = document.querySelectorAll('.userItem');
+    const { getActiveChannelWrapper } = _deps();
+    const scope = (typeof getActiveChannelWrapper === 'function' ? getActiveChannelWrapper() : null) || document;
+    const userElements = scope.querySelectorAll('.userItem');
     for (const item of userElements) {
         const nameEl = item.querySelector('.playerName');
         if (nameEl && normalizeUsername(nameEl.textContent) === userKey) {
@@ -224,21 +227,7 @@ function wrapCallbacks(callbacks, FCADE) {
                     fcadeObj.declineChallenge(channelname, userObj, challengeid);
                 }
 
-                // Chat notice on auto-reject: mandatory for FT filter, optional via toggle for other filters
-                const isFtReject = rejectReason === 'ft';
-                const shouldNotify = isFtReject || (ConfigManager.getSetting('countryFilter.autoRejectNotify') !== false);
-
-                if (shouldNotify) {
-                    const now = Date.now();
-                    const state = (typeof window !== 'undefined' && window.CerberusState) ? window.CerberusState : (typeof window !== 'undefined' ? (window.CerberusState = {}) : {});
-                    if (!state.lastAutoRejectNotifyTime || (now - state.lastAutoRejectNotifyTime >= 5000)) {
-                        state.lastAutoRejectNotifyTime = now;
-                        const notifyMsg = isFtReject && typeof formatAllowedFts === 'function'
-                            ? t('autoReject.notifyFtMsg', { fts: formatAllowedFts(ConfigManager.getSetting('ftFilter')) })
-                            : t('autoReject.notifyMsg');
-                        setTimeout(() => executeChatMacro([notifyMsg]), 500);
-                    }
-                }
+                handleAutoRejectNotification(userKey, rejectReason);
                 return;
             }
         } catch (e) {
@@ -247,6 +236,18 @@ function wrapCallbacks(callbacks, FCADE) {
 
         if (originalOnChallengeRequest) {
             originalOnChallengeRequest.apply(this, arguments);
+        }
+    };
+
+    const originalOnUserJoin = callbacks.onUserJoin;
+    callbacks.onUserJoin = function(user, channelId) {
+        try {
+            handleFavoriteUserJoin(user, channelId);
+        } catch (e) {
+            console.error('[Cerberus] Error in onUserJoin interceptor:', e);
+        }
+        if (originalOnUserJoin) {
+            originalOnUserJoin.apply(this, arguments);
         }
     };
 }
@@ -314,7 +315,129 @@ function setupChallengeInterceptor(FCADE) {
     }
 }
 
+let _notifyVariantCounter = 0;
+
+function handleAutoRejectNotification(userKey, rejectReason) {
+    const { ConfigManager, executeChatMacro, t, formatAllowedFts, showAutoRejectToast } = _deps();
+    const now = Date.now();
+    const state = (typeof window !== 'undefined' && window.CerberusState) ? window.CerberusState : (typeof window !== 'undefined' ? (window.CerberusState = {}) : {});
+    if (!state.lastAutoRejectPerUser) state.lastAutoRejectPerUser = {};
+    if (!state.lastToastPerUser) state.lastToastPerUser = {};
+
+    // 1. Notificação Visual Local (Toast): sempre ativa, deduplicada (3s) para evitar trigger duplo entre Rede e DOM
+    const lastToast = state.lastToastPerUser[userKey] || 0;
+    if (now - lastToast >= 3000) {
+        state.lastToastPerUser[userKey] = now;
+        if (typeof showAutoRejectToast === 'function') {
+            showAutoRejectToast(userKey, rejectReason);
+        }
+        const toastKeys = Object.keys(state.lastToastPerUser);
+        if (toastKeys.length > 50) {
+            for (const k of toastKeys) {
+                if (now - state.lastToastPerUser[k] > 60000) delete state.lastToastPerUser[k];
+            }
+        }
+    }
+
+    // 2. Chat público: obrigatório para FT, opcional via toggle para os demais filtros
+    const isFtReject = rejectReason === 'ft';
+    const shouldNotify = isFtReject || (ConfigManager.getSetting('countryFilter.autoRejectNotify') !== false);
+    if (!shouldNotify) return;
+
+    // Trava de 5 minutos por jogador (300.000 ms)
+    const lastUserNotice = state.lastAutoRejectPerUser[userKey] || 0;
+    if (now - lastUserNotice < 300000) {
+        return;
+    }
+
+    // Cooldown global de 30 segundos (30.000 ms)
+    if (state.lastAutoRejectNotifyTime && (now - state.lastAutoRejectNotifyTime < 30000)) {
+        return;
+    }
+
+    state.lastAutoRejectNotifyTime = now;
+    state.lastAutoRejectPerUser[userKey] = now;
+
+    // Limpeza periódica de memória da trava por jogador (> 10 minutos)
+    const userKeys = Object.keys(state.lastAutoRejectPerUser);
+    if (userKeys.length > 50) {
+        for (const k of userKeys) {
+            if (now - state.lastAutoRejectPerUser[k] > 600000) delete state.lastAutoRejectPerUser[k];
+        }
+    }
+
+    // Rotação anti-spam de 3 variantes
+    const variant = (_notifyVariantCounter++ % 3) + 1;
+    const notifyMsg = isFtReject && typeof formatAllowedFts === 'function'
+        ? t(`autoReject.notifyFtMsg${variant}`, { fts: formatAllowedFts(ConfigManager.getSetting('ftFilter')) })
+        : t(`autoReject.notifyMsg${variant}`);
+
+    setTimeout(() => executeChatMacro([notifyMsg]), 500);
+}
+
+function handleFavoriteUserJoin(user, channelId) {
+    try {
+        if (!user) return;
+        const { CerberusData, ConfigManager, normalizeUsername, isSystemUser, getLocalUsername, showFavoritePlayerToast, playPopSound, playCustomSound } = _deps();
+        const userKey = normalizeUsername(user.name || user.id || user.username);
+        if (!userKey || isSystemUser(userKey)) return;
+
+        // Não notificar se for o próprio usuário
+        const localUser = getLocalUsername ? getLocalUsername() : '';
+        if (localUser && userKey.toLowerCase() === localUser.toLowerCase()) return;
+
+        // Checar se o usuário é favorito (reputação positiva)
+        if (!CerberusData.isPositive(userKey)) return;
+
+        const now = Date.now();
+        const state = (typeof window !== 'undefined' && window.CerberusState) ? window.CerberusState : (typeof window !== 'undefined' ? (window.CerberusState = {}) : {});
+        if (!state.lastFavoriteJoinPerUser) state.lastFavoriteJoinPerUser = {};
+
+        // Cooldown de 2 minutos (120.000 ms) por jogador
+        const lastJoin = state.lastFavoriteJoinPerUser[userKey] || 0;
+        if (now - lastJoin < 120000) return;
+        state.lastFavoriteJoinPerUser[userKey] = now;
+
+        const favKeys = Object.keys(state.lastFavoriteJoinPerUser);
+        if (favKeys.length > 50) {
+            for (const k of favKeys) {
+                if (now - state.lastFavoriteJoinPerUser[k] > 240000) delete state.lastFavoriteJoinPerUser[k];
+            }
+        }
+
+        // Nome da sala amigável (se disponível)
+        let channelName = channelId || '';
+        try {
+            const fcadeObj = window.CerberusFCADE;
+            if (fcadeObj && fcadeObj.channels) {
+                const chan = fcadeObj.channels.find(c => c.id === channelId || c.name === channelId);
+                if (chan && chan.name) channelName = chan.name;
+            }
+        } catch (_) {}
+
+        // 1. Toast Visual (se ativado nas configurações, padrão: true)
+        const notifyToast = ConfigManager.getSetting('chatUserInfo.notifyFavoriteJoin') !== false;
+        if (notifyToast && typeof showFavoritePlayerToast === 'function') {
+            showFavoritePlayerToast(userKey, channelName);
+        }
+
+        // 2. Som (de acordo com a opção selecionada)
+        const soundPref = ConfigManager.getSetting('chatUserInfo.favoriteJoinSound') || 'pop';
+        if (soundPref === 'pop' && typeof playPopSound === 'function') {
+            playPopSound();
+        } else if (soundPref === 'custom20' && typeof playCustomSound === 'function') {
+            playCustomSound('custom20', 0.8);
+        } else if (soundPref === 'custom19' && typeof playCustomSound === 'function') {
+            playCustomSound('custom19', 0.8);
+        }
+    } catch (e) {
+        console.warn('[Cerberus] Error in handleFavoriteUserJoin:', e);
+    }
+}
+
 module.exports = {
     setupChallengeInterceptor,
-    evaluateChallengeFilters
+    evaluateChallengeFilters,
+    handleAutoRejectNotification,
+    handleFavoriteUserJoin
 };

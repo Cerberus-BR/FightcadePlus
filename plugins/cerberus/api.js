@@ -5,6 +5,7 @@ const path = require('path');
 const { atomicWriteJSON, safeLoadJSON } = require('./state.js');
 
 const rankingsPath = path.join(__dirname, '..', 'cerberus_rankings.json');
+const SYNC_ICON_HTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>';
 
 function getPlayerRankNumber(p, gameId) {
     if (!p) return null;
@@ -101,7 +102,7 @@ const RankCache = {
         const btn = cw ? cw.querySelector('.cerb-sync-btn') : document.querySelector('.cerb-sync-btn');
         if (btn) {
             btn.classList.remove('syncing');
-            btn.innerHTML = '🔄';
+            btn.innerHTML = SYNC_ICON_HTML;
             setSyncBtnState(btn, false);
         }
     },
@@ -125,6 +126,132 @@ const RankCache = {
     getPlayerRankLetter(gameId, username) {
         if (!gameId || !username || !this.data[gameId]) return null;
         return this.data[gameId].playerRanks?.[username.toLowerCase()] || null;
+    },
+
+    async syncUserRanking(gameId, targetUsername) {
+        const { getActiveGameId, getActiveChannelWrapper, getLocalUsername } = require('./utils.js');
+        const { fullChatScanScoped, updateSidebarScope } = require('./chat.js');
+        const { CerberusData } = require('./state.js');
+        const { parseRankLetter, clearEloMemoCache } = require('./elo.js');
+
+        if (!gameId) return { success: false, reason: 'missing_game_id' };
+        const userToFind = (targetUsername || getLocalUsername(window.CerberusFCADE) || '').toLowerCase().trim();
+        if (!userToFind) return { success: false, reason: 'missing_username' };
+
+        if (this.isSyncing) return { success: false, reason: 'sync_in_progress' };
+        this.isSyncing = true;
+        this._abortController = new AbortController();
+        const signal = this._abortController.signal;
+
+        const maxLimit = 999;
+        let offset = 0;
+        let validPlayersFound = 0;
+        let foundPlayer = null;
+        let pagesFetched = 0;
+        const maxPages = Math.ceil(maxLimit / 100);
+
+        try {
+            while (validPlayersFound < maxLimit && pagesFetched < maxPages) {
+                if (signal.aborted) break;
+
+                let res = await fetch('https://web.fightcade.com/api/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal,
+                    body: JSON.stringify({ req: "searchrankings", gameid: gameId, limit: 100, offset: offset, byElo: true, recent: true })
+                });
+
+                if (res.status === 429) {
+                    await new Promise(resolve => {
+                        const timeout = setTimeout(resolve, 10000);
+                        signal.addEventListener('abort', () => { clearTimeout(timeout); resolve(); }, { once: true });
+                    });
+                    if (signal.aborted) break;
+                    res = await fetch('https://web.fightcade.com/api/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        signal,
+                        body: JSON.stringify({ req: "searchrankings", gameid: gameId, limit: 100, offset: offset, byElo: true, recent: true })
+                    });
+                }
+
+                if (!res.ok) break;
+                const players = (await res.json())?.results?.results || [];
+                if (players.length === 0) break;
+
+                pagesFetched++;
+
+                for (const p of players) {
+                    if (validPlayersFound >= maxLimit || !p.name) break;
+                    validPlayersFound++;
+
+                    const pName = p.name.toLowerCase().trim();
+                    const playerRankNum = getPlayerRankNumber(p, gameId);
+                    const rLetter = parseRankLetter(playerRankNum || p.game?.rank || p.rank);
+                    const rawElo = p.game?.elo || p.elo || p.points || p.rating || (p.gameinfo && p.gameinfo[gameId] && p.gameinfo[gameId].elo) || null;
+
+                    if (pName === userToFind) {
+                        foundPlayer = {
+                            position: validPlayersFound,
+                            rankLetter: rLetter || null,
+                            elo: (typeof rawElo === 'number' && rawElo > 0) ? Math.round(rawElo) : null
+                        };
+                        break;
+                    }
+                }
+
+                if (foundPlayer) break;
+                offset += 100;
+                await new Promise(resolve => setTimeout(resolve, 250));
+            }
+
+            if (foundPlayer) {
+                if (!this.data[gameId]) {
+                    this.data[gameId] = {
+                        schemaVersion: 2,
+                        lastUpdate: Date.now(),
+                        players: {},
+                        playerRanks: {},
+                        playerElos: {},
+                        rankCoverage: {},
+                        rankBounds: {},
+                        totalPlayers: 0,
+                        filter: { limit: 900 }
+                    };
+                }
+                const gameCache = this.data[gameId];
+                if (!gameCache.players) gameCache.players = {};
+                if (!gameCache.playerRanks) gameCache.playerRanks = {};
+                if (!gameCache.playerElos) gameCache.playerElos = {};
+
+                gameCache.players[userToFind] = foundPlayer.position;
+                if (foundPlayer.rankLetter) gameCache.playerRanks[userToFind] = foundPlayer.rankLetter;
+                if (foundPlayer.elo) gameCache.playerElos[userToFind] = foundPlayer.elo;
+
+                CerberusData.recordUserPosition(gameId, userToFind, foundPlayer.position, foundPlayer.rankLetter, foundPlayer.elo);
+
+                this.save();
+                if (typeof clearEloMemoCache === 'function') clearEloMemoCache();
+
+                const { ConfigManager } = require('./config.js');
+                if (window.CerberusFCADE && ConfigManager?.getRuntimeConfig?.()) {
+                    const cw = getActiveChannelWrapper();
+                    if (cw) {
+                        fullChatScanScoped(cw, window.CerberusFCADE, ConfigManager.getRuntimeConfig());
+                        updateSidebarScope(cw.querySelector('.usersListWrapper'), window.CerberusFCADE, ConfigManager.getRuntimeConfig());
+                    }
+                }
+
+                return { success: true, ...foundPlayer };
+            } else {
+                return { success: false, reason: 'not_found_in_top_999', checkedPlayers: validPlayersFound };
+            }
+        } catch (err) {
+            return { success: false, reason: 'error', error: err?.message };
+        } finally {
+            this.isSyncing = false;
+            this._abortController = null;
+        }
     },
 
     async syncRankings(gameId) {
@@ -163,7 +290,10 @@ const RankCache = {
             btn.title = t ? t('sync.clickCancel') : 'Clique para cancelar';
         }
 
-        const RANK_ORDER = { 'S': 6, 'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 };
+        let syncCompleted = false;
+
+        try {
+            const RANK_ORDER = { 'S': 6, 'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 };
         let offset = 0; let validPlayersFound = 0; let pagesFetched = 0; const maxPagesSafeguard = Math.max(50, Math.ceil(targetLimit / 100) + 10); const newCache = {};
         const playerRanks = {};
         const playerElos = {};
@@ -174,7 +304,7 @@ const RankCache = {
         let stopReason = 'natural_end';
         let consecutiveEmptyPages = 0;
         let rankCutoffReached = false;
-        let syncCompleted = false;
+        syncCompleted = false;
         const { parseRankLetter, clearEloMemoCache } = require('./elo.js');
 
         while (validPlayersFound < targetLimit && !rankCutoffReached) {
@@ -411,12 +541,25 @@ const RankCache = {
             this._evictOldEntries();
             this.save();
             if (typeof clearEloMemoCache === 'function') clearEloMemoCache();
-        }
 
+            // [CERBERUS] Record local user position from fresh sync data
+            try {
+                const { getLocalUsername } = require('./utils.js');
+                const localUserNick = getLocalUsername(window?.CerberusFCADE);
+                if (localUserNick && newCache[localUserNick.toLowerCase()]) {
+                    const freshPos = newCache[localUserNick.toLowerCase()];
+                    const freshRank = playerRanks[localUserNick.toLowerCase()] || null;
+                    const freshElo = playerElos[localUserNick.toLowerCase()] || null;
+                    const { CerberusData } = require('./state.js');
+                    CerberusData.recordUserPosition(initialGameId, localUserNick, freshPos, freshRank, freshElo);
+                }
+            } catch (ePos) { }
+        }
+    } finally {
         this.isSyncing = false; this._abortController = null;
         if (btn) {
             btn.classList.remove('syncing');
-            btn.innerHTML = '🔄';
+            btn.innerHTML = SYNC_ICON_HTML;
             setSyncBtnState(btn, syncCompleted && (Date.now() - (this.data[initialGameId]?.lastUpdate || 0) < cooldownMs));
         }
         if (window.CerberusFCADE && ConfigManager.getRuntimeConfig()) {
@@ -427,6 +570,7 @@ const RankCache = {
             }
         }
     }
+}
 };
 
 module.exports = { RankCache, getPlayerRankNumber };

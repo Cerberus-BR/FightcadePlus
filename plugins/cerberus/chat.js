@@ -12,7 +12,8 @@ function _deps() {
         ...require('./constants.js'),
         ...require('./utils.js'),
         ...require('./ui.js'),
-        ...require('./elo.js')
+        ...require('./elo.js'),
+        ...require('./challenge.js')
     });
 }
 
@@ -120,7 +121,7 @@ function attachSidebarTooltip(sidebar, FCADE) {
         }
 
         if (!oppLetter || isExplicitlyUnranked) {
-            const unrankedText = t ? (t('elo.unrankedHover') || '❓ Rank Indefinido (Sem dados de rank)') : '❓ Rank Indefinido (Sem dados de rank)';
+            const unrankedText = t ? (t('elo.unrankedHover') || 'Rank Indefinido (Sem dados de rank)') : 'Rank Indefinido (Sem dados de rank)';
             if (target.title !== unrankedText) target.title = unrankedText;
             const wrapper = target.closest('.rankWrapper');
             if (wrapper && wrapper.title !== unrankedText) wrapper.title = unrankedText;
@@ -139,7 +140,7 @@ function attachSidebarTooltip(sidebar, FCADE) {
         const isSelf = Boolean(userKey && localUser?.username && userKey.toLowerCase() === localUser.username.toLowerCase());
 
         if (isSelf && (localUser.isUnranked || !localUser.rankLetter)) {
-            const unrankedText = t ? (t('elo.unrankedHover') || '❓ Rank Indefinido (Sem dados de rank)') : '❓ Rank Indefinido (Sem dados de rank)';
+            const unrankedText = t ? (t('elo.unrankedHover') || 'Rank Indefinido (Sem dados de rank)') : 'Rank Indefinido (Sem dados de rank)';
             if (target.title !== unrankedText) target.title = unrankedText;
             const wrapper = target.closest('.rankWrapper');
             if (wrapper && wrapper.title !== unrankedText) wrapper.title = unrankedText;
@@ -155,18 +156,32 @@ function attachSidebarTooltip(sidebar, FCADE) {
             let nextRankText = '';
             if (nextReq) {
                 if (nextReq.isMaxRank) {
-                    nextRankText = `\n${t ? t('elo.maxRankReached') : '👑 Max Rank reached (Rank S)'}`;
+                    nextRankText = `\n${t ? t('elo.maxRankReached') : 'Max Rank reached (Rank S)'}`;
                 } else if (nextReq.isSynced) {
-                    nextRankText = `\n${t ? t('elo.nextRankTarget', { pts: nextReq.ptsNeeded, nextRank: nextReq.nextRank }) : `📈 ~${nextReq.ptsNeeded} pts to Rank ${nextReq.nextRank}`}`;
+                    nextRankText = `\n${t ? t('elo.nextRankTarget', { pts: nextReq.ptsNeeded, nextRank: nextReq.nextRank }) : `~${nextReq.ptsNeeded} pts to Rank ${nextReq.nextRank}`}`;
                 }
             }
-            tooltipText = `🏅 Rank ${oppLetter} (${rankDetails})\n${selfHeader}${nextRankText}`;
+            let historyText = '';
+            const { CerberusData } = _deps();
+            const posHistory = CerberusData?.getUserPositionHistory ? CerberusData.getUserPositionHistory(activeGameId, userKey) : [];
+            if (posHistory && posHistory.length > 1) {
+                const maxTrailItems = 5;
+                const recentHistory = posHistory.slice(-maxTrailItems);
+                const hasMore = posHistory.length > maxTrailItems;
+                const trail = (hasMore ? '... ➔ ' : '') + recentHistory.map(h => `#${h.pos}`).join(' ➔ ');
+                const delta = CerberusData.getUserPositionDelta(activeGameId, userKey);
+                const deltaStr = delta?.text ? `(${delta.text})` : '';
+                historyText = `\n${t ? t('elo.posHistory', { trail, delta: deltaStr }) : `Histórico: ${trail} ${deltaStr}`}`;
+            } else if (posHistory && posHistory.length === 1) {
+                historyText = `\n${t ? t('elo.posRecorded', { pos: posHistory[0].pos }) : `Posição registrada: #${posHistory[0].pos}`}`;
+            }
+            tooltipText = `Rank ${oppLetter} (${rankDetails})\n${selfHeader}${nextRankText}${historyText}`;
         } else if (localUser && !localUser.isUnranked && localUser.elo) {
             const hoverFt = parseInt(ConfigManager?.getSetting?.('rankings.defaultFt'), 10) || 5;
             const rec = getRecommendation(localUser.elo, oppElo, hoverFt, t);
-            tooltipText = `🏅 Rank ${oppLetter} (${rankDetails})\n${rec.diffText}\n${rec.text}`;
+            tooltipText = `Rank ${oppLetter} (${rankDetails})\n${rec.diffText}\n${rec.text}`;
         } else {
-            tooltipText = `🏅 Rank ${oppLetter} (${rankDetails})`;
+            tooltipText = `Rank ${oppLetter} (${rankDetails})`;
         }
 
         if (target.title !== tooltipText) target.title = tooltipText;
@@ -195,11 +210,13 @@ function attachMultiObservers(FCADE, configFull) {
                 if (mut.type === 'childList') {
                     mut.addedNodes.forEach(node => {
                         if (node.nodeType === 1) {
+                            if (node.classList?.contains('cerb-rank-badge') || node.classList?.contains('cerb-endgame-elo-box') || node.classList?.contains('cerb-challenge-elo-hint') || node.classList?.contains('cerb-motd-dismiss-btn') || node.classList?.contains('cerb-motd-collapsed-bar') || node.classList?.contains('cerberus-injected-status')) return;
                             if (node.classList?.contains('messageWrapper')) { pendingWrappers.add(node); hasChanges = true; }
                             else { const w = node.closest('.messageWrapper'); if (w) { pendingWrappers.add(w); hasChanges = true; } }
                         }
                     });
                 } else if (mut.type === 'attributes') {
+                    if (mut.target.classList?.contains('cerb-rank-badge') || mut.target.classList?.contains('cerb-endgame-elo-box') || mut.target.classList?.contains('cerb-challenge-elo-hint') || mut.target.classList?.contains('cerb-motd-dismiss-btn') || mut.target.classList?.contains('cerb-motd-collapsed-bar') || mut.target.classList?.contains('cerberus-injected-status')) return;
                     const w = mut.target.closest('.messageWrapper'); if (w) { pendingWrappers.add(w); hasChanges = true; }
                 }
             });
@@ -571,21 +588,9 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                                 declineBtn.click();
                             }
 
-                            // [CERBERUS] Auto-Reject Notify: mandatory for FT filter, optional via toggle for other filters
-                            const isFtReject = rejectReason === 'ft';
-                            const shouldNotify = isFtReject || (ConfigManager.getSetting('countryFilter.autoRejectNotify') !== false);
-
-                            if (shouldNotify) {
-                                const now = Date.now();
-                                const state = (typeof window !== 'undefined' && window.CerberusState) ? window.CerberusState : (typeof window !== 'undefined' ? (window.CerberusState = {}) : {});
-                                if (!state.lastAutoRejectNotifyTime || (now - state.lastAutoRejectNotifyTime >= 5000)) {
-                                    state.lastAutoRejectNotifyTime = now;
-                                    const { formatAllowedFts } = _deps();
-                                    const notifyMsg = isFtReject && typeof formatAllowedFts === 'function'
-                                        ? t('autoReject.notifyFtMsg', { fts: formatAllowedFts(ConfigManager.getSetting('ftFilter')) })
-                                        : t('autoReject.notifyMsg');
-                                    setTimeout(() => executeChatMacro([notifyMsg]), 500);
-                                }
+                            const { handleAutoRejectNotification } = _deps();
+                            if (typeof handleAutoRejectNotification === 'function') {
+                                handleAutoRejectNotification(chalUserKey, rejectReason);
                             }
                         }
 
@@ -775,8 +780,9 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                                 const isP1Winner = s1 > s2;
                                 const isP2Winner = s2 > s1;
                                 const isDraw = s1 === s2;
-                                const icon1 = isP1Winner ? '🏆' : (isDraw ? '⚖️' : (res.delta1 > 0 ? '📈' : '📉'));
-                                const icon2 = isP2Winner ? '🏆' : (isDraw ? '⚖️' : (res.delta2 > 0 ? '📈' : '📉'));
+                                const crownSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px; vertical-align:-1px;"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>';
+                                const icon1 = isP1Winner ? crownSvg : (isDraw ? '<span style="color:#9ca3af; margin-right:4px;">=</span>' : (res.delta1 > 0 ? '<span style="color:#4ade80; margin-right:4px;">▲</span>' : '<span style="color:#f87171; margin-right:4px;">▼</span>'));
+                                const icon2 = isP2Winner ? crownSvg : (isDraw ? '<span style="color:#9ca3af; margin-right:4px;">=</span>' : (res.delta2 > 0 ? '<span style="color:#4ade80; margin-right:4px;">▲</span>' : '<span style="color:#f87171; margin-right:4px;">▼</span>'));
                                 const isAborted = res.isEarlyQuit || (wrapper.querySelector('p')?.textContent || '').includes('Not finishing') || (wrapper.textContent || '').includes('Not finishing');
                                 const cw = wrapper.closest('.channelWrapper');
                                 const isRankedMatch = h3Text.toLowerCase().includes('ranked') || Boolean(cw?.querySelector('.rankedWrapper, .ranked'));
@@ -809,7 +815,7 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
                                     ${motivationHtml}
                                     ${showPenaltyWarning ? `
                                         <div class="cerb-endgame-warning-row">
-                                            <span class="cerb-warning-icon">⚠️</span>
+                                            <span class="cerb-warning-icon" style="display:inline-flex; align-items:center; margin-right:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
                                             <div class="cerb-warning-text">${t('elo.rageQuitWarning', { score: `${s1}x${s2}` })}</div>
                                         </div>` : ''}
                                 `;
@@ -985,7 +991,7 @@ function checkAndProcessWrapper(wrapper, FCADE, cfg, filterCfg, queueCfg, global
 }
 
 const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
-    const { CerberusData, RankCache, normalizeUsername, isSystemUser, extractMinPing, getActiveGameId, createRankBadge, getRankBadgeText, applyReputationStyleList, applyReputationStyleMatch, addReputationControlsToElement, applyDevBadge, ConfigManager, COUNTRY_NAME_TO_CODE, RANK_IMG_MAP, estimatePlayerElo, getPlayerEloInfo, getLocalUserInfo, getRecommendation, t } = _deps();
+    const { CerberusData, RankCache, normalizeUsername, isSystemUser, extractMinPing, getActiveGameId, createRankBadge, createPositionDeltaElement, getRankBadgeText, applyReputationStyleList, applyReputationStyleMatch, addReputationControlsToElement, applyDevBadge, ConfigManager, COUNTRY_NAME_TO_CODE, RANK_IMG_MAP, estimatePlayerElo, getPlayerEloInfo, getLocalUserInfo, getRecommendation, t } = _deps();
 
     if (!sidebarElement) return;
     attachSidebarTooltip(sidebarElement, FCADE);
@@ -1002,6 +1008,8 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
     const maxPing = pingCfg?.maxPingMs || 150;
 
     const activeGameId = getActiveGameId(FCADE, cw);
+    const localUser = getLocalUserInfo ? getLocalUserInfo(FCADE, activeGameId, RankCache) : null;
+    const localUsername = (localUser?.username || '').toLowerCase();
     const searchTerm = window.CerberusState.sidebarSearchTerm || '';
 
     const masterVisuals = cfg.masterEnabled !== false;
@@ -1025,7 +1033,7 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
 
     if (!hasAnySidebarFeature) {
         if (sidebarElement.dataset.cerbSidebarCleaned !== "true") {
-            sidebarElement.querySelectorAll('.cerberus-ping-text, .cerb-rank-badge, .cerb-flag-trigger').forEach(el => el.remove());
+            sidebarElement.querySelectorAll('.cerberus-ping-text, .cerb-rank-badge, .cerb-pos-delta, .cerb-flag-trigger').forEach(el => el.remove());
             sidebarElement.querySelectorAll('.userItem').forEach(item => {
                 if (item.style.display === 'none') item.style.display = '';
                 item.removeAttribute('data-cerberus-processed');
@@ -1053,7 +1061,7 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                 item.removeAttribute('data-cerb-search-hidden'); 
                 item.removeAttribute('data-country-blocked');
                 item.style.display = ''; 
-                item.querySelectorAll('.cerberus-ping-text, .cerb-rank-badge').forEach(el => el.remove()); 
+                item.querySelectorAll('.cerberus-ping-text, .cerb-rank-badge, .cerb-pos-delta').forEach(el => el.remove()); 
                 const rankEl = item.querySelector('.rankWrapper, .rank');
                 if (rankEl && rankEl.hasAttribute('title')) rankEl.removeAttribute('title');
                 item.dataset.cerbIdentity = itemIdentity;
@@ -1063,6 +1071,8 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
 
             const rankImg = item.querySelector('.rankWrapper img, .rank img');
             const isUnrankedLive = rankImg && (rankImg.src || rankImg.getAttribute('src') || '').includes('rank0.png');
+
+            const isSelf = Boolean(localUsername && userKey.toLowerCase() === localUsername);
 
             if (rankingsEnabled && cfg.showNumericRanks && activeGameId && !isUnrankedLive) {
                 const numericRank = RankCache.getRank(activeGameId, userKey); let badge = item.querySelector('.cerb-rank-badge');
@@ -1075,9 +1085,42 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                     } else if (badge.textContent !== desiredText) {
                         badge.textContent = desiredText;
                     }
-                } else if (badge) badge.remove();
+
+                    // [CERBERUS] Position history tracking and delta indicator for logged-in user
+                    if (isSelf) {
+                        CerberusData.recordUserPosition(activeGameId, userKey, numericRank, localUser?.rankLetter, localUser?.elo);
+                        const delta = CerberusData.getUserPositionDelta(activeGameId, userKey);
+                        let deltaEl = item.querySelector('.cerb-pos-delta');
+                        if (delta && delta.status !== 'initial') {
+                            if (!deltaEl) {
+                                deltaEl = createPositionDeltaElement(delta, t);
+                                if (deltaEl && badge && badge.parentNode) {
+                                    badge.parentNode.insertBefore(deltaEl, badge.nextSibling);
+                                }
+                            } else if (deltaEl.textContent !== delta.text) {
+                                deltaEl.className = `cerb-pos-delta cerb-pos-${delta.status}`;
+                                deltaEl.textContent = delta.text;
+                                deltaEl.title = delta.status === 'up'
+                                    ? (t ? t('elo.posDeltaUp', { diff: delta.diff, prev: delta.previousPos, curr: delta.currentPos }) : `Subiu ${delta.diff} posições`)
+                                    : (delta.status === 'down'
+                                        ? (t ? t('elo.posDeltaDown', { diff: Math.abs(delta.diff), prev: delta.previousPos, curr: delta.currentPos }) : `Caiu ${Math.abs(delta.diff)} posições`)
+                                        : (t ? t('elo.posDeltaSame', { curr: delta.currentPos }) : 'Mesma posição'));
+                            }
+                        } else if (deltaEl) {
+                            deltaEl.remove();
+                        }
+                    } else {
+                        const deltaEl = item.querySelector('.cerb-pos-delta');
+                        if (deltaEl) deltaEl.remove();
+                    }
+                } else {
+                    if (badge) badge.remove();
+                    const deltaEl = item.querySelector('.cerb-pos-delta');
+                    if (deltaEl) deltaEl.remove();
+                }
             } else { 
                 const badge = item.querySelector('.cerb-rank-badge'); if (badge) badge.remove(); 
+                const deltaEl = item.querySelector('.cerb-pos-delta'); if (deltaEl) deltaEl.remove();
                 const rankEl = item.querySelector('.rankWrapper, .rank');
                 if (rankEl && rankEl.hasAttribute('title')) rankEl.removeAttribute('title');
             }
@@ -1107,15 +1150,15 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                         netType = 'vpn';
                     }
 
-                    let color = '#aaa';
+                    let color = '#94a3b8';
                     if (netType === 'vpn') {
-                        color = '#ff4444'; // [CERBERUS] VPN is always red
+                        color = '#f87171'; // [CERBERUS] VPN is always red
                     } else if (netType === 'wifi') {
-                        color = minPingVal > 90 ? '#ff4444' : '#fbbf24'; // [CERBERUS] Wi-Fi: green/neutral become yellow
+                        color = minPingVal > 90 ? '#f87171' : '#fbbf24'; // [CERBERUS] Wi-Fi: green/neutral become yellow
                     } else {
-                        if (minPingVal < 60) color = '#00ff00';
-                        else if (minPingVal > 90) color = '#ff4444';
-                        else color = '#aaa';
+                        if (minPingVal < 60) color = '#4ade80';
+                        else if (minPingVal > 90) color = '#f87171';
+                        else color = '#94a3b8';
                     }
 
                     let txt = pingWrapper.querySelector('.cerberus-ping-text');
@@ -1123,7 +1166,7 @@ const updateSidebarScope = (sidebarElement, FCADE, configFull) => {
                     if (!txt) { 
                         txt = document.createElement('span'); 
                         txt.className = 'cerberus-ping-text'; 
-                        Object.assign(txt.style, { fontSize: '11px', fontWeight: 'bold', marginLeft: 'auto', verticalAlign: 'middle', display: 'inline-flex', alignItems: 'center' }); 
+                        Object.assign(txt.style, { fontSize: '11px', fontWeight: '500', fontVariantNumeric: 'tabular-nums', marginLeft: 'auto', verticalAlign: 'middle', display: 'inline-flex', alignItems: 'center' }); 
                         pingWrapper.appendChild(txt); 
                     }
 
@@ -1224,23 +1267,25 @@ function reprocessUserMessages(userKey, hideNegative) {
     const { normalizeUsername, getActiveChannelWrapper, applyReputationStyleChat, applyReputationStyleList, applyReputationStyleMatch, ConfigManager } = _deps();
 
     const menu = document.getElementById('cerbGlobalMenu'); if (menu) menu.classList.remove('visible');
-    document.querySelectorAll('.messageWrapper').forEach(wrapper => {
+    const cw = getActiveChannelWrapper();
+    const scope = cw || document;
+    scope.querySelectorAll('.messageWrapper').forEach(wrapper => {
         if (wrapper.dataset.cerberusUser === userKey) {
             const msg = wrapper.querySelector('.message.chat'); if (msg) { const author = msg.querySelector('span.author'); if (author) applyReputationStyleChat(author, msg, userKey, hideNegative); }
             wrapper.style.display = ''; wrapper.removeAttribute('data-cerberus-hidden'); wrapper.removeAttribute('data-cerberus-processed');
             wrapper.removeAttribute('data-cerb-identity'); 
         }
     });
-    document.querySelectorAll('.userItem').forEach(item => {
+    scope.querySelectorAll('.userItem').forEach(item => {
         const name = item.querySelector('.playerName');
         if (name && normalizeUsername(name.textContent) === userKey) { applyReputationStyleList(name, item, userKey); item.style.display = ''; item.removeAttribute('data-country-blocked'); item.removeAttribute('data-cerberus-processed'); item.removeAttribute('data-cerb-identity'); }
     });
-    document.querySelectorAll('.matchesList .matchItem').forEach(match => {
+    scope.querySelectorAll('.matchesList .matchItem').forEach(match => {
         let hasUser = false;
         match.querySelectorAll('.playerName').forEach(name => { if (normalizeUsername(name.textContent) === userKey) { applyReputationStyleMatch(name, userKey); hasUser = true; } });
         if (hasUser) { match.style.display = ''; match.removeAttribute('data-country-blocked'); match.removeAttribute('data-cerberus-processed'); match.removeAttribute('data-cerb-identity'); }
     });
-    if (ConfigManager.getRuntimeConfig() && window.CerberusFCADE) { const cw = getActiveChannelWrapper(); if (cw) { fullChatScanScoped(cw, window.CerberusFCADE, ConfigManager.getRuntimeConfig()); updateSidebarScope(cw.querySelector('.usersListWrapper'), window.CerberusFCADE, ConfigManager.getRuntimeConfig()); } }
+    if (ConfigManager.getRuntimeConfig() && window.CerberusFCADE) { if (cw) { fullChatScanScoped(cw, window.CerberusFCADE, ConfigManager.getRuntimeConfig()); updateSidebarScope(cw.querySelector('.usersListWrapper'), window.CerberusFCADE, ConfigManager.getRuntimeConfig()); } }
 }
 
 function setupChatMessageInterceptor(FCADE) {
@@ -1278,6 +1323,17 @@ function setupChatMessageInterceptor(FCADE) {
                 originalOnChatMessage.apply(this, arguments);
             }
         };
+
+        if (typeof target.onUserAwayStateChanges === 'function' && !target.onUserAwayStateChanges._cerbPatched) {
+            const origAway = target.onUserAwayStateChanges;
+            target.onUserAwayStateChanges = function(username, isAway, channelname) {
+                if (FCADE.globalUsers && !FCADE.globalUsers[username] && (!username || !FCADE.globalUsers[username.toLowerCase()])) {
+                    return;
+                }
+                return origAway.apply(this, arguments);
+            };
+            target.onUserAwayStateChanges._cerbPatched = true;
+        }
     };
 
     if (FCADE.connectionCallbacks) hookCallbacks(FCADE.connectionCallbacks);

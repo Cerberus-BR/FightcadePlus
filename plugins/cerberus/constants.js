@@ -38,6 +38,7 @@ const defaultConfig = {
         showNumericRanks: true, enablePingText: true, enablePingBars: true,
         replacePingBarWithText: true, enableReputation: true, hideNegativeMessages: false,
         autoRejectNegative: true, unlockColorThemes: true, blurMode: 'none', challengeSound: 'native',
+        notifyFavoriteJoin: true, favoriteJoinSound: 'pop',
         chatMuted: false
     },
     liveQueue: {
@@ -51,7 +52,7 @@ const defaultConfig = {
 };
 
 module.exports = {
-    CURRENT_VERSION: "2.0.1",
+    CURRENT_VERSION: "2.1.0",
     AVAILABLE_COUNTRIES,
     COUNTRY_NAME_TO_CODE,
     defaultConfig

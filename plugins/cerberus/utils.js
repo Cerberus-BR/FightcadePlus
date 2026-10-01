@@ -86,6 +86,37 @@ function playPopSound() {
     } catch (e) { }
 }
 
+function playCustomSound(soundName, volume = 0.8) {
+    try {
+        if (!soundName || soundName === 'silent') return;
+        if (typeof window === 'undefined') return;
+        if (!window.cerberusAudioCache) window.cerberusAudioCache = new Map();
+
+        const playBase64 = (dataUri) => {
+            const audio = new window.Audio(dataUri);
+            audio.volume = volume;
+            audio.play().catch(() => {});
+        };
+
+        if (window.cerberusAudioCache.has(soundName)) {
+            playBase64(window.cerberusAudioCache.get(soundName));
+        } else {
+            const fs = require('fs');
+            const path = require('path');
+            const audioPath = path.join(__dirname, `${soundName}.wav`);
+            fs.readFile(audioPath, (err, data) => {
+                if (!err && data) {
+                    const base64Str = `data:audio/wav;base64,${data.toString('base64')}`;
+                    window.cerberusAudioCache.set(soundName, base64Str);
+                    playBase64(base64Str);
+                }
+            });
+        }
+    } catch (e) {
+        console.warn('[Cerberus] Error playing custom sound:', e);
+    }
+}
+
 function executeChatCommand(command) {
     const cw = getActiveChannelWrapper(); 
     const inputEl = cw ? cw.querySelector('.chatInput input.input') : null;
@@ -474,7 +505,7 @@ function formatAllowedFts(ftCfg) {
 
 module.exports = {
     t, normalizeUsername, isSystemUser, getLocalUsername, extractMinPing, getMinPing,
-    playPopSound, executeChatCommand, executeChatMacro, getActiveChannelWrapper,
+    playPopSound, playCustomSound, executeChatCommand, executeChatMacro, getActiveChannelWrapper,
     isRankedChannel, getActiveGameId, isNewerVersion, checkForUpdates,
     resolveNoticeLocale, connectToChannelWhenAvailable, setupAudioSilencer,
     silenceRecentAudios, blockAnalyticsAndTagManager, formatAllowedFts

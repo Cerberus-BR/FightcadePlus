@@ -72,14 +72,23 @@ const ConfigManager = {
         }
 
         if ((pathStr.startsWith('chatUserInfo.') && pathStr !== 'chatUserInfo.replacePingBarWithText') || pathStr === 'rankings.masterEnabled' || pathStr === 'rankings.enableElo') {
-            document.querySelectorAll('.messageWrapper').forEach(wrapper => {
+            const cw = getActiveChannelWrapper();
+            const scope = cw || document;
+            scope.querySelectorAll('.messageWrapper').forEach(wrapper => {
                 wrapper.querySelectorAll('.cerberus-injected-status, .cerberus-injected-flag, .cerberus-injected-rank, .cerberus-injected-pingbar, .cerberus-injected-pingtext, .cerb-rank-badge, .cerb-challenge-elo-hint, .cerb-endgame-elo-box').forEach(el => el.remove());
                 wrapper.removeAttribute('data-cerberus-processed'); wrapper.removeAttribute('data-cerb-identity');
             });
+            if (window.CerberusFCADE && cw) {
+                fullChatScanScoped(cw, window.CerberusFCADE, runtimeConfig);
+                const usersListWrapper = cw.querySelector('.usersListWrapper');
+                if (usersListWrapper) updateSidebarScope(usersListWrapper, window.CerberusFCADE, runtimeConfig);
+            }
+        }
+        
+        if (pathStr === 'chatUserInfo.replacePingBarWithText') {
             if (window.CerberusFCADE) {
                 const cw = getActiveChannelWrapper();
                 if (cw) {
-                    fullChatScanScoped(cw, window.CerberusFCADE, runtimeConfig);
                     const usersListWrapper = cw.querySelector('.usersListWrapper');
                     if (usersListWrapper) updateSidebarScope(usersListWrapper, window.CerberusFCADE, runtimeConfig);
                 }

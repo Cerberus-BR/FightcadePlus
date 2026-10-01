@@ -38,30 +38,30 @@
     
     <style>
         :root {
-            --fc-bg-dark: #0f070e;
-            --fc-bg-base: #150a14;
-            --fc-bg-panel: #20111f;
-            --fc-bg-panel-alt: rgba(38, 20, 37, 0.6);
-            --fc-border: rgba(255, 0, 122, 0.12);
-            --fc-border-active: rgba(51, 241, 229, 0.3);
+            --fc-bg-dark: #0d060c;
+            --fc-bg-base: #140913;
+            --fc-bg-panel: #1e0f1d;
+            --fc-bg-panel-alt: rgba(36, 18, 35, 0.7);
+            --fc-border: rgba(255, 255, 255, 0.08);
+            --fc-border-active: rgba(51, 241, 229, 0.35);
             --fc-text: #f8f6f8;
-            --fc-text-mute: #b8acb7;
+            --fc-text-mute: #b4a7b3;
             --fc-teal: #33f1e5;
-            --fc-teal-glow: rgba(51, 241, 229, 0.4);
+            --fc-teal-glow: rgba(51, 241, 229, 0.15);
             --fc-pink: #ff007a;
-            --fc-pink-glow: rgba(255, 0, 122, 0.4);
+            --fc-pink-glow: rgba(255, 0, 122, 0.15);
             --fc-purple: #9d2cb3;
             --fc-yellow: #f5b50e;
-            --fc-yellow-glow: rgba(245, 181, 14, 0.3);
+            --fc-yellow-glow: rgba(245, 181, 14, 0.15);
             --fc-green: #59b240;
             --font-display: 'Space Grotesk', sans-serif;
             --font-body: 'Outfit', sans-serif;
             
             --paypal: #00457c;
             --paypal-hover: #003060;
-            --livepix: #00ff87;
-            --livepix-hover: #00cc6a;
-            --livepix-text: #000000;
+            --livepix: #059669;
+            --livepix-hover: #047857;
+            --livepix-text: #ffffff;
         }
 
         * {
@@ -78,8 +78,8 @@
             font-family: var(--font-body);
             background-color: var(--fc-bg-dark);
             background-image: 
-                radial-gradient(circle at 50% 0%, rgba(157, 44, 179, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 100% 70%, rgba(51, 241, 229, 0.08) 0%, transparent 40%);
+                radial-gradient(circle at 50% 0%, rgba(157, 44, 179, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 100% 70%, rgba(51, 241, 229, 0.06) 0%, transparent 40%);
             color: var(--fc-text);
             min-height: 100vh;
             line-height: 1.6;
@@ -96,25 +96,22 @@
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.004) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.004) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.003) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.003) 1px, transparent 1px);
             background-size: 24px 24px, 24px 24px;
             z-index: 0;
             pointer-events: none;
         }
 
-        /* Scanline simulation effect */
+        /* Scanlines overlay disabled to ensure high contrast and crisp typography */
         .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
-            background-size: 100% 4px;
-            z-index: 999;
-            pointer-events: none;
-            opacity: 0.3;
+            display: none !important;
+        }
+
+        /* Accessibility: visible keyboard focus states */
+        :focus-visible {
+            outline: 2px solid var(--fc-teal);
+            outline-offset: 3px;
         }
 
         .container {
@@ -165,12 +162,10 @@
 
         .logo-title span {
             color: var(--fc-pink);
-            text-shadow: 0 0 10px var(--fc-pink-glow);
         }
 
         .logo-title span.plus {
             color: var(--fc-teal);
-            text-shadow: 0 0 10px var(--fc-teal-glow);
         }
 
         nav {
@@ -189,7 +184,6 @@
 
         nav a:hover {
             color: var(--fc-teal);
-            text-shadow: 0 0 8px var(--fc-teal-glow);
         }
 
         .btn-header {
@@ -200,13 +194,13 @@
             font-weight: 600;
             font-family: var(--font-display);
             transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 12px rgba(255, 0, 122, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 2px 8px rgba(255, 0, 122, 0.2);
         }
 
         .btn-header:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(255, 0, 122, 0.5);
+            box-shadow: 0 4px 14px rgba(255, 0, 122, 0.35);
             color: white;
         }
 
@@ -248,6 +242,11 @@
             box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.1);
         }
 
+        .lang-btn:focus-visible {
+            outline: 2px solid var(--fc-teal);
+            outline-offset: 1px;
+        }
+
         /* Hero Section */
         .hero {
             padding: 80px 0 100px 0;
@@ -275,8 +274,8 @@
             font-family: var(--font-display);
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(255, 0, 122, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.25s ease;
         }
 
         .hero h1 {
@@ -309,10 +308,17 @@
 
         .hero-actions-row-top {
             width: 100%;
+            display: flex;
+            gap: 12px;
         }
 
         .hero-actions-row-top .btn-download {
-            width: 100%;
+            flex: 1.2;
+            text-align: center;
+        }
+
+        .hero-actions-row-top .btn-zip {
+            flex: 0.8;
             text-align: center;
         }
 
@@ -327,6 +333,33 @@
             text-align: center;
         }
 
+        .hero-preview-img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--fc-border);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
+            display: block;
+        }
+
+        .hero-preview-img:hover {
+            transform: translateY(-4px);
+            border-color: rgba(51, 241, 229, 0.35);
+        }
+
+        @media (max-width: 560px) {
+            .hero-actions-row-top,
+            .hero-actions-row-bottom {
+                flex-direction: column;
+            }
+            .hero-actions-row-top .btn-download,
+            .hero-actions-row-top .btn-zip,
+            .hero-actions-row-bottom .btn {
+                flex: 1;
+                width: 100%;
+            }
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -339,55 +372,64 @@
             text-decoration: none;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid var(--fc-teal);
+            outline-offset: 2px;
         }
 
         .btn-download {
             background: linear-gradient(135deg, var(--fc-teal) 0%, #1bc4b9 100%);
-            color: #0b0c10;
-            box-shadow: 0 6px 20px rgba(51, 241, 229, 0.25);
-            border-color: rgba(255, 255, 255, 0.2);
+            color: #090a0d;
+            box-shadow: 0 4px 14px rgba(51, 241, 229, 0.2);
+            border-color: rgba(255, 255, 255, 0.25);
         }
 
         .btn-download:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(51, 241, 229, 0.45);
+            box-shadow: 0 6px 18px rgba(51, 241, 229, 0.35);
+            color: #000000;
         }
 
         .btn-zip {
-            background: linear-gradient(135deg, rgba(255, 0, 122, 0.15) 0%, rgba(157, 44, 179, 0.25) 100%);
+            background: rgba(255, 255, 255, 0.04);
             color: var(--fc-text);
-            border: 1px solid rgba(255, 0, 122, 0.4);
-            box-shadow: 0 4px 15px rgba(255, 0, 122, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .btn-zip:hover {
-            background: linear-gradient(135deg, rgba(255, 0, 122, 0.3) 0%, rgba(157, 44, 179, 0.4) 100%);
-            border-color: var(--fc-pink);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 0, 122, 0.35);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
         }
 
         .btn-paypal {
             background: var(--paypal);
             color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .btn-paypal:hover {
             background: var(--paypal-hover);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 69, 124, 0.3);
+            box-shadow: 0 4px 14px rgba(0, 69, 124, 0.35);
         }
 
         .btn-livepix {
             background: var(--livepix);
             color: var(--livepix-text);
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
         }
 
         .btn-livepix:hover {
             background: var(--livepix-hover);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 255, 135, 0.3);
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
         }
 
         /* Demo Video Section */
@@ -456,29 +498,29 @@
         }
 
         .play-btn {
-            width: 88px;
-            height: 88px;
+            width: 80px;
+            height: 80px;
             background: rgba(255, 0, 122, 0.9);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 30px rgba(255, 0, 122, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(255, 255, 255, 0.15);
         }
 
         .play-btn svg {
             fill: white;
-            width: 36px;
-            height: 36px;
-            margin-left: 6px;
+            width: 32px;
+            height: 32px;
+            margin-left: 5px;
         }
 
         .video-placeholder:hover .play-btn {
-            transform: scale(1.1);
+            transform: scale(1.06);
             background: var(--fc-pink);
-            box-shadow: 0 0 40px rgba(255, 0, 122, 0.7);
+            box-shadow: 0 6px 24px rgba(255, 0, 122, 0.4);
         }
 
         /* Features Section */
@@ -499,11 +541,11 @@
             background: var(--fc-bg-panel);
             border: 1px solid var(--fc-border);
             border-radius: 12px;
-            padding: 36px 32px;
+            padding: 32px 28px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 14px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
 
@@ -513,17 +555,17 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 4px;
+            height: 2px;
             background: var(--fc-teal);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.25s ease;
             border-radius: 12px 12px 0 0;
         }
 
         .feature-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--fc-teal-glow);
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+            transform: translateY(-4px);
+            border-color: rgba(51, 241, 229, 0.25);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
         }
 
         .feature-card:hover::before {
@@ -531,23 +573,23 @@
         }
 
         .feature-icon-wrapper {
-            width: 56px;
-            height: 56px;
-            border-radius: 10px;
-            background: rgba(51, 241, 229, 0.06);
-            border: 1px solid rgba(51, 241, 229, 0.15);
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            margin-bottom: 8px;
-            transition: all 0.3s ease;
+            font-size: 24px;
+            margin-bottom: 6px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .feature-card:hover .feature-icon-wrapper {
-            background: rgba(51, 241, 229, 0.12);
-            border-color: var(--fc-teal);
-            transform: scale(1.05);
+            background: rgba(51, 241, 229, 0.08);
+            border-color: rgba(51, 241, 229, 0.35);
+            transform: translateY(-2px);
         }
 
         .feature-card h3 {
@@ -573,14 +615,13 @@
             overflow: hidden;
             border-radius: 16px;
             border: 1px solid var(--fc-border);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             background: var(--fc-bg-panel);
             transition: all 0.3s ease;
         }
 
         .gallery-carousel-container:hover {
-            border-color: rgba(255, 0, 122, 0.25);
-            box-shadow: 0 25px 50px rgba(255, 0, 122, 0.1);
+            border-color: rgba(255, 255, 255, 0.15);
         }
 
         .gallery-carousel-slides {
@@ -633,7 +674,6 @@
             font-size: 22px;
             font-weight: 700;
             color: var(--fc-teal);
-            text-shadow: 0 0 10px rgba(51, 241, 229, 0.2);
             margin: 0;
             transition: all 0.3s ease;
         }
@@ -655,7 +695,7 @@
             height: 48px;
             border-radius: 50%;
             background: rgba(21, 10, 20, 0.85);
-            border: 1px solid var(--fc-border);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: #fff;
             display: flex;
             align-items: center;
@@ -668,18 +708,15 @@
         }
 
         .carousel-nav-btn:hover {
-            background: var(--fc-pink);
-            border-color: var(--fc-pink);
-            box-shadow: 0 0 15px var(--fc-pink-glow);
+            background: rgba(255, 0, 122, 0.85);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
             transform: translateY(-50%) scale(1.05);
         }
 
-        .carousel-nav-btn.prev {
-            left: 20px;
-        }
-
-        .carousel-nav-btn.next {
-            right: 20px;
+        .carousel-nav-btn:focus-visible {
+            outline: 2px solid var(--fc-teal);
+            outline-offset: 2px;
         }
 
         .carousel-dots {
@@ -700,9 +737,16 @@
 
         .carousel-dot.active {
             background: var(--fc-pink);
-            box-shadow: 0 0 8px var(--fc-pink-glow);
+            box-shadow: 0 0 6px rgba(255, 0, 122, 0.35);
             width: 24px;
             border-radius: 4px;
+        }
+        .carousel-nav-btn.prev {
+            left: 20px;
+        }
+
+        .carousel-nav-btn.next {
+            right: 20px;
         }
 
         /* Changelog Section */
@@ -755,6 +799,12 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
+        .changelog-header:focus-visible {
+            outline: 2px solid var(--fc-teal);
+            outline-offset: -2px;
+            border-radius: 8px;
+        }
+
         .changelog-header-info {
             display: flex;
             align-items: center;
@@ -772,7 +822,6 @@
             font-size: 13px;
             font-weight: 700;
             font-family: var(--font-display);
-            text-shadow: 0 0 10px rgba(51, 241, 229, 0.15);
         }
 
         .changelog-badge-latest {
@@ -961,48 +1010,51 @@
             align-items: center;
             gap: 12px;
             z-index: 9999;
-            animation: contactAttentionBounce 6s infinite ease-in-out;
         }
 
         .tally-contact-label {
-            background: linear-gradient(135deg, rgba(20, 15, 35, 0.95), rgba(40, 20, 55, 0.98));
-            border: 1px solid rgba(255, 0, 122, 0.5);
+            background: rgba(20, 10, 24, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             color: #ffffff;
             font-size: 13px;
             font-weight: 600;
             padding: 9px 16px;
             border-radius: 24px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 0, 122, 0.25);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(10px);
             white-space: nowrap;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
         }
 
         .tally-contact-wrapper:hover .tally-contact-label {
-            transform: translateX(-4px) scale(1.03);
-            border-color: var(--fc-pink);
-            box-shadow: 0 10px 25px rgba(255, 0, 122, 0.5), 0 0 20px var(--fc-pink-glow);
+            transform: translateX(-3px);
+            border-color: rgba(255, 0, 122, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
             color: #ffffff;
         }
 
         .tally-contact-btn {
             position: relative;
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--fc-pink) 0%, var(--fc-purple) 100%);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            box-shadow: 0 8px 24px rgba(255, 0, 122, 0.45);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            outline: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tally-contact-btn:focus-visible {
+            outline: 2px solid var(--fc-teal);
+            outline-offset: 3px;
         }
 
         .tally-badge-dot {
@@ -1011,52 +1063,24 @@
             right: 2px;
             width: 12px;
             height: 12px;
-            background: #00ff88;
+            background: #10b981;
             border: 2px solid #1a1025;
             border-radius: 50%;
-            box-shadow: 0 0 8px #00ff88;
-            animation: dotPulse 1.5s infinite ease-in-out;
-        }
-
-        @keyframes dotPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.7; }
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
         }
 
         .tally-contact-btn svg {
             fill: currentColor;
-            transition: transform 0.3s ease;
+            transition: transform 0.25s ease;
         }
 
         .tally-contact-wrapper:hover .tally-contact-btn {
-            transform: scale(1.08) rotate(-5deg);
-            box-shadow: 0 12px 30px rgba(255, 0, 122, 0.65), 0 0 20px var(--fc-pink-glow);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 0, 122, 0.35);
         }
 
         .tally-contact-wrapper:hover .tally-contact-btn svg {
-            transform: scale(1.1) rotate(10deg);
-        }
-
-        .tally-contact-btn::after {
-            content: "";
-            position: absolute;
-            top: -3px; left: -3px; right: -3px; bottom: -3px;
-            border-radius: 50%;
-            border: 2px solid var(--fc-pink);
-            opacity: 0;
-            animation: tallyPulse 2s infinite;
-        }
-
-        @keyframes tallyPulse {
-            0% { transform: scale(1); opacity: 0.7; }
-            100% { transform: scale(1.4); opacity: 0; }
-        }
-
-        @keyframes contactAttentionBounce {
-            0%, 80%, 100% { transform: translateY(0); }
-            85% { transform: translateY(-8px) scale(1.03); }
-            90% { transform: translateY(0) scale(1.01); }
-            95% { transform: translateY(-4px); }
+            transform: scale(1.08);
         }
 
         @media (max-width: 768px) {
@@ -1169,9 +1193,9 @@
         }
 
         .smartscreen-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--fc-pink-glow);
-            box-shadow: 0 12px 30px rgba(255, 0, 122, 0.15);
+            transform: translateY(-4px);
+            border-color: rgba(255, 0, 122, 0.35);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
         }
 
         .smartscreen-badge {
@@ -1261,7 +1285,7 @@
 
         .faq-item.active {
             border-color: var(--fc-teal);
-            box-shadow: 0 8px 24px rgba(51, 241, 229, 0.12);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
         }
 
         .faq-question {
@@ -1280,6 +1304,12 @@
             align-items: center;
             gap: 16px;
             transition: color 0.2s ease;
+        }
+
+        .faq-question:focus-visible {
+            outline: 2px solid var(--fc-teal);
+            outline-offset: -2px;
+            border-radius: 8px;
         }
 
         .faq-question:hover {
@@ -1348,12 +1378,12 @@
                     <a href="#support" data-i18n="navSupport">Apoiar</a>
                     <a href="#contact" data-action="open-contact" data-i18n="navContact">Contato</a>
                     <a href="https://github.com/Cerberus-BR/FightcadePlus" target="_blank">GitHub</a>
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.1/Setup-FightcadePlus-2.0.1.exe" class="btn-header" data-i18n="downloadBtn">Download</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.1.0/Setup-FightcadePlus-2.1.0.exe" class="btn-header" data-i18n="downloadBtn">Download</a>
                 </nav>
                 <div class="lang-selector">
-                    <button class="lang-btn active" data-lang="pt" title="Português">🇧🇷</button>
-                    <button class="lang-btn" data-lang="en" title="English">🇺🇸</button>
-                    <button class="lang-btn" data-lang="es" title="Español">🇪🇸</button>
+                    <button class="lang-btn active" data-lang="pt" title="Português" aria-label="Português">🇧🇷</button>
+                    <button class="lang-btn" data-lang="en" title="English" aria-label="English">🇺🇸</button>
+                    <button class="lang-btn" data-lang="es" title="Español" aria-label="Español">🇪🇸</button>
                 </div>
             </div>
         </div>
@@ -1362,16 +1392,16 @@
     <!-- Hero Section -->
     <section class="container hero">
         <div class="hero-content">
-            <span class="hero-tag" data-i18n="heroTag">v2.0.1 — Novo Update</span>
+            <span class="hero-tag" data-i18n="heroTag">v2.1.0: Novo Update</span>
             <h1 data-i18n="heroTitle">Melhore sua experiência no Fightcade</h1>
             <p data-i18n="heroDesc">
                 O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, 
                 filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.
             </p>
             <div class="hero-actions">
-                <div class="hero-actions-row-top" style="display: flex; gap: 12px;">
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.1/Setup-FightcadePlus-2.0.1.exe" class="btn btn-download" style="flex: 1.2;" data-i18n="heroDownload">Download Setup v2.0.1 (.exe)</a>
-                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.0.1/FightcadePlus-2.0.1.zip" class="btn btn-zip" style="flex: 0.8;" data-i18n="heroDownloadZip">Portátil (.zip)</a>
+                <div class="hero-actions-row-top">
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.1.0/Setup-FightcadePlus-2.1.0.exe" class="btn btn-download" data-i18n="heroDownload">Download Setup v2.1.0 (.exe)</a>
+                    <a href="https://github.com/Cerberus-BR/FightcadePlus/releases/download/2.1.0/FightcadePlus-2.1.0.zip" class="btn btn-zip" data-i18n="heroDownloadZip">Portátil (.zip)</a>
                 </div>
                 <div class="hero-actions-row-bottom">
                     <a href="https://www.paypal.com/donate/?hosted_button_id=BEPD37AB7XYL4" target="_blank" class="btn btn-paypal" data-i18n="heroPaypal">Donate via PayPal</a>
@@ -1383,7 +1413,7 @@
         
         <!-- Hero Visual Mockup -->
         <div class="hero-visual-mockup">
-            <img src="assets/images/preview-settings.svg" alt="Fightcade Plus Panel" style="width: 100%; border-radius: 12px; box-shadow: 0 30px 60px rgba(0,0,0,0.7); border: 1px solid var(--fc-border); transition: transform 0.3s ease, border-color 0.3s ease;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--fc-teal)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--fc-border)';">
+            <img src="assets/images/preview-settings.svg" alt="Fightcade Plus Panel" class="hero-preview-img" width="550" height="350">
         </div>
     </section>
 
@@ -1467,8 +1497,12 @@
             <p data-i18n="galleryDesc">Veja imagens demonstrativas da extensão rodando diretamente integrada ao cliente desktop do Fightcade.</p>
         </div>
         <div class="gallery-carousel-container">
-            <button class="carousel-nav-btn prev" aria-label="Slide anterior">&lt;</button>
-            <button class="carousel-nav-btn next" aria-label="Próximo slide">&gt;</button>
+            <button class="carousel-nav-btn prev" aria-label="Slide anterior" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button class="carousel-nav-btn next" aria-label="Próximo slide" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
             
             <div class="gallery-carousel-slides">
                 <!-- Slide 1 -->
@@ -1548,7 +1582,7 @@
                 <div class="smartscreen-card">
                     <span class="smartscreen-badge alt" data-i18n="smartscreenCard2Badge">Propriedades (15s)</span>
                     <h3 data-i18n="smartscreenCard2Title">2. Desbloquear Arquivo</h3>
-                    <p data-i18n="smartscreenCard2Desc">Clique com o botão direito no instalador baixado (<code>Setup-FightcadePlus-2.0.1.exe</code>) &gt; <strong>Propriedades</strong> &gt; marque <strong>"Desbloquear"</strong> no rodapé &gt; <strong>Aplicar</strong> e <strong>OK</strong>.</p>
+                    <p data-i18n="smartscreenCard2Desc">Clique com o botão direito no instalador baixado (<code>Setup-FightcadePlus-2.1.0.exe</code>) &gt; <strong>Propriedades</strong> &gt; marque <strong>"Desbloquear"</strong> no rodapé &gt; <strong>Aplicar</strong> e <strong>OK</strong>.</p>
                 </div>
 
                 <div class="smartscreen-card">
@@ -1718,16 +1752,16 @@
                 smartscreenCard1Desc: "Ao abrir o instalador e ver a janela azul do Windows Defender, clique no link <strong>\"Mais informações\"</strong> e em seguida no botão <strong>\"Executar assim mesmo\"</strong>.",
                 smartscreenCard2Badge: "Propriedades (15s)",
                 smartscreenCard2Title: "2. Desbloquear Arquivo",
-                smartscreenCard2Desc: "Clique com o botão direito no instalador baixado (<code>Setup-FightcadePlus-2.0.1.exe</code>) &gt; <strong>Propriedades</strong> &gt; marque <strong>\"Desbloquear\"</strong> no rodapé &gt; <strong>Aplicar</strong> e <strong>OK</strong>.",
+                smartscreenCard2Desc: "Clique com o botão direito no instalador baixado (<code>Setup-FightcadePlus-2.1.0.exe</code>) &gt; <strong>Propriedades</strong> &gt; marque <strong>\"Desbloquear\"</strong> no rodapé &gt; <strong>Aplicar</strong> e <strong>OK</strong>.",
                 smartscreenCard3Badge: "Avançado (1 min)",
                 smartscreenCard3Title: "3. Desativar SmartScreen",
                 smartscreenCard3Desc: "Abra o menu Iniciar &gt; <strong>Segurança do Windows</strong> &gt; <strong>Controle de aplicativos e navegador</strong> &gt; <strong>Proteção baseada em reputação</strong> &gt; desative <strong>\"Verificar aplicativos e arquivos\"</strong>.",
                 contactLabel: "💬 Dúvidas ou Sugestões? Fale Conosco",
                 downloadBtn: "Download",
-                heroTag: "v2.0.1 — Novo Update",
+                heroTag: "v2.1.0: Novo Update",
                 heroTitle: "Melhore sua experiência no Fightcade",
                 heroDesc: "O Fightcade Plus é um mod modular completo que adiciona melhorias de estabilidade, filtros automatizados de ping/país, reputação de jogadores e fila de lives no seu Fightcade nativo.",
-                heroDownload: "Download Setup v2.0.1 (.exe)",
+                heroDownload: "Download Setup v2.1.0 (.exe)",
                 heroDownloadZip: "Portátil (.zip)",
                 smartscreenZipTitle: "Prefere não usar o instalador? Baixe a Versão Portátil (.zip)",
                 smartscreenZipText: "Basta descompactar a pasta em qualquer local e abrir o Fightcade. O pacote compactado não inclui as ROMs dos jogos para download rápido: caso já tenha salas de jogos abertas ao logar, basta <strong>sair da sala e entrar novamente</strong> para que as ROMs sejam baixadas automaticamente!",
@@ -1812,16 +1846,16 @@
                 smartscreenCard1Desc: "When the blue Windows Defender window appears, click the <strong>\"More info\"</strong> link and then click the <strong>\"Run anyway\"</strong> button.",
                 smartscreenCard2Badge: "Properties (15s)",
                 smartscreenCard2Title: "2. Unblock the File",
-                smartscreenCard2Desc: "Right-click the downloaded installer (<code>Setup-FightcadePlus-2.0.1.exe</code>) &gt; <strong>Properties</strong> &gt; check <strong>\"Unblock\"</strong> at the bottom &gt; <strong>Apply</strong> and <strong>OK</strong>.",
+                smartscreenCard2Desc: "Right-click the downloaded installer (<code>Setup-FightcadePlus-2.1.0.exe</code>) &gt; <strong>Properties</strong> &gt; check <strong>\"Unblock\"</strong> at the bottom &gt; <strong>Apply</strong> and <strong>OK</strong>.",
                 smartscreenCard3Badge: "Advanced (1 min)",
                 smartscreenCard3Title: "3. Disable SmartScreen",
                 smartscreenCard3Desc: "Open Start Menu &gt; <strong>Windows Security</strong> &gt; <strong>App &amp; browser control</strong> &gt; <strong>Reputation-based protection</strong> &gt; toggle off <strong>\"Check apps and files\"</strong>.",
                 contactLabel: "💬 Questions or Feedback? Contact Us",
                 downloadBtn: "Download",
-                heroTag: "v2.0.1 — New Update",
-                heroTitle: "Elevate your Fightcade experience",
+                heroTag: "v2.1.0: New Update",
+                heroTitle: "Upgrade your Fightcade experience",
                 heroDesc: "Fightcade Plus is a full modular mod adding stability enhancements, automatic ping/country filters, integrated player reputation, and live stream queues to your native Fightcade client.",
-                heroDownload: "Download Setup v2.0.1 (.exe)",
+                heroDownload: "Download Setup v2.1.0 (.exe)",
                 heroDownloadZip: "Portable (.zip)",
                 smartscreenZipTitle: "Prefer not to use the installer? Download the Portable (.zip)",
                 smartscreenZipText: "Simply extract the folder to any location and launch Fightcade. The compressed package does not include game ROMs to keep download size compact: if you already have game channels open when logging in, simply <strong>leave the channel and rejoin it</strong> to trigger the automatic ROM download!",
@@ -1905,16 +1939,16 @@
                 smartscreenCard1Desc: "Cuando aparezca la ventana azul de Windows Defender, haz clic en <strong>\"Más información\"</strong> y luego en el botón <strong>\"Ejecutar de todas formas\"</strong>.",
                 smartscreenCard2Badge: "Propiedades (15s)",
                 smartscreenCard2Title: "2. Desbloquear Archivo",
-                smartscreenCard2Desc: "Haz clic derecho en el instalador descargado (<code>Setup-FightcadePlus-2.0.1.exe</code>) &gt; <strong>Propiedades</strong> &gt; marca <strong>\"Desbloquear\"</strong> al pie &gt; <strong>Aplicar</strong> y <strong>Aceptar</strong>.",
+                smartscreenCard2Desc: "Haz clic derecho en el instalador descargado (<code>Setup-FightcadePlus-2.1.0.exe</code>) &gt; <strong>Propiedades</strong> &gt; marca <strong>\"Desbloquear\"</strong> al pie &gt; <strong>Aplicar</strong> y <strong>Aceptar</strong>.",
                 smartscreenCard3Badge: "Avanzado (1 min)",
                 smartscreenCard3Title: "3. Desactivar SmartScreen",
                 smartscreenCard3Desc: "Abre el menú Inicio &gt; <strong>Seguridad de Windows</strong> &gt; <strong>Control de aplicaciones y navegador</strong> &gt; <strong>Protección basada en reputación</strong> &gt; desactiva <strong>\"Comprobar aplicaciones y archivos\"</strong>.",
                 contactLabel: "💬 ¿Preguntas o Sugerencias? Contáctanos",
                 downloadBtn: "Descargar",
-                heroTag: "v2.0.1 — Nueva Actualización",
+                heroTag: "v2.1.0: Nueva Actualización",
                 heroTitle: "Mejora tu experiencia en Fightcade",
                 heroDesc: "Fightcade Plus es un mod modular completo que añade mejoras de estabilidad, filtros automáticos de ping/país, reputación de jugadores y cola de streaming en vivo a tu cliente nativo de Fightcade.",
-                heroDownload: "Descargar Setup v2.0.1 (.exe)",
+                heroDownload: "Descargar Setup v2.1.0 (.exe)",
                 heroDownloadZip: "Portátil (.zip)",
                 smartscreenZipTitle: "¿Prefieres no usar el instalador? Descarga la Versión Portátil (.zip)",
                 smartscreenZipText: "Simplemente descomprime la carpeta en cualquier ubicación y abre Fightcade. El paquete comprimido no incluye las ROMs para mantener la descarga ligera: si ya tienes salas de juegos abiertas al iniciar sesión, ¡solo debes <strong>salir de la sala y volver a entrar</strong> para que las ROMs se descarguen automáticamente!",
@@ -1984,6 +2018,43 @@
         };
 
         const changelogTimelineData = [
+            {
+                version: "v2.1.0",
+                date: {
+                    pt: "30 de Setembro de 2026",
+                    en: "September 30, 2026",
+                    es: "30 de Septiembre de 2026"
+                },
+                changes: {
+                    pt: [
+                        "Menu de perfil próprio (👤) no hover do seu nick com Rank, Elo estimado, meta de pontos e histórico recente.",
+                        "Sincronização individual do ranking (busca direcionada até o top 999) com parada imediata e preservação de cache da sala.",
+                        "Indicador de variação de posição no ranking (▲ / ▼ / =) com histórico compacto de 10 entradas no hover.",
+                        "Proteção anti-spam de auto-reject: toast visual local na tela sem tráfego de rede e rotação cíclica no chat público.",
+                        "Notificação e alerta sonoro de favoritos: detecção por socket ao entrar na sala com toast dourado e som personalizável (Pop Suave, MSN Alert, Mario Coin ou Mudo).",
+                        "Design System refinado: novo ícone vetorial RJ-45 de cabo, números tabulares, paleta suave e mockups SVG universais.",
+                        "Hardening arquitetural: consultas estritas ao canal ativo (getActiveChannelWrapper), padding lateral condicional (.userItem) e trava de sincronização segura."
+                    ],
+                    en: [
+                        "Dedicated personal profile card (👤) on username hover displaying Rank, estimated Elo, point goals, and recent history.",
+                        "Targeted personal ranking sync (up to top 999) with immediate halt upon finding user and room cache preservation.",
+                        "Leaderboard position delta indicator (▲ / ▼ / =) with a compact 10-entry trail on hover.",
+                        "Anti-spam auto-reject protection: zero-network local screen toast and cyclic anti-flood chat notification.",
+                        "Favorite player room join notification: real-time socket detection with themed gold toast and customizable chime (Soft Pop, MSN Alert, Mario Coin, or Mute).",
+                        "Refined Design System: new vector RJ-45 Ethernet icon, tabular numbers, softened color palette, and universal SVG mockups.",
+                        "Architectural hardening: strict active channel DOM queries (getActiveChannelWrapper), conditional lateral ping padding (.userItem), and safe API sync semaphore.",
+                    ],
+                    es: [
+                        "Menú de perfil propio (👤) en el hover de tu nick con Rango, Elo estimado, meta de puntos e historial reciente.",
+                        "Sincronización individual del ranking (búsqueda dirigida hasta top 999) con parada inmediata y preservación de caché.",
+                        "Indicador de cambio de posición en la tabla (▲ / ▼ / =) con registro compacto de 10 entradas en el hover.",
+                        "Protección anti-spam de auto-rechazo: toast visual local en pantalla sin tráfico de red y rotación cíclica en el chat público.",
+                        "Notificación y alerta sonora de favoritos: detección por socket al unirse a la sala con toast dorado y sonido personalizable (Pop Suave, MSN Alert, Moneda Mario o Silencio).",
+                        "Design System refinado: nuevo icono vectorial RJ-45 para cable, números tabulares, paleta suave y maquetas SVG universales.",
+                        "Refuerzo arquitectónico: consultas estrictas al canal activo (getActiveChannelWrapper), espaciado lateral condicional (.userItem) y semáforo de sincronización seguro."
+                    ]
+                }
+            },
             {
                 version: "v2.0.1",
                 date: {
